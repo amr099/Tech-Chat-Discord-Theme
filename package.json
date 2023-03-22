@@ -9,8 +9,14 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "bootstrap": "^5.2.3",
+    "firebase": "^9.18.0",
+    "firebase-tools": "^11.25.1",
+    "firebaseui": "^6.0.2",
     "react": "^18.2.0",
+    "react-bootstrap": "^2.7.2",
     "react-dom": "^18.2.0",
+    "react-hook-form": "^7.43.7",
     "vite-jsconfig-paths": "^2.0.1"
   },
   "devDependencies": {
