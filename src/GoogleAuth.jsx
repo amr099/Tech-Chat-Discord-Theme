@@ -1,15 +1,23 @@
 import { signInWithPopup } from "firebase/auth";
 import React, { useContext } from "react";
-import { auth, provider } from "./../firebase-config";
+import { db, auth, provider } from "./../firebase-config";
 import { AuthContext } from "./AuthContext";
+import { ref, set } from "firebase/database";
 
 export default function GoogleAuth() {
-    const { setUser } = useContext(AuthContext);
+    const { user, setUser } = useContext(AuthContext);
     const login = () => {
         try {
             signInWithPopup(auth, provider)
                 .then((result) => {
                     setUser(result.user);
+                    set(ref(db, "users/" + result.user.displayName), {
+                        name: result.user.displayName,
+                        email: result.user?.email,
+                        notifications: {
+                            creation: "this email created at ...",
+                        },
+                    });
                 })
                 .catch((e) => {
                     console.log(e);

@@ -1,16 +1,33 @@
 import { ref, onValue } from "firebase/database";
 import { db } from "../firebase-config";
 
-import React from "react";
+import React, { useState, useContext, useEffect } from "react";
+import { RoomContext } from "./RoomContext";
 
 export default function GetRoomMessages() {
-    const getMessages = () => {
-        const starCountRef = ref(db, "rooms/", "room1");
+    const [messages, setMessages] = useState();
+    const { room } = useContext(RoomContext);
+
+    useEffect(() => {
+        const starCountRef = ref(db, `messages/${room}/`);
         onValue(starCountRef, (snapshot) => {
+            let messages = [];
             const data = snapshot.val();
-            // updateStarCount(postElement, data);
             console.log(data);
+            for (let i in data) {
+                messages.push(data[i]);
+            }
+            setMessages(messages);
         });
-    };
-    return <button onClick={getMessages}>Get Messages</button>;
+    }, [room]);
+
+    return (
+        <ul>
+            {messages?.map((m) => (
+                <li>
+                    {m.sender}:{m.msg}
+                </li>
+            ))}
+        </ul>
+    );
 }

@@ -3,7 +3,10 @@ import GetRoomMessages from "GetRoomMessages";
 import GoogleAuth from "GoogleAuth";
 import { useContext } from "react";
 import SendMessage from "SendMessage";
+import Users from "Users";
 import { AuthContext } from "./AuthContext";
+import Rooms from "./Rooms";
+import Notification from "./Notification";
 
 function App() {
     const { user } = useContext(AuthContext);
@@ -11,10 +14,13 @@ function App() {
     return (
         <>
             <GoogleAuth />
-            <h1>{user && user?.email}</h1>
+            <h1>{user && user?.displayName}</h1>
+            <Notification />
             <CreateRoom />
-            <GetRoomMessages />
+            <Rooms />
             <SendMessage />
+            <GetRoomMessages />
+            <Users />
         </>
     );
 }

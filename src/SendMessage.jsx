@@ -3,23 +3,30 @@ import { ref, child, push, update } from "firebase/database";
 import React, { useContext } from "react";
 import { db } from "../firebase-config";
 import { AuthContext } from "AuthContext";
+import { RoomContext } from "./RoomContext";
+import { useForm } from "react-hook-form";
 
 export default function SendMessage() {
+    const { room } = useContext(RoomContext);
     const { user } = useContext(AuthContext);
-    function send() {
+    const { register, handleSubmit } = useForm();
+    function send(data) {
         const msg = {
             sender: user?.displayName,
-            msg: "Hey you!",
+            msg: data.message,
         };
 
-        // Get a key for a new Post.
         const newPostKey = push(child(ref(db), "messages")).key;
 
-        // Write the new post's data simultaneously in the posts list and the user's post list.
         const updates = {};
-        updates["/messages/" + newPostKey] = msg;
+        updates[`messages/${room}/${newPostKey}`] = msg;
 
         return update(ref(db), updates);
     }
-    return <button onClick={send}>Send</button>;
+    return (
+        <form onSubmit={handleSubmit(send)}>
+            <input {...register("message")} />
+            <button type='submit'>Send</button>
+        </form>
+    );
 }
