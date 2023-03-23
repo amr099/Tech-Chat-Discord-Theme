@@ -9,18 +9,28 @@ export default function Rooms() {
     const { user } = useContext(AuthContext);
     const [rooms, setRooms] = useState([]);
 
-    const join = (creator, room) => {
-        const req = {
-            user: user?.displayName,
-            msg: `${user?.displayName} wanna join ${room}`,
-        };
+    const join = (creatorId, room) => {
+        try {
+            const newNotificationKey = push(
+                child(ref(db), `users/${creatorId}`)
+            ).key;
 
-        const newPostKey = push(child(ref(db), "messages")).key;
+            const joinRequest = {
+                id: newNotificationKey,
+                userName: user?.displayName,
+                userID: user?.uid,
+                room: room,
+            };
 
-        const updates = {};
-        updates[`users/${creator}/notifications/${newPostKey}`] = req;
+            const updates = {};
+            updates[`users/${creatorId}/notifications/${newNotificationKey}/`] =
+                joinRequest;
 
-        return update(ref(db), updates);
+            return update(ref(db), updates);
+        } catch (e) {
+            console.log(e);
+            console.log("error sending request to join", room);
+        }
     };
 
     useEffect(() => {
@@ -41,7 +51,7 @@ export default function Rooms() {
                 {rooms?.map((room) => (
                     <li onClick={() => setRoom(room.name)}>
                         {room.name}{" "}
-                        <button onClick={() => join(room.creator, room.name)}>
+                        <button onClick={() => join(room.creatorId, room.name)}>
                             Join
                         </button>
                     </li>

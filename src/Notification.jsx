@@ -1,4 +1,5 @@
-import { ref, onValue } from "firebase/database";
+import { ref, child, push, update, onValue, remove } from "firebase/database";
+
 import { db } from "../firebase-config";
 import React, { useState, useContext, useEffect } from "react";
 import { AuthContext } from "AuthContext";
@@ -8,7 +9,7 @@ export default function GetRoomMessages() {
     const { user } = useContext(AuthContext);
 
     useEffect(() => {
-        const starCountRef = ref(db, `users/${user.displayName}/notifications`);
+        const starCountRef = ref(db, `users/${user.uid}/notifications`);
         onValue(starCountRef, (snapshot) => {
             let notifications = [];
             const data = snapshot.val();
@@ -19,10 +20,46 @@ export default function GetRoomMessages() {
         });
     }, [user]);
 
+    const updateUserRooms = (id, room) => {
+        try {
+            const updates = {};
+            updates[`users/${id}/rooms/`] = { name: room };
+            return update(ref(db), updates);
+        } catch (e) {
+            console.log(e);
+            console.log("error adding room to users rooms ");
+            return;
+        }
+    };
+
+    const updateRoomMembers = (id, name, room) => {
+        try {
+            const updates = {};
+            updates[`rooms/${room}/members/${id}/`] = { id: id, name: name };
+            return update(ref(db), updates);
+        } catch (e) {
+            console.log(e);
+            console.log("error adding user to room members");
+            return;
+        }
+    };
+
+    const accept = (name, id, room) => {
+        updateUserRooms(id, room);
+        updateRoomMembers(id, name, room);
+    };
+
     return (
         <ul>
             {notifications?.map((n) => (
-                <li>{n.msg}</li>
+                <li>
+                    {n.userName} wanna join room {n.room}
+                    <button
+                        onClick={() => accept(n.userName, n.userID, n.room)}
+                    >
+                        accept
+                    </button>
+                </li>
             ))}
         </ul>
     );
