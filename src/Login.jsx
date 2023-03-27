@@ -1,5 +1,5 @@
 import { signInWithPopup } from "firebase/auth";
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { db, auth, provider } from "../firebase-config";
 import { AuthContext } from "./AuthContext";
 import { ref, set } from "firebase/database";
@@ -10,9 +10,6 @@ export default function Login() {
     const login = () => {
         signInWithPopup(auth, provider)
             .then((result) => {
-                setUser(result.user);
-            })
-            .then(() => {
                 // Set record into users collection.
                 set(ref(db, `users/${result.user.uid}`), {
                     uid: result.user?.uid,
@@ -20,11 +17,17 @@ export default function Login() {
                     email: result.user?.email,
                     img: result.user?.photoURL,
                 });
+                setUser(result.user);
             })
+
             .catch((e) => {
-                console.log(e);
+                console.log(`error:${e}`);
                 return;
             });
     };
+
+    useEffect(() => {
+        console.log(user);
+    }, [user]);
     return <button onClick={login}>Login</button>;
 }

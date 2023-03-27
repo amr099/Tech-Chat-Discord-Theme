@@ -1,4 +1,4 @@
-import { ref, child, push, update, onValue, remove } from "firebase/database";
+import { ref, update, onValue } from "firebase/database";
 
 import { db } from "../firebase-config";
 import React, { useState, useContext, useEffect } from "react";

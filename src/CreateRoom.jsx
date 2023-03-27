@@ -3,6 +3,30 @@ import { ref, set, update, push, child } from "firebase/database";
 import { db } from "./../firebase-config";
 import { AuthContext } from "AuthContext";
 import { useForm } from "react-hook-form";
+import styled from "styled-components";
+import { Container } from "Header";
+
+export const Input = styled.input`
+    font-size: 1rem;
+    padding: 0.5rem;
+    border: none;
+    outline: none;
+    background-color: inherit;
+`;
+export const Button = styled.button`
+    all: unset;
+    max-width: fit-content;
+`;
+
+export const FormContainer = styled.div`
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px solid #909090;
+    padding: 1rem;
+    &::focued {
+        outline: none;
+    }
+`;
 
 export default function CreateRoom() {
     const { register, handleSubmit } = useForm();
@@ -58,9 +82,18 @@ export default function CreateRoom() {
         }
     }
     return (
-        <form onSubmit={handleSubmit(createRoom)}>
-            <input {...register("roomName")} />
-            <button type='submit'>New Room</button>
-        </form>
+        <Container>
+            <form onSubmit={handleSubmit(createRoom)}>
+                <FormContainer>
+                    <Input
+                        {...register("roomName")}
+                        placeholder='Create new room ...'
+                    />
+                    <Button type='submit'>
+                        <i class='bi bi-plus'></i>
+                    </Button>
+                </FormContainer>
+            </form>
+        </Container>
     );
 }
