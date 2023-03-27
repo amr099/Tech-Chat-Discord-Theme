@@ -4,35 +4,34 @@ import { db } from "./../firebase-config";
 import { AuthContext } from "AuthContext";
 import { useForm } from "react-hook-form";
 import styled from "styled-components";
-import { Container } from "Header";
 
-export const Input = styled.input`
-    font-size: 1rem;
-    padding: 0.5rem;
+export const Container = styled.div`
+    display: flex;
+    border-bottom: 1px solid #909090;
+    margin-bottom: 2rem;
+    &::focued {
+        outline: none;
+    }
+`;
+
+const Input = styled.input`
+    font-size: 1.2rem;
+    padding: 1rem;
     border: none;
     outline: none;
     background-color: inherit;
-`;
-export const Button = styled.button`
-    all: unset;
-    max-width: fit-content;
-`;
-
-export const FormContainer = styled.div`
-    display: flex;
-    justify-content: space-between;
-    border-bottom: 1px solid #909090;
-    padding: 1rem;
-    &::focued {
-        outline: none;
+    width: 100%;
+    &::placeholder {
+        color: #cacaca;
     }
 `;
 
 export default function CreateRoom() {
     const { register, handleSubmit } = useForm();
     const { user } = useContext(AuthContext);
-    function createRoom(data) {
+    function onSubmit(data) {
         if (user) {
+            console.log(user);
             try {
                 try {
                     // Set new record into rooms collection.
@@ -82,18 +81,16 @@ export default function CreateRoom() {
         }
     }
     return (
-        <Container>
-            <form onSubmit={handleSubmit(createRoom)}>
-                <FormContainer>
-                    <Input
-                        {...register("roomName")}
-                        placeholder='Create new room ...'
-                    />
-                    <Button type='submit'>
-                        <i class='bi bi-plus'></i>
-                    </Button>
-                </FormContainer>
-            </form>
-        </Container>
+        <form onSubmit={handleSubmit(onSubmit)}>
+            <Container>
+                <Input
+                    {...register("roomName")}
+                    placeholder='Create new room ...'
+                />
+                <button type='submit'>
+                    <i class='bi bi-plus'></i>
+                </button>
+            </Container>
+        </form>
     );
 }

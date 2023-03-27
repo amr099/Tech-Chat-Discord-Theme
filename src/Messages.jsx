@@ -7,16 +7,18 @@ import styled from "styled-components";
 const Container = styled.div`
     height: 70vh;
     overflow: auto;
-    display: grid;
+    display: flex;
+    flex-direction: column;
 `;
 
 const MessageContainer = styled.div`
-    margin: 2rem 0;
     display: flex;
     gap: 10px;
+    max-width: 45%;
+    margin: 2rem 0;
 `;
 const MyMessageContainer = styled(MessageContainer)`
-    justify-self: end;
+    margin-left: auto;
 `;
 
 const Message = styled.div`
@@ -26,6 +28,7 @@ const Message = styled.div`
 `;
 const MyMessage = styled(Message)`
     background-color: #f1f5fb;
+    float: right;
 `;
 
 const Msg = styled.p`
@@ -50,10 +53,11 @@ export default function Messages() {
     const { room } = useContext(RoomContext);
 
     useEffect(() => {
+        console.log(room);
         const messages = ref(db, `messages/${room}/`);
         onValue(messages, (snapshot) => {
-            let messages = [];
             const data = snapshot.val();
+            let messages = [];
             for (let i in data) {
                 messages.push(data[i]);
             }
@@ -62,49 +66,17 @@ export default function Messages() {
     }, [room]);
 
     return (
-        // <ul>
-        //     {messages?.map((m) => (
-        //         <li>
-        //             {m.sender}:{m.msg}
-        //         </li>
-        //     ))}
-        // </ul>
         <Container>
-            <MessageContainer>
-                <UserImg src='https://media.istockphoto.com/id/1409329028/vector/no-picture-available-placeholder-thumbnail-icon-illustration-design.jpg?s=612x612&w=0&k=20&c=_zOuJu755g2eEUioiOUdz_mHKJQJn-tDgIAhQzyeKUQ='></UserImg>
-                <Message>
-                    <Msg>
-                        Hi Den, Not yet. Iam working on the task right now!
-                    </Msg>
-                    <Time>11:34 AM</Time>
-                </Message>
-            </MessageContainer>
-            <MessageContainer>
-                <UserImg src='https://media.istockphoto.com/id/1409329028/vector/no-picture-available-placeholder-thumbnail-icon-illustration-design.jpg?s=612x612&w=0&k=20&c=_zOuJu755g2eEUioiOUdz_mHKJQJn-tDgIAhQzyeKUQ='></UserImg>
-                <Message>
-                    <Msg>
-                        Hi Den, Not yet. Iam working on the task right now!
-                    </Msg>
-                    <Time>11:34 AM</Time>
-                </Message>
-            </MessageContainer>
-            <MessageContainer>
-                <UserImg src='https://media.istockphoto.com/id/1409329028/vector/no-picture-available-placeholder-thumbnail-icon-illustration-design.jpg?s=612x612&w=0&k=20&c=_zOuJu755g2eEUioiOUdz_mHKJQJn-tDgIAhQzyeKUQ='></UserImg>
-                <Message>
-                    <Msg>
-                        Hi Den, Not yet. Iam working on the task right now!
-                    </Msg>
-                    <Time>11:34 AM</Time>
-                </Message>
-            </MessageContainer>
-            <MyMessageContainer>
-                <MyMessage>
-                    <Msg>
-                        Hi Den, Not yet. Iam working on the task right now!
-                    </Msg>
-                    <Time>11:34 AM</Time>
-                </MyMessage>
-            </MyMessageContainer>
+            {messages &&
+                messages?.map((msg) => (
+                    <MyMessageContainer>
+                        {/* <UserImg src='https://media.istockphoto.com/id/1409329028/vector/no-picture-available-placeholder-thumbnail-icon-illustration-design.jpg?s=612x612&w=0&k=20&c=_zOuJu755g2eEUioiOUdz_mHKJQJn-tDgIAhQzyeKUQ='></UserImg> */}
+                        <Message>
+                            <Msg>{msg.msg}</Msg>
+                            <Time>{msg?.time}</Time>
+                        </Message>
+                    </MyMessageContainer>
+                ))}
         </Container>
     );
 }

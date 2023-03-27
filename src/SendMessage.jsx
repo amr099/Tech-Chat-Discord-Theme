@@ -10,9 +10,8 @@ const Container = styled.div`
     margin: 1rem;
 `;
 
-export const Input = styled.input`
+const Input = styled.input`
     font-size: 1rem;
-    padding: 0.5rem;
     border: none;
     outline: none;
     width: 100%;
@@ -20,14 +19,14 @@ export const Input = styled.input`
         color: #cacaca;
     }
 `;
-export const Button = styled.button`
+const Button = styled.button`
     all: unset;
     background-color: black;
     padding: 1rem;
     color: #cacaca;
 `;
 
-export const FormContainer = styled.div`
+const FormContainer = styled.div`
     padding-top: 1rem;
     font-weight: bold;
     border-top: 1px solid #000;

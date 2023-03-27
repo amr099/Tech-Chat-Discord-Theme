@@ -26,8 +26,5 @@ export default function Login() {
             });
     };
 
-    useEffect(() => {
-        console.log(user);
-    }, [user]);
     return <button onClick={login}>Login</button>;
 }

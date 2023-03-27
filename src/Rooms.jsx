@@ -18,6 +18,7 @@ const RoomContainer = styled.div`
     border-bottom: 2px solid #eee;
     &:hover {
         background-color: #f2faf1;
+        border-top: 3px solid #c7f2ae;
     }
 `;
 
@@ -38,30 +39,7 @@ const P = styled.p`
     color: #c1c1c1;
 `;
 
-const Ul = styled.ul`
-    all: unset;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-`;
-
-const Li = styled.li`
-    all: unset;
-    display: flex;
-    justify-content: space-between;
-    padding: 1rem;
-    font-size: 1.5rem;
-    border-bottom: 1px solid #ccc;
-    cursor: pointer;
-
-    &:hover {
-        background-color: lightblue;
-    }
-`;
-
 const Span = styled.span`
-    flex-grow: -1;
-    margin-right: 1rem;
     color: #c1c1c1;
 `;
 
@@ -69,14 +47,17 @@ const Button = styled.span`
     all: unset;
     font-size: 0.8rem;
     padding: 1rem;
-    border-radius: 10px 10px;
     background-color: #000;
     color: #b7b8bb;
     font-weight: bold;
+
+    &:hover {
+        cursor: pointer;
+    }
 `;
 
 export default function Rooms() {
-    const { room, setRoom } = useContext(RoomContext);
+    const { setRoom } = useContext(RoomContext);
     const { user } = useContext(AuthContext);
     const [rooms, setRooms] = useState([]);
 
@@ -105,8 +86,8 @@ export default function Rooms() {
     };
 
     useEffect(() => {
-        const starCountRef = ref(db, "rooms/");
-        onValue(starCountRef, (snapshot) => {
+        const rooms = ref(db, "rooms/");
+        onValue(rooms, (snapshot) => {
             const data = snapshot.val();
             let rooms = [];
             for (let i in data) {
@@ -120,72 +101,20 @@ export default function Rooms() {
         <>
             <Container>
                 <CreateRoom />
-                <RoomContainer>
-                    <Flex>
-                        <div>
+                {rooms.map((room) => (
+                    <RoomContainer onClick={() => setRoom(room.name)}>
+                        <Flex>
                             <Flex>
-                                <Flex>
-                                    <Img src='https://media.istockphoto.com/id/1409329028/vector/no-picture-available-placeholder-thumbnail-icon-illustration-design.jpg?s=612x612&w=0&k=20&c=_zOuJu755g2eEUioiOUdz_mHKJQJn-tDgIAhQzyeKUQ='></Img>
-                                    <h4>Capmpaings Data</h4>
-                                </Flex>
-                                <Span>20min</Span>
-                                <Button>Join</Button>
+                                <Img src='https://media.istockphoto.com/id/1409329028/vector/no-picture-available-placeholder-thumbnail-icon-illustration-design.jpg?s=612x612&w=0&k=20&c=_zOuJu755g2eEUioiOUdz_mHKJQJn-tDgIAhQzyeKUQ='></Img>
+                                <h4>{room.name}</h4>
                             </Flex>
-                            <P>
-                                Lorem ipsum dolor sit amet consectetur,
-                                adipisicing elit. Modi iste ratione deleniti
-                                placeat porro numquam beatae, voluptatem sunt
-                                voluptatum voluptates, autem, perferendis
-                                corporis cupiditate! Eaque facere explicabo
-                                repellat quod animi.
-                            </P>
-                        </div>
-                    </Flex>
-                </RoomContainer>
-                <RoomContainer>
-                    <Flex>
-                        <div>
-                            <Flex>
-                                <Flex>
-                                    <Img src='https://media.istockphoto.com/id/1409329028/vector/no-picture-available-placeholder-thumbnail-icon-illustration-design.jpg?s=612x612&w=0&k=20&c=_zOuJu755g2eEUioiOUdz_mHKJQJn-tDgIAhQzyeKUQ='></Img>
-                                    <h4>Capmpaings Data</h4>
-                                </Flex>
-                                <Span>20min</Span>
-                                <Button>Join</Button>
-                            </Flex>
-                            <P>
-                                Lorem ipsum dolor sit amet consectetur,
-                                adipisicing elit. Modi iste ratione deleniti
-                                placeat porro numquam beatae, voluptatem sunt
-                                voluptatum voluptates, autem, perferendis
-                                corporis cupiditate! Eaque facere explicabo
-                                repellat quod animi.
-                            </P>
-                        </div>
-                    </Flex>
-                </RoomContainer>
-                <RoomContainer>
-                    <Flex>
-                        <div>
-                            <Flex>
-                                <Flex>
-                                    <Img src='https://media.istockphoto.com/id/1409329028/vector/no-picture-available-placeholder-thumbnail-icon-illustration-design.jpg?s=612x612&w=0&k=20&c=_zOuJu755g2eEUioiOUdz_mHKJQJn-tDgIAhQzyeKUQ='></Img>
-                                    <h4>Capmpaings Data</h4>
-                                </Flex>
-                                <Span>20min</Span>
-                                <Button>Join</Button>
-                            </Flex>
-                            <P>
-                                Lorem ipsum dolor sit amet consectetur,
-                                adipisicing elit. Modi iste ratione deleniti
-                                placeat porro numquam beatae, voluptatem sunt
-                                voluptatum voluptates, autem, perferendis
-                                corporis cupiditate! Eaque facere explicabo
-                                repellat quod animi.
-                            </P>
-                        </div>
-                    </Flex>
-                </RoomContainer>
+                            <Button onClick={() => join(room.name)}>
+                                Join
+                            </Button>
+                        </Flex>
+                        <P>{room?.lastMsg}</P>
+                    </RoomContainer>
+                ))}
             </Container>
         </>
     );

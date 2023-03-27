@@ -6,12 +6,18 @@ export const GlobalStyle = createGlobalStyle`
         margin:0;
         font-family:sans-serif;
     }
+
+    button{
+        all: unset;
+    }
+
     i{
         font-size:2rem;
         &:hover{
             cursor:pointer;
         }
     }
+
     .bi-bell{
         margin-right:2rem; 
     }
@@ -19,11 +25,12 @@ export const GlobalStyle = createGlobalStyle`
     ::placeholder{
         color:#CFCFCF;
     }
+
     .bi-plus
     {
         &:hover{
         background-color:#292929;
-    color:#fff;
-border-radius:5px;}
-    }
+        color:#fff;
+        border-radius:5px;
+}
     `;
