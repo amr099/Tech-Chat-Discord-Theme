@@ -1,16 +1,16 @@
 import { ref, update, onValue } from "firebase/database";
 
-import { db } from "../firebase-config";
+import { db } from "../../firebase-config";
 import React, { useState, useContext, useEffect } from "react";
-import { AuthContext } from "AuthContext";
+import { AuthContext } from "../context/AuthContext";
 
 export default function GetRoomMessages() {
     const [notifications, setNotifications] = useState();
     const { user } = useContext(AuthContext);
 
     useEffect(() => {
-        const starCountRef = ref(db, `users/${user.uid}/notifications`);
-        onValue(starCountRef, (snapshot) => {
+        const notifications = ref(db, `users/${user.uid}/notifications`);
+        onValue(notifications, (snapshot) => {
             let notifications = [];
             const data = snapshot.val();
             for (let i in data) {

@@ -1,9 +1,10 @@
 import { ref, onValue } from "firebase/database";
-import { db } from "../firebase-config";
+import { db } from "../../firebase-config";
 
 import React, { useState, useContext, useEffect } from "react";
-import { RoomContext } from "./RoomContext";
+import { RoomContext } from "../context/RoomContext";
 import styled from "styled-components";
+import { AuthContext } from "../context/AuthContext";
 const Container = styled.div`
     height: 70vh;
     overflow: auto;
@@ -51,9 +52,9 @@ const UserImg = styled.img`
 export default function Messages() {
     const [messages, setMessages] = useState();
     const { room } = useContext(RoomContext);
+    const { user } = useContext(AuthContext);
 
     useEffect(() => {
-        console.log(room);
         const messages = ref(db, `messages/${room}/`);
         onValue(messages, (snapshot) => {
             const data = snapshot.val();
@@ -68,15 +69,33 @@ export default function Messages() {
     return (
         <Container>
             {messages &&
-                messages?.map((msg) => (
-                    <MyMessageContainer>
-                        {/* <UserImg src='https://media.istockphoto.com/id/1409329028/vector/no-picture-available-placeholder-thumbnail-icon-illustration-design.jpg?s=612x612&w=0&k=20&c=_zOuJu755g2eEUioiOUdz_mHKJQJn-tDgIAhQzyeKUQ='></UserImg> */}
-                        <Message>
-                            <Msg>{msg.msg}</Msg>
-                            <Time>{msg?.time}</Time>
-                        </Message>
-                    </MyMessageContainer>
-                ))}
+                messages?.map((msg) => {
+                    if (msg.uid === user.uid) {
+                        return (
+                            <MyMessageContainer>
+                                <Message>
+                                    <Msg>{msg.msg}</Msg>
+                                    <Time>{msg.time}</Time>
+                                </Message>
+                            </MyMessageContainer>
+                        );
+                    } else {
+                        return (
+                            <MessageContainer>
+                                <UserImg
+                                    src={
+                                        msg.userImg ||
+                                        "https://png.pngtree.com/png-clipart/20210915/ourmid/pngtree-user-avatar-login-interface-abstract-blue-icon-png-image_3917504.jpg"
+                                    }
+                                ></UserImg>
+                                <Message>
+                                    <Msg>{msg.msg}</Msg>
+                                    <Time>{msg.time}</Time>
+                                </Message>
+                            </MessageContainer>
+                        );
+                    }
+                })}
         </Container>
     );
 }

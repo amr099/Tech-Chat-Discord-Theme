@@ -1,8 +1,7 @@
 import React, { useContext } from "react";
 import styled from "styled-components";
-import { AuthContext } from "AuthContext";
-import Login from "Login";
-import User from "User";
+import { AuthContext } from "../context/AuthContext";
+import Login from "components/Login";
 
 export const HeaderBackground = styled.div`
     background-color: #292929;
@@ -34,7 +33,7 @@ export default function Header() {
                     <H1>Tech Chat</H1>
                     <Flex align={"center"}>
                         <i className='bi bi-bell'></i>
-                        {user?.currentUser ? <User /> : <Login />}{" "}
+                        <Login />
                     </Flex>
                 </Flex>
             </Container>

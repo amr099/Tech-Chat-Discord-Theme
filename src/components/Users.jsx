@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useContext } from "react";
 import { ref, onValue } from "firebase/database";
-import { db } from "../firebase-config";
-import { RoomContext } from "RoomContext";
+import { db } from "../../firebase-config";
+import { RoomContext } from "../context/RoomContext";
 
 export default function Users() {
     const [users, setUsers] = useState([]);

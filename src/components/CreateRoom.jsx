@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import { ref, set, update, push, child } from "firebase/database";
-import { db } from "./../firebase-config";
-import { AuthContext } from "AuthContext";
+import { db } from "../../firebase-config";
+import { AuthContext } from "../context/AuthContext";
 import { useForm } from "react-hook-form";
 import styled from "styled-components";
 
@@ -40,7 +40,6 @@ export default function CreateRoom() {
                         creatorName: user?.displayName,
                         creatorId: user?.uid,
                         members: {
-                            id: user?.uid,
                             name: user?.displayName,
                         },
                     });
@@ -52,7 +51,13 @@ export default function CreateRoom() {
                 try {
                     // Set new record for newly created room into messages collection.
                     set(ref(db, "messages/" + data.roomName), {
-                        msg1: `${data.roomName} has been created successfully`,
+                        creationMsg: {
+                            user: user?.displayName,
+                            uid: user?.uid,
+                            userImg: user?.photoURL,
+                            msg: `${user.displayName} has created '${data.roomName}' successfully.`,
+                            time: new Date().toLocaleString(),
+                        },
                     });
                 } catch (e) {
                     console.log(e);
@@ -64,11 +69,12 @@ export default function CreateRoom() {
                 }
                 try {
                     // Add new room into creator rooms.
-                    const room = {
-                        name: data.roomName,
-                    };
                     const updates = {};
-                    updates[`users/${user.uid}/rooms/`] = room;
+                    updates[`users/${user.uid}`] = {
+                        rooms: {
+                            name: data.roomName,
+                        },
+                    };
                     return update(ref(db), updates);
                 } catch (e) {
                     console.log(e);

@@ -1,8 +1,8 @@
 import { ref, child, push, update } from "firebase/database";
 import React, { useContext } from "react";
-import { db } from "../firebase-config";
-import { AuthContext } from "AuthContext";
-import { RoomContext } from "./RoomContext";
+import { db } from "../../firebase-config";
+import { AuthContext } from "../context/AuthContext";
+import { RoomContext } from "../context/RoomContext";
 import { useForm } from "react-hook-form";
 import styled from "styled-components";
 
@@ -45,8 +45,11 @@ export default function SendMessage() {
     function send(data) {
         try {
             const msg = {
-                sender: user?.displayName,
+                user: user?.displayName,
+                uid: user?.uid,
+                userImg: user?.photoURL,
                 msg: data.message,
+                time: new Date().toLocaleString(),
             };
 
             const newMsgKey = push(child(ref(db), "messages")).key;

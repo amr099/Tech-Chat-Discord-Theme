@@ -1,10 +1,10 @@
 import React, { useEffect, useState, useContext } from "react";
-import { db } from "../firebase-config";
-import { RoomContext } from "./RoomContext";
-import { AuthContext } from "AuthContext";
+import { db } from "../../firebase-config";
+import { RoomContext } from "../context/RoomContext";
+import { AuthContext } from "../context/AuthContext";
 import { ref, child, push, update, onValue } from "firebase/database";
 import styled from "styled-components";
-import CreateRoom from "CreateRoom";
+import CreateRoom from "components/CreateRoom";
 
 const Container = styled.div`
     background-color: #f9f9f9;
@@ -60,6 +60,7 @@ export default function Rooms() {
     const { setRoom } = useContext(RoomContext);
     const { user } = useContext(AuthContext);
     const [rooms, setRooms] = useState([]);
+    const [joinedRooms, setJoinedRooms] = useState([]);
 
     const join = (creatorId, room) => {
         try {
@@ -85,7 +86,7 @@ export default function Rooms() {
         }
     };
 
-    useEffect(() => {
+    const getRooms = () => {
         const rooms = ref(db, "rooms/");
         onValue(rooms, (snapshot) => {
             const data = snapshot.val();
@@ -95,7 +96,30 @@ export default function Rooms() {
             }
             setRooms(rooms);
         });
+    };
+    useEffect(() => {
+        getRooms();
     }, []);
+
+    const getJoinedRooms = () => {
+        const joinedRooms = ref(db, `users/${user.uid}/rooms`);
+        onValue(joinedRooms, (snapshot) => {
+            const data = snapshot.val();
+            let rooms = [];
+            for (let i in data) {
+                console.log(data[i]);
+                rooms.push(data[i]);
+            }
+            setJoinedRooms(rooms);
+        });
+    };
+
+    useEffect(() => {
+        getJoinedRooms();
+        // console.log(user);
+        // console.log(joinedRooms);
+        // console.log(joinedRooms.find((room) => room == room.name));
+    }, [user, rooms]);
 
     return (
         <>
@@ -108,9 +132,13 @@ export default function Rooms() {
                                 <Img src='https://media.istockphoto.com/id/1409329028/vector/no-picture-available-placeholder-thumbnail-icon-illustration-design.jpg?s=612x612&w=0&k=20&c=_zOuJu755g2eEUioiOUdz_mHKJQJn-tDgIAhQzyeKUQ='></Img>
                                 <h4>{room.name}</h4>
                             </Flex>
-                            <Button onClick={() => join(room.name)}>
-                                Join
-                            </Button>
+                            {joinedRooms.find((room) => room === room.name) ? (
+                                <h1>Joined</h1>
+                            ) : (
+                                <Button onClick={() => join(room.name)}>
+                                    Join
+                                </Button>
+                            )}
                         </Flex>
                         <P>{room?.lastMsg}</P>
                     </RoomContainer>

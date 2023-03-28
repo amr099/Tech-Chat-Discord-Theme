@@ -1,18 +1,18 @@
-import CreateRoom from "CreateRoom";
-import GetRoomMessages from "Messages";
+import CreateRoom from "components/CreateRoom";
+import Messages from "components/Messages";
 import { useContext, useState, useEffect } from "react";
-import SendMessage from "SendMessage";
-import Users from "Users";
-import { AuthContext } from "./AuthContext";
-import Rooms from "./Rooms";
-import Notification from "./Notification";
+import SendMessage from "components/SendMessage";
+import Users from "components/Users";
+import { AuthContext } from "./context/AuthContext";
+import Rooms from "components/Rooms";
+import Notification from "components//Notification";
 import { ref, onValue } from "firebase/database";
 import { db } from "./../firebase-config";
-import Login from "./Login";
-import Header from "Header";
-import ChatWindow from "ChatWindow";
+import Login from "components//Login";
+import Header from "components/Header";
+import ChatWindow from "components/ChatWindow";
 import styled from "styled-components";
-import { GlobalStyle } from "GlobalStyles";
+import { GlobalStyle } from "components/GlobalStyles";
 
 const Grid = styled.div`
     display: grid;
