@@ -1,7 +1,8 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import styled from "styled-components";
 import { AuthContext } from "../context/AuthContext";
 import Login from "components/Login";
+import Notifications from "./Notifications";
 
 export const HeaderBackground = styled.div`
     background-color: #292929;
@@ -16,6 +17,7 @@ const Flex = styled.div`
     display: flex;
     justify-content: ${(props) => props.justfiy};
     align-items: ${(props) => props.align};
+    flex-direction: ${(props) => props.direction};
 `;
 
 const H1 = styled.h1`
@@ -25,6 +27,7 @@ const H1 = styled.h1`
 
 export default function Header() {
     const { user } = useContext(AuthContext);
+    const [notifications, showNotifications] = useState(false);
 
     return (
         <HeaderBackground>
@@ -32,7 +35,11 @@ export default function Header() {
                 <Flex justfiy={"space-between"}>
                     <H1>Tech Chat</H1>
                     <Flex align={"center"}>
-                        <i className='bi bi-bell'></i>
+                        <i
+                            className='bi bi-bell'
+                            onClick={() => showNotifications(!notifications)}
+                        ></i>
+                        {notifications && <Notifications />}
                         <Login />
                     </Flex>
                 </Flex>

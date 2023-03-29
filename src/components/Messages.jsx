@@ -10,6 +10,7 @@ const Container = styled.div`
     overflow: auto;
     display: flex;
     flex-direction: column;
+    background-color: #fdfdfd;
 `;
 
 const MessageContainer = styled.div`
@@ -62,7 +63,7 @@ export default function Messages() {
             for (let i in data) {
                 messages.push(data[i]);
             }
-            setMessages(messages);
+            setMessages(messages.sort((a, b) => b.time - a.time));
         });
     }, [room]);
 
@@ -75,7 +76,7 @@ export default function Messages() {
                             <MyMessageContainer>
                                 <Message>
                                     <Msg>{msg.msg}</Msg>
-                                    <Time>{msg.time}</Time>
+                                    <Time>{msg.time.toLocaleString()}</Time>
                                 </Message>
                             </MyMessageContainer>
                         );

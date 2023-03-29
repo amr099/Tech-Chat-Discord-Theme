@@ -63,26 +63,32 @@ export default function Rooms() {
     const [joinedRooms, setJoinedRooms] = useState([]);
 
     const join = (creatorId, room) => {
-        try {
-            const newNotificationKey = push(
-                child(ref(db), `users/${creatorId}`)
-            ).key;
+        if (user.displayName) {
+            try {
+                const newNotificationKey = push(
+                    child(ref(db), `users/${creatorId}`)
+                ).key;
 
-            const joinRequest = {
-                id: newNotificationKey,
-                userName: user?.displayName,
-                userID: user?.uid,
-                room: room,
-            };
+                const joinRequest = {
+                    id: newNotificationKey,
+                    userName: user?.displayName,
+                    userID: user?.uid,
+                    userImg: user?.photoURL,
+                    room: room,
+                };
 
-            const updates = {};
-            updates[`users/${creatorId}/notifications/${newNotificationKey}/`] =
-                joinRequest;
+                const updates = {};
+                updates[
+                    `users/${creatorId}/notifications/${newNotificationKey}/`
+                ] = joinRequest;
 
-            return update(ref(db), updates);
-        } catch (e) {
-            console.log(e);
-            console.log("error sending request to join", room);
+                return update(ref(db), updates);
+            } catch (e) {
+                console.log(e);
+                console.log("error sending request to join", room);
+            }
+        } else {
+            alert("You have to log in first.");
         }
     };
 
@@ -107,8 +113,8 @@ export default function Rooms() {
             const data = snapshot.val();
             let rooms = [];
             for (let i in data) {
-                console.log(data[i]);
-                rooms.push(data[i]);
+                console.log(data[i].name);
+                rooms.push(data[i].name);
             }
             setJoinedRooms(rooms);
         });
@@ -116,15 +122,12 @@ export default function Rooms() {
 
     useEffect(() => {
         getJoinedRooms();
-        // console.log(user);
-        // console.log(joinedRooms);
-        // console.log(joinedRooms.find((room) => room == room.name));
-    }, [user, rooms]);
+    }, [user?.displayName, rooms]);
 
     return (
         <>
             <Container>
-                <CreateRoom />
+                <CreateRoom rooms={rooms} />
                 {rooms.map((room) => (
                     <RoomContainer onClick={() => setRoom(room.name)}>
                         <Flex>
@@ -132,10 +135,14 @@ export default function Rooms() {
                                 <Img src='https://media.istockphoto.com/id/1409329028/vector/no-picture-available-placeholder-thumbnail-icon-illustration-design.jpg?s=612x612&w=0&k=20&c=_zOuJu755g2eEUioiOUdz_mHKJQJn-tDgIAhQzyeKUQ='></Img>
                                 <h4>{room.name}</h4>
                             </Flex>
-                            {joinedRooms.find((room) => room === room.name) ? (
+                            {joinedRooms.find((r) => r === room.name) ? (
                                 <h1>Joined</h1>
                             ) : (
-                                <Button onClick={() => join(room.name)}>
+                                <Button
+                                    onClick={() =>
+                                        join(room.creatorId, room.name)
+                                    }
+                                >
                                     Join
                                 </Button>
                             )}

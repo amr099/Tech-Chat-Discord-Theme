@@ -1,5 +1,17 @@
-1- User Login(Google)
-2- Create Room
-3- user send request to join Room
-4- Room creator get notification
-5- User gets response
+TODO:
+    - handle error when not logged in.(Done)
+    - Handle overriding Rooms and Users.(Done)
+
+    - Style and handle notifications.
+      - handle send only one join request per room.
+      - don't get notification of initial note.
+      - Handle join requests.
+
+    - Show members of Selected Room.
+      - handle member with keys when update and creator with no key.
+
+    - handle new message position.(Done)
+    - handle sorting by date.(Done)
+    - clean style.
+    - clean code.
+    - test application.

@@ -43,22 +43,26 @@ export default function SendMessage() {
     const { register, handleSubmit } = useForm();
 
     function send(data) {
-        try {
-            const msg = {
-                user: user?.displayName,
-                uid: user?.uid,
-                userImg: user?.photoURL,
-                msg: data.message,
-                time: new Date().toLocaleString(),
-            };
+        if (user.displayName) {
+            try {
+                const msg = {
+                    user: user?.displayName,
+                    uid: user?.uid,
+                    userImg: user?.photoURL,
+                    msg: data.message,
+                    time: new Date(),
+                };
 
-            const newMsgKey = push(child(ref(db), "messages")).key;
-            const updates = {};
-            updates[`messages/${room}/${newMsgKey}`] = msg;
-            return update(ref(db), updates);
-        } catch (e) {
-            console.log(e);
-            console.log("error sending message.");
+                const newMsgKey = push(child(ref(db), "messages")).key;
+                const updates = {};
+                updates[`messages/${room}/${newMsgKey}`] = msg;
+                return update(ref(db), updates);
+            } catch (e) {
+                console.log(e);
+                console.log("error sending message.");
+            }
+        } else {
+            alert("You have to log in first.");
         }
     }
     return (
