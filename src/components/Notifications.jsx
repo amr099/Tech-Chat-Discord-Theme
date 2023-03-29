@@ -1,4 +1,4 @@
-import { ref, update, onValue } from "firebase/database";
+import { ref, update, onValue, push, child } from "firebase/database";
 import { db } from "../../firebase-config";
 import React, { useState, useContext, useEffect } from "react";
 import { AuthContext } from "../context/AuthContext";
@@ -61,11 +61,15 @@ export default function Notifications() {
         });
     }, [user]);
 
-    const updateUserRooms = (id, room) => {
+    const updateUserRooms = (id, room, roomId) => {
         try {
             const newRoomKey = push(child(ref(db), `users/${id}/rooms/`)).key;
             const updates = {};
-            updates[`users/${id}/rooms/${newRoomKey}`] = { name: room };
+            updates[`users/${id}/rooms/${roomId}`] = {
+                id: roomId,
+                name: room,
+                status: "member",
+            };
             return update(ref(db), updates);
         } catch (e) {
             console.log(e);
@@ -80,7 +84,7 @@ export default function Notifications() {
                 child(ref(db), `rooms/${room}/members/`)
             ).key;
             const updates = {};
-            updates[`rooms/${room}/members/${newUserKey}/`] = {
+            updates[`rooms/${room}/members/${newUserKey}`] = {
                 id: id,
                 name: name,
             };
@@ -108,9 +112,9 @@ export default function Notifications() {
         }
     };
 
-    const accept = (name, id, room) => {
-        updateUserRooms(id, room);
-        updateRoomMembers(id, name, room);
+    const accept = (name, id, roomName, roomId) => {
+        updateUserRooms(id, roomName, roomId);
+        updateRoomMembers(id, name, roomName);
         sendAcceptNote(id, room);
     };
 
@@ -133,11 +137,16 @@ export default function Notifications() {
 
             {notifications?.map((note) => (
                 <Notification key={note.id}>
-                    <Img src={note.userImg}></Img>
-                    <h4>{`${note.userName} wanna join ${note.room}`}</h4>
+                    {note.userImg && <Img src={note.userImg}></Img>}
+                    <h4>{note.note}</h4>
                     <Button
                         onClick={() =>
-                            accept(note.userName, note.userID, note.room)
+                            accept(
+                                note.userName,
+                                note.userID,
+                                note.room,
+                                note.roomId
+                            )
                         }
                     >
                         Accept

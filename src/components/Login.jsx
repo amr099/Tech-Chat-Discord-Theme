@@ -55,12 +55,9 @@ export default function Login() {
             });
     };
 
-    {
-        user &&
-            useEffect(() => {
-                getUserInfo();
-            }, [user]);
-    }
+    useEffect(() => {
+        getUserInfo();
+    }, [user]);
 
     return (
         <>

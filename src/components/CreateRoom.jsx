@@ -36,6 +36,7 @@ export default function CreateRoom({ rooms }) {
                     try {
                         // Set new record into rooms collection.
                         set(ref(db, "rooms/" + data.roomName), {
+                            id: 2,
                             name: data.roomName,
                             creatorName: user?.displayName,
                             creatorId: user?.uid,
@@ -72,8 +73,10 @@ export default function CreateRoom({ rooms }) {
                             child(ref(db), `users/${user.uid}/rooms`)
                         ).key;
                         const updates = {};
-                        updates[`users/${user.uid}/rooms/${newRoomKey}`] = {
+                        updates[`users/${user.uid}/rooms/${id}`] = {
+                            id: 2,
                             name: data.roomName,
+                            status: "owner",
                         };
                         return update(ref(db), updates);
                     } catch (e) {

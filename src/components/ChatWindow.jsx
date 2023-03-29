@@ -37,11 +37,15 @@ export default function ChatWindow() {
     return (
         <>
             <RoomHeader>
-                <h2>{room?.name}</h2>
-                <span>created by: {room?.creatorName}</span>
-                {members?.map((m) => (
-                    <span>{m.name}</span>
-                ))}
+                {room && (
+                    <>
+                        <h2>{room?.name}</h2>
+                        <span>created by: {room?.creatorName}</span>
+                        {members?.map((m) => (
+                            <span>{m.name}</span>
+                        ))}
+                    </>
+                )}
             </RoomHeader>
             <Messages />
             <SendMessage />

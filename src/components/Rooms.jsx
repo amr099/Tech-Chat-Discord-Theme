@@ -62,7 +62,7 @@ export default function Rooms() {
     const [rooms, setRooms] = useState([]);
     const [joinedRooms, setJoinedRooms] = useState([]);
 
-    const join = (creatorId, room) => {
+    const sendJoinRequest = (creatorId, roomName, roomId) => {
         if (user.displayName) {
             try {
                 const newNotificationKey = push(
@@ -70,11 +70,12 @@ export default function Rooms() {
                 ).key;
 
                 const joinRequest = {
-                    id: newNotificationKey,
                     userName: user?.displayName,
                     userID: user?.uid,
                     userImg: user?.photoURL,
-                    room: room,
+                    roomName: roomName,
+                    roomId: roomId,
+                    note: `${user.displayName} wanna join ${roomName}`,
                 };
 
                 const updates = {};
@@ -90,6 +91,22 @@ export default function Rooms() {
         } else {
             alert("You have to log in first.");
         }
+    };
+
+    const roomToPending = (roomName, roomId) => {
+        const newRoomKey = push(child(ref(db), `users/${user.uid}/rooms`)).key;
+        const updates = {};
+        updates[`users/${user.uid}/rooms/${roomId}`] = {
+            id: roomId,
+            name: roomName,
+            status: "pending",
+        };
+        return update(ref(db), updates);
+    };
+
+    const join = (creatorId, room, id) => {
+        sendJoinRequest(creatorId, room, id);
+        roomToPending(room, id);
     };
 
     const getRooms = () => {
@@ -113,8 +130,8 @@ export default function Rooms() {
             const data = snapshot.val();
             let rooms = [];
             for (let i in data) {
-                console.log(data[i].name);
-                rooms.push(data[i].name);
+                console.log(data[i]);
+                rooms.push(data[i]);
             }
             setJoinedRooms(rooms);
         });
@@ -127,29 +144,53 @@ export default function Rooms() {
     return (
         <>
             <Container>
-                <CreateRoom rooms={rooms} />
-                {rooms.map((room) => (
-                    <RoomContainer onClick={() => setRoom(room)}>
-                        <Flex>
-                            <Flex>
-                                <Img src='https://media.istockphoto.com/id/1409329028/vector/no-picture-available-placeholder-thumbnail-icon-illustration-design.jpg?s=612x612&w=0&k=20&c=_zOuJu755g2eEUioiOUdz_mHKJQJn-tDgIAhQzyeKUQ='></Img>
-                                <h4>{room.name}</h4>
-                            </Flex>
-                            {joinedRooms.find((r) => r === room.name) ? (
-                                <h1>Joined</h1>
-                            ) : (
-                                <Button
-                                    onClick={() =>
-                                        join(room.creatorId, room.name)
-                                    }
-                                >
-                                    Join
-                                </Button>
-                            )}
-                        </Flex>
-                        <P>{room?.lastMsg}</P>
-                    </RoomContainer>
-                ))}
+                {user.displayName && (
+                    <>
+                        <CreateRoom rooms={rooms} />
+                        <h1>Joined Rooms</h1>
+                        {joinedRooms?.map((room) => (
+                            <RoomContainer onClick={() => setRoom(room)}>
+                                <Flex>
+                                    <Flex>
+                                        <Img src='https://media.istockphoto.com/id/1409329028/vector/no-picture-available-placeholder-thumbnail-icon-illustration-design.jpg?s=612x612&w=0&k=20&c=_zOuJu755g2eEUioiOUdz_mHKJQJn-tDgIAhQzyeKUQ='></Img>
+                                        <h4>{room.name}</h4>
+                                        <span>{room.status}</span>
+                                    </Flex>
+                                    <P>{room?.lastMsg}</P>
+                                </Flex>
+                            </RoomContainer>
+                        ))}
+                    </>
+                )}
+                <hr></hr>
+                <h2>Another Rooms</h2>
+                {rooms.map((room) => {
+                    if (!joinedRooms.find((r) => r.name === room.name)) {
+                        return (
+                            <RoomContainer onClick={() => setRoom(room)}>
+                                <Flex>
+                                    <Flex>
+                                        <Img src='https://media.istockphoto.com/id/1409329028/vector/no-picture-available-placeholder-thumbnail-icon-illustration-design.jpg?s=612x612&w=0&k=20&c=_zOuJu755g2eEUioiOUdz_mHKJQJn-tDgIAhQzyeKUQ='></Img>
+                                        <h4>{room.name}</h4>
+                                        <span>{room.status}</span>
+                                    </Flex>
+                                    <P>{room?.lastMsg}</P>
+                                    <Button
+                                        onClick={() =>
+                                            join(
+                                                room.creatorId,
+                                                room.name,
+                                                room.id
+                                            )
+                                        }
+                                    >
+                                        Join
+                                    </Button>
+                                </Flex>
+                            </RoomContainer>
+                        );
+                    }
+                })}
             </Container>
         </>
     );
