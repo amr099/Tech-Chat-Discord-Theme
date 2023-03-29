@@ -39,9 +39,6 @@ export default function CreateRoom({ rooms }) {
                             name: data.roomName,
                             creatorName: user?.displayName,
                             creatorId: user?.uid,
-                            members: {
-                                name: user?.displayName,
-                            },
                         });
                     } catch (e) {
                         console.log(e);
@@ -88,6 +85,7 @@ export default function CreateRoom({ rooms }) {
                     }
                 } catch (e) {
                     console.log(e);
+                    return;
                 }
             } else {
                 alert("this room name is already used.");

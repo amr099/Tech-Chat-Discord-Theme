@@ -18,7 +18,7 @@ export default function ChatWindow() {
     const [members, setMembers] = useState([]);
 
     const getMembers = () => {
-        const members = ref(db, `rooms/${room}/members`);
+        const members = ref(db, `rooms/${room.name}/members`);
         onValue(members, (snapshot) => {
             const data = snapshot.val();
             let members = [];
@@ -30,12 +30,15 @@ export default function ChatWindow() {
     };
 
     useEffect(() => {
-        getMembers();
+        if (room) {
+            getMembers();
+        }
     }, [room]);
     return (
         <>
             <RoomHeader>
-                <h2>{room}</h2>
+                <h2>{room?.name}</h2>
+                <span>created by: {room?.creatorName}</span>
                 {members?.map((m) => (
                     <span>{m.name}</span>
                 ))}

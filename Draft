@@ -7,11 +7,9 @@ TODO:
       - don't get notification of initial note.
       - Handle join requests.
 
-    - Show members of Selected Room.
+    - Show members of Selected Room.(Done)
       - handle member with keys when update and creator with no key.
 
-    - handle new message position.(Done)
-    - handle sorting by date.(Done)
     - clean style.
     - clean code.
     - test application.

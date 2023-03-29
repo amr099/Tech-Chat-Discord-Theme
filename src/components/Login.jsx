@@ -19,21 +19,18 @@ export default function Login() {
     const [userInfo, setUserInfo] = useState();
 
     const login = () => {
-        console.log(users);
         signInWithPopup(auth, provider)
             .then((result) => {
                 setUser(result.user);
-                if (!users.find((u) => u == result.user.uid)) {
+                if (!users?.find((u) => u == result.user.uid)) {
                     // Set record into users collection.
                     set(ref(db, `users/${result.user.uid}`), {
                         uid: result.user?.uid,
                         name: result.user?.displayName,
                         email: result.user?.email,
                         img: result.user?.photoURL,
-                        rooms: { name: "public" },
-                        notifications: {
-                            note: `created at ${new Date().toLocaleString()}`,
-                        },
+                        rooms: {}, //
+                        notifications: {}, //
                     });
                 }
             })

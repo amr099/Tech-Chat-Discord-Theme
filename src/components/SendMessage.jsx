@@ -50,7 +50,7 @@ export default function SendMessage() {
                     uid: user?.uid,
                     userImg: user?.photoURL,
                     msg: data.message,
-                    time: new Date(),
+                    time: new Date().toLocaleString(),
                 };
 
                 const newMsgKey = push(child(ref(db), "messages")).key;

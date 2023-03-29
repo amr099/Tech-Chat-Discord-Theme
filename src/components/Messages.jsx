@@ -56,15 +56,23 @@ export default function Messages() {
     const { user } = useContext(AuthContext);
 
     useEffect(() => {
-        const messages = ref(db, `messages/${room}/`);
-        onValue(messages, (snapshot) => {
-            const data = snapshot.val();
-            let messages = [];
-            for (let i in data) {
-                messages.push(data[i]);
-            }
-            setMessages(messages.sort((a, b) => b.time - a.time));
-        });
+        if (room) {
+            const messages = ref(db, `messages/${room.name}/`);
+            onValue(messages, (snapshot) => {
+                const data = snapshot.val();
+                let messages = [];
+                for (let i in data) {
+                    messages.push(data[i]);
+                }
+                setMessages(
+                    messages.sort((a, b) => {
+                        const date1 = new Date(a.time);
+                        const date2 = new Date(b.time);
+                        return date1 - date2;
+                    })
+                );
+            });
+        }
     }, [room]);
 
     return (
@@ -76,7 +84,7 @@ export default function Messages() {
                             <MyMessageContainer>
                                 <Message>
                                     <Msg>{msg.msg}</Msg>
-                                    <Time>{msg.time.toLocaleString()}</Time>
+                                    <Time>{msg.time}</Time>
                                 </Message>
                             </MyMessageContainer>
                         );
