@@ -65,7 +65,7 @@ export default function Notifications() {
         try {
             const newRoomKey = push(child(ref(db), `users/${id}/rooms/`)).key;
             const updates = {};
-            updates[`users/${id}/rooms/${roomId}`] = {
+            updates[`users/${id}/rooms/${roomId}/`] = {
                 id: roomId,
                 name: roomName,
                 status: "member",
@@ -83,7 +83,7 @@ export default function Notifications() {
                 child(ref(db), `rooms/${room}/members/`)
             ).key;
             const updates = {};
-            updates[`rooms/${room}/members/${newUserKey}`] = {
+            updates[`rooms/${room}/members/${newUserKey}/`] = {
                 id: id,
                 name: name,
             };
@@ -99,7 +99,7 @@ export default function Notifications() {
                 child(ref(db), `users/${id}/notifications/`)
             ).key;
             const updates = {};
-            updates[`users/${id}/notifications/${newNoteKey}`] = {
+            updates[`users/${id}/notifications/${newNoteKey}/`] = {
                 note: `You have joined room : ${room}!`,
             };
             return update(ref(db), updates);
@@ -136,18 +136,20 @@ export default function Notifications() {
                 <Notification key={note.id}>
                     {note.userImg && <Img src={note.userImg}></Img>}
                     <h4>{note.note}</h4>
-                    <Button
-                        onClick={() =>
-                            accept(
-                                note.userName,
-                                note.userID,
-                                note.roomName,
-                                note.roomId
-                            )
-                        }
-                    >
-                        Accept
-                    </Button>
+                    {note.userImg && (
+                        <Button
+                            onClick={() =>
+                                accept(
+                                    note.userName,
+                                    note.userID,
+                                    note.roomName,
+                                    note.roomId
+                                )
+                            }
+                        >
+                            Accept
+                        </Button>
+                    )}
                 </Notification>
             ))}
         </Container>
