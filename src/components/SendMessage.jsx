@@ -38,28 +38,32 @@ const FormContainer = styled.div`
 `;
 
 export default function SendMessage() {
-    const { room } = useContext(RoomContext);
+    const { room, members } = useContext(RoomContext);
     const { user } = useContext(AuthContext);
     const { register, handleSubmit } = useForm();
 
     function send(data) {
         if (user.displayName) {
-            try {
-                const msg = {
-                    user: user?.displayName,
-                    uid: user?.uid,
-                    userImg: user?.photoURL,
-                    msg: data.message,
-                    time: new Date().toLocaleString(),
-                };
+            if (members.find((m) => m == user.uid)) {
+                try {
+                    const msg = {
+                        uid: user.uid,
+                        user: user.displayName,
+                        userImg: user.photoURL,
+                        msg: data.message,
+                        time: new Date().toLocaleString(),
+                    };
 
-                const newMsgKey = push(child(ref(db), "messages")).key;
-                const updates = {};
-                updates[`messages/${room}/${newMsgKey}`] = msg;
-                return update(ref(db), updates);
-            } catch (e) {
-                console.log(e);
-                console.log("error sending message.");
+                    const newMsgKey = push(child(ref(db), "messages")).key;
+                    const updates = {};
+                    updates[`messages/${room.name}/${newMsgKey}/`] = msg;
+                    return update(ref(db), updates);
+                } catch (e) {
+                    console.log(e);
+                    console.log("error sending message.");
+                }
+            } else {
+                alert("You should be a member to send a message.");
             }
         } else {
             alert("You have to log in first.");
@@ -79,3 +83,8 @@ export default function SendMessage() {
         </Container>
     );
 }
+
+// Send Message proccess :
+//      - if logged in and member of room, user can send a message.
+//      - room and members is came from RoomContext.
+//      - send message create new object in messages/room object has (userInfo, msg and time)

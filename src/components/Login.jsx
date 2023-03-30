@@ -7,9 +7,9 @@ import styled from "styled-components";
 import { UsersContext } from "./../context/UsersContext";
 
 const Img = styled.img`
-    border-radius: 100%;
     width: 50px;
     height: 50px;
+    border-radius: 50%;
     align-self: center;
 `;
 
@@ -29,14 +29,14 @@ export default function Login() {
                         name: result.user?.displayName,
                         email: result.user?.email,
                         img: result.user?.photoURL,
-                        rooms: {}, //
-                        notifications: {}, //
+                        rooms: {},
+                        notifications: {},
                     });
                 }
             })
             .catch((e) => {
                 console.log(`error:${e}`);
-                return;
+                alert("error occured while logging in!");
             });
     };
 
@@ -52,6 +52,7 @@ export default function Login() {
             })
             .catch((error) => {
                 console.error(error);
+                alert("error occured while getting user's Information!");
             });
     };
 
@@ -69,3 +70,11 @@ export default function Login() {
         </>
     );
 }
+
+// Login Process:
+//      - Login using gmail popup.
+//          - set new object for new user and save his data (id,name,email,img,...)
+//          - if logged in before (don't save)
+//      - control user from the AuthContext.
+//      - fetch userinfo when user changes.
+//      - if there's userinfo return img of user. else return login button.

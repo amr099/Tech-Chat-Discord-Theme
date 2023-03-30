@@ -41,8 +41,9 @@ export default function ChatWindow() {
                     <>
                         <h2>{room?.name}</h2>
                         <span>created by: {room?.creatorName}</span>
+                        <br></br>
                         {members?.map((m) => (
-                            <span>{m.name}</span>
+                            <span>{m.name},</span>
                         ))}
                     </>
                 )}

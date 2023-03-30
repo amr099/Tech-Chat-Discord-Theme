@@ -6,8 +6,8 @@ import styled from "styled-components";
 
 const Container = styled.div`
     position: absolute;
-    top: 90px;
-    right: 100px;
+    top: 9vh;
+    right: 9vw;
     display: flex;
     flex-direction: column;
     gap: 20px;
@@ -27,9 +27,9 @@ const Notification = styled.div`
 const Img = styled.img`
     height: 30px;
     width: 30px;
+    border-radius: 50%;
     margin-right: 10px;
     align-self: center;
-    border-radius: 50%;
 `;
 
 const Button = styled.button`
@@ -61,20 +61,19 @@ export default function Notifications() {
         });
     }, [user]);
 
-    const updateUserRooms = (id, room, roomId) => {
+    const updateUserRooms = (id, roomName, roomId) => {
         try {
             const newRoomKey = push(child(ref(db), `users/${id}/rooms/`)).key;
             const updates = {};
             updates[`users/${id}/rooms/${roomId}`] = {
                 id: roomId,
-                name: room,
+                name: roomName,
                 status: "member",
             };
             return update(ref(db), updates);
         } catch (e) {
             console.log(e);
             console.log("error adding room to users rooms ");
-            return;
         }
     };
 
@@ -92,7 +91,6 @@ export default function Notifications() {
         } catch (e) {
             console.log(e);
             console.log("error adding user to room members");
-            return;
         }
     };
     const sendAcceptNote = (id, room) => {
@@ -108,14 +106,13 @@ export default function Notifications() {
         } catch (e) {
             console.log(e);
             console.log("error send user acceptance note");
-            return;
         }
     };
 
     const accept = (name, id, roomName, roomId) => {
         updateUserRooms(id, roomName, roomId);
         updateRoomMembers(id, name, roomName);
-        sendAcceptNote(id, room);
+        sendAcceptNote(id, roomName);
     };
 
     return (
@@ -144,7 +141,7 @@ export default function Notifications() {
                             accept(
                                 note.userName,
                                 note.userID,
-                                note.room,
+                                note.roomName,
                                 note.roomId
                             )
                         }

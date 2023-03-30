@@ -4,6 +4,7 @@ import { db } from "../../firebase-config";
 import { AuthContext } from "../context/AuthContext";
 import { useForm } from "react-hook-form";
 import styled from "styled-components";
+import { v4 as uuid } from "uuid";
 
 export const Container = styled.div`
     display: flex;
@@ -15,10 +16,9 @@ export const Container = styled.div`
 `;
 
 const Input = styled.input`
+    all: unset;
     font-size: 1.2rem;
     padding: 1rem;
-    border: none;
-    outline: none;
     background-color: inherit;
     width: 100%;
     &::placeholder {
@@ -33,21 +33,40 @@ export default function CreateRoom({ rooms }) {
         if (user.displayName) {
             if (!rooms.find((r) => r.name === data.roomName)) {
                 try {
+                    const roomId = uuid();
                     try {
                         // Set new record into rooms collection.
                         set(ref(db, "rooms/" + data.roomName), {
-                            id: 2,
+                            id: roomId,
                             name: data.roomName,
-                            creatorName: user?.displayName,
-                            creatorId: user?.uid,
+                            creatorName: user.displayName,
+                            creatorId: user.uid,
+                            members: {},
                         });
                     } catch (e) {
                         console.log(e);
                         console.log(
                             "error setting new room into rooms collection"
                         );
-                        return;
                     }
+                    try {
+                        const members = {
+                            id: user.uid,
+                            name: user.displayName,
+                        };
+
+                        const newMemberKey = push(
+                            child(ref(db), `rooms/${data.roomName}/members`)
+                        ).key;
+                        const updates = {};
+                        updates[
+                            `rooms/${data.roomName}/members/${newMemberKey}/`
+                        ] = members;
+                        update(ref(db), updates);
+                    } catch (e) {
+                        console.log(e);
+                    }
+
                     try {
                         // Set new record for newly created room into messages collection.
                         set(ref(db, "messages/" + data.roomName), {
@@ -64,8 +83,6 @@ export default function CreateRoom({ rooms }) {
                         console.log(
                             "error setting new room into messages collection"
                         );
-
-                        return;
                     }
                     try {
                         // Add new room into creator rooms.
@@ -73,8 +90,8 @@ export default function CreateRoom({ rooms }) {
                             child(ref(db), `users/${user.uid}/rooms`)
                         ).key;
                         const updates = {};
-                        updates[`users/${user.uid}/rooms/${id}`] = {
-                            id: 2,
+                        updates[`users/${user.uid}/rooms/${roomId}`] = {
+                            id: roomId,
                             name: data.roomName,
                             status: "owner",
                         };
@@ -84,11 +101,9 @@ export default function CreateRoom({ rooms }) {
                         console.log(
                             "error adding new room into creator's rooms"
                         );
-                        return;
                     }
                 } catch (e) {
                     console.log(e);
-                    return;
                 }
             } else {
                 alert("this room name is already used.");
@@ -111,3 +126,12 @@ export default function CreateRoom({ rooms }) {
         </form>
     );
 }
+
+// Create Room Proccess :
+//  - You should be logged in
+//  - can't create room with repeated name.
+//  - if room entered :
+//      - set new record into rooms object has (id,name,creatorName,creatorId)
+//      - update members to contain creator.
+//      - set record into messages object has creationMessage
+//      - set record into user's rooms has room's info.
