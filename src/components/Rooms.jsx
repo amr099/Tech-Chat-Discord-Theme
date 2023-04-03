@@ -111,7 +111,7 @@ export default function Rooms() {
     };
 
     const getJoinedRooms = () => {
-        const joinedRooms = ref(db, `users/${userData.id}/rooms`);
+        const joinedRooms = ref(db, `users/${userData?.id}/rooms`);
         onValue(joinedRooms, (snapshot) => {
             const data = snapshot.val();
             let rooms = [];
@@ -125,7 +125,7 @@ export default function Rooms() {
 
     useEffect(() => {
         getJoinedRooms();
-    }, [rooms]);
+    }, [rooms, userData?.id]);
 
     return (
         <>

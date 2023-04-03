@@ -1,4 +1,12 @@
-import { ref, update, onValue, push, child, get } from "firebase/database";
+import {
+    ref,
+    update,
+    onValue,
+    push,
+    child,
+    get,
+    remove,
+} from "firebase/database";
 import { db } from "../../firebase-config";
 import React, { useState, useContext, useEffect } from "react";
 import { AuthContext } from "../context/AuthContext";
@@ -138,6 +146,10 @@ export default function Notifications() {
         sendAcceptNote(id, roomName);
     };
 
+    const onDelete = async (id) => {
+        remove(ref(db, `users/${userData.id}/notifications/${id}`));
+    };
+
     return (
         // <ul>
         //     {notifications?.map((n) => (
@@ -177,6 +189,7 @@ export default function Notifications() {
                             Accept
                         </Button>
                     )}
+                    <button onClick={() => onDelete(note.id)}>x</button>
                 </Flex>
             ))}
         </Container>
