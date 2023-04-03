@@ -39,17 +39,17 @@ const FormContainer = styled.div`
 
 export default function SendMessage() {
     const { room, members } = useContext(RoomContext);
-    const { user } = useContext(AuthContext);
+    const { userData } = useContext(AuthContext);
     const { register, handleSubmit } = useForm();
 
     function send(data) {
-        if (user.displayName) {
-            if (members.find((m) => m == user.uid)) {
+        if (userData) {
+            if (members.find((m) => m == userData.id)) {
                 try {
                     const msg = {
-                        uid: user.uid,
-                        user: user.displayName,
-                        userImg: user.photoURL,
+                        uid: userData.id,
+                        user: userData.name,
+                        userImg: userData.img,
                         msg: data.message,
                         time: new Date().toLocaleString(),
                     };

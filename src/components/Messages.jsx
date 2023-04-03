@@ -53,7 +53,7 @@ const UserImg = styled.img`
 export default function Messages() {
     const [messages, setMessages] = useState();
     const { room } = useContext(RoomContext);
-    const { user } = useContext(AuthContext);
+    const { userData } = useContext(AuthContext);
 
     useEffect(() => {
         if (room) {
@@ -79,7 +79,7 @@ export default function Messages() {
         <Container>
             {messages &&
                 messages?.map((msg) => {
-                    if (msg.uid === user.uid) {
+                    if (msg.uid === userData.id) {
                         return (
                             <MyMessageContainer>
                                 <Message>

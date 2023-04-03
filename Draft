@@ -1,2 +1,16 @@
-TODO:
-    - Compelete Styling.
+Login Process:
+    - Optimize Login Process (loading,error and success).(Done)
+    - logout dropdown.(Done)
+
+Notifications:
+    - handle delete Notification.
+
+ChatWindow:
+    - add owner badge.
+    - view members of room and their status.
+
+Rooms:
+    - view last message of each room.
+
+Fuctionality:
+    - handle delete records of uncompleted process.

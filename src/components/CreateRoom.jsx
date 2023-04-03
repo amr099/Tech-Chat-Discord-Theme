@@ -1,12 +1,14 @@
 import React, { useContext } from "react";
 import { ref, set, update, push, child } from "firebase/database";
-import { db } from "../../firebase-config";
+import { db, firestoreDb } from "../../firebase-config";
 import { AuthContext } from "../context/AuthContext";
 import { useForm } from "react-hook-form";
 import styled from "styled-components";
 import { v4 as uuid } from "uuid";
+import { setDoc, doc } from "firebase/firestore";
+import { RoomsContext } from "context/RoomsContext";
 
-export const Container = styled.div`
+const Container = styled.div`
     display: flex;
     border-bottom: 1px solid #909090;
     margin-bottom: 2rem;
@@ -26,22 +28,26 @@ const Input = styled.input`
     }
 `;
 
-export default function CreateRoom({ rooms }) {
+const I = styled.i`
+    font-size: 3rem;
+`;
+
+export default function CreateRoom({}) {
     const { register, handleSubmit } = useForm();
-    const { user } = useContext(AuthContext);
+    const { userData } = useContext(AuthContext);
+    const { rooms } = useContext(RoomsContext);
     function onSubmit(data) {
-        if (user.displayName) {
+        if (userData) {
             if (!rooms.find((r) => r.name === data.roomName)) {
                 try {
                     const roomId = uuid();
                     try {
                         // Set new record into rooms collection.
-                        set(ref(db, "rooms/" + data.roomName), {
+                        setDoc(doc(firestoreDb, "Rooms", roomId), {
                             id: roomId,
                             name: data.roomName,
-                            creatorName: user.displayName,
-                            creatorId: user.uid,
-                            members: {},
+                            creatorName: userData.name,
+                            creatorId: userData.id,
                         });
                     } catch (e) {
                         console.log(e);
@@ -49,32 +55,53 @@ export default function CreateRoom({ rooms }) {
                             "error setting new room into rooms collection"
                         );
                     }
-                    try {
-                        const members = {
-                            id: user.uid,
-                            name: user.displayName,
-                        };
 
-                        const newMemberKey = push(
-                            child(ref(db), `rooms/${data.roomName}/members`)
-                        ).key;
-                        const updates = {};
-                        updates[
-                            `rooms/${data.roomName}/members/${newMemberKey}/`
-                        ] = members;
-                        update(ref(db), updates);
+                    try {
+                        // Set new record for newly created room into rooms object .
+                        set(ref(db, `rooms/${data.roomName}/`), {
+                            members: {
+                                Owner: {
+                                    id: userData.id,
+                                    name: userData.name,
+                                    memberImg: userData.img,
+                                    status: "owner",
+                                },
+                            },
+                        });
                     } catch (e) {
                         console.log(e);
+                        console.log(
+                            "error setting new room into messages collection"
+                        );
                     }
 
                     try {
-                        // Set new record for newly created room into messages collection.
+                        // Add new room into creator rooms.
+                        const newRoomKey = push(
+                            child(ref(db), `users/${userData.id}/rooms`)
+                        ).key;
+                        const updates = {};
+                        updates[`users/${userData.id}/rooms/${roomId}`] = {
+                            id: roomId,
+                            name: data.roomName,
+                            status: "owner",
+                        };
+                        return update(ref(db), updates);
+                    } catch (e) {
+                        console.log(e);
+                        console.log(
+                            "error adding new room into creator's rooms"
+                        );
+                    }
+
+                    try {
+                        // Set new record for newly created room into messages object.
                         set(ref(db, "messages/" + data.roomName), {
                             creationMsg: {
-                                user: user?.displayName,
-                                uid: user?.uid,
-                                userImg: user?.photoURL,
-                                msg: `${user.displayName} has created '${data.roomName}' successfully.`,
+                                userId: userData.id,
+                                userName: userData.name,
+                                userImg: userData.img,
+                                msg: `${userData.name} has created '${data.roomName}' successfully.`,
                                 time: new Date().toLocaleString(),
                             },
                         });
@@ -84,16 +111,19 @@ export default function CreateRoom({ rooms }) {
                             "error setting new room into messages collection"
                         );
                     }
+
                     try {
-                        // Add new room into creator rooms.
-                        const newRoomKey = push(
-                            child(ref(db), `users/${user.uid}/rooms`)
+                        // Add new note into creator notifications.
+                        const newNoteKey = push(
+                            child(ref(db), `users/${userData.id}/notifications`)
                         ).key;
                         const updates = {};
-                        updates[`users/${user.uid}/rooms/${roomId}`] = {
-                            id: roomId,
-                            name: data.roomName,
-                            status: "owner",
+                        updates[
+                            `users/${userData.id}/notifications/${newNoteKey}`
+                        ] = {
+                            note: `You have created '${
+                                data.roomName
+                            }' room successfully at ${new Date().toLocaleDateString()} `,
                         };
                         return update(ref(db), updates);
                     } catch (e) {
@@ -120,7 +150,7 @@ export default function CreateRoom({ rooms }) {
                     placeholder='Create new room ...'
                 />
                 <button type='submit'>
-                    <i class='bi bi-plus'></i>
+                    <I className='bi bi-plus'></I>
                 </button>
             </Container>
         </form>

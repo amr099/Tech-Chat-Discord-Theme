@@ -9,8 +9,9 @@ import { db } from "../../firebase-config";
 const RoomHeader = styled.div`
     background-color: #fdfdfd;
     border-bottom: 3px solid #eee;
-    padding: 1.5rem 0;
+    // padding: 1.5rem 0;
     text-align: center;
+    padding: 5px 0;
 `;
 
 export default function ChatWindow() {

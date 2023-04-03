@@ -6,6 +6,8 @@ import styled from "styled-components";
 import { GlobalStyle } from "components/GlobalStyles";
 import { useContext } from "react";
 import { UsersContext } from "./context/UsersContext";
+import Modal from "react-modal";
+import CreateRoom from "components/CreateRoom";
 
 const Grid = styled.div`
     display: grid;
@@ -19,26 +21,21 @@ const ChatContainer = styled.div`
     grid-column: 4/13;
     width: 98%;
 `;
-
-const Container = styled.div`
-    height: 100vh;
-`;
+Modal.setAppElement("#root");
 
 function App() {
     return (
         <>
             <GlobalStyle />
-            <Container>
-                <Header />
-                <Grid>
-                    <RoomsContainer>
-                        <Rooms />
-                    </RoomsContainer>
-                    <ChatContainer>
-                        <ChatWindow />
-                    </ChatContainer>
-                </Grid>
-            </Container>
+            <Header />
+            <Grid>
+                <RoomsContainer>
+                    <Rooms />
+                </RoomsContainer>
+                <ChatContainer>
+                    <ChatWindow />
+                </ChatContainer>
+            </Grid>
         </>
     );
 }

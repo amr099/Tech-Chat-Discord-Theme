@@ -2,9 +2,19 @@ import React from "react";
 import { createGlobalStyle } from "styled-components";
 
 export const GlobalStyle = createGlobalStyle`
+    html{
+        max-height:80vh;
+    }
+    
+
     body{
         margin:0;
         font-family:sans-serif;
+        height:80vh;
+    }
+
+    h2{
+        margin:0;
     }
 
     button{
@@ -12,15 +22,13 @@ export const GlobalStyle = createGlobalStyle`
     }
 
     i{
-        font-size:2rem;
+        font-size:1rem;
         &:hover{
             cursor:pointer;
         }
     }
 
-    .bi-bell{
-        margin-right:2rem; 
-    }
+    
 
     ::placeholder{
         color:#CFCFCF;

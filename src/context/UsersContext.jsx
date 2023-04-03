@@ -1,28 +1,14 @@
-import React, { createContext, useState, useEffect } from "react";
-import { getDatabase, ref, child, get } from "firebase/database";
-import { db } from "./../../firebase-config";
+import React, { createContext } from "react";
+import { firestoreDb } from "../../firebase-config";
+import { useCollectionData } from "react-firebase-hooks/firestore";
+import { collection } from "firebase/firestore";
 
 export const UsersContext = createContext();
 
 export default function UsersContextProvider({ children }) {
-    const [users, setUsers] = useState();
+    const usersCol = collection(firestoreDb, "Users");
+    const [users, loading, error, snapshot] = useCollectionData(usersCol);
 
-    get(ref(db, `users`))
-        .then((snapshot) => {
-            if (snapshot.exists()) {
-                let users = [];
-
-                for (let i in snapshot.val()) {
-                    users.push(i);
-                }
-                setUsers(users);
-            } else {
-                console.log("No data available");
-            }
-        })
-        .catch((error) => {
-            console.error(error);
-        });
     return (
         <UsersContext.Provider value={{ users }}>
             {children}

@@ -1,49 +1,65 @@
 import React, { useContext, useState } from "react";
 import styled from "styled-components";
 import { AuthContext } from "../context/AuthContext";
-import Login from "components/Login";
 import Notifications from "./Notifications";
+import User from "components/User";
 
-export const HeaderBackground = styled.div`
+export const HeaderContainer = styled.div`
+    display: flex;
+    align-items: center;
+    font-size: 1rem;
+    height: 50px;
     background-color: #292929;
-    color: #b7b8bb;
+    color: #fff;
 `;
-export const Container = styled.div`
+
+const Container = styled.div`
     width: 95%;
     margin: auto;
 `;
+
+const H1 = styled.h1`
+    font-size: 1.2rem;
+    font-weight: 400;
+    letter-spacing: -1px;
+`;
+
 const Flex = styled.div`
     width: ${(props) => props.width};
     display: flex;
+    gap: 20px;
     justify-content: ${(props) => props.justfiy};
     align-items: ${(props) => props.align};
     flex-direction: ${(props) => props.direction};
 `;
 
-const H1 = styled.h1`
-    font-weight: 400;
-    letter-spacing: -2px;
-`;
-
 export default function Header() {
-    const { user } = useContext(AuthContext);
+    const { userData } = useContext(AuthContext);
     const [notifications, showNotifications] = useState(false);
+    const [bell, setBell] = useState(false);
 
     return (
-        <HeaderBackground>
+        <HeaderContainer>
             <Container>
                 <Flex justfiy={"space-between"}>
-                    <H1>Tech Chat</H1>
+                    <H1>TechChat</H1>
                     <Flex align={"center"}>
-                        <i
-                            className='bi bi-bell'
-                            onClick={() => showNotifications(!notifications)}
-                        ></i>
+                        {userData && (
+                            <i
+                                className={
+                                    bell ? "bi bi-bell-fill" : "bi bi-bell"
+                                }
+                                onClick={() => {
+                                    showNotifications(!notifications);
+                                    setBell(!bell);
+                                }}
+                            ></i>
+                        )}
                         {notifications && <Notifications />}
-                        <Login />
+                        <User />
                     </Flex>
                 </Flex>
             </Container>
-        </HeaderBackground>
+        </HeaderContainer>
     );
 }

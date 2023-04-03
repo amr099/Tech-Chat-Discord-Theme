@@ -5,6 +5,7 @@ import { AuthContext } from "../context/AuthContext";
 import { ref, child, push, update, onValue } from "firebase/database";
 import styled from "styled-components";
 import CreateRoom from "components/CreateRoom";
+import { RoomsContext } from "context/RoomsContext";
 
 const Container = styled.div`
     background-color: #f9f9f9;
@@ -39,43 +40,41 @@ const P = styled.p`
     color: #c1c1c1;
 `;
 
-const Span = styled.span`
-    color: #c1c1c1;
-`;
-
 const Button = styled.span`
     all: unset;
     font-size: 0.8rem;
-    padding: 1rem;
-    background-color: #000;
-    color: #b7b8bb;
+    padding: 10px 20px;
+    background-color: #f2f2f2;
     font-weight: bold;
+    border-radius: 20px 20px;
 
     &:hover {
         cursor: pointer;
+        background-color: #eee;
     }
 `;
 
 export default function Rooms() {
     const { setRoom } = useContext(RoomContext);
-    const { user } = useContext(AuthContext);
-    const [rooms, setRooms] = useState([]);
+    const { userData } = useContext(AuthContext);
+    const { rooms } = useContext(RoomsContext);
     const [joinedRooms, setJoinedRooms] = useState([]);
 
     const sendJoinRequest = (creatorId, roomName, roomId) => {
-        if (user.displayName) {
+        if (userData) {
             try {
                 const newNotificationKey = push(
                     child(ref(db), `users/${creatorId}`)
                 ).key;
 
                 const joinRequest = {
-                    userName: user?.displayName,
-                    userID: user?.uid,
-                    userImg: user?.photoURL,
+                    id: newNotificationKey,
+                    userName: userData.name,
+                    userID: userData.id,
+                    userImg: userData.img,
                     roomName: roomName,
                     roomId: roomId,
-                    note: `${user.displayName} wanna join ${roomName}`,
+                    note: `${userData.name} wanna join ${roomName}`,
                 };
 
                 const updates = {};
@@ -86,7 +85,7 @@ export default function Rooms() {
                 return update(ref(db), updates);
             } catch (e) {
                 console.log(e);
-                console.log("error sending request to join", room);
+                console.log("error sending request to join", roomName);
             }
         } else {
             alert("You have to log in first.");
@@ -94,9 +93,11 @@ export default function Rooms() {
     };
 
     const roomToPending = (roomName, roomId) => {
-        const newRoomKey = push(child(ref(db), `users/${user.uid}/rooms`)).key;
+        const newRoomKey = push(
+            child(ref(db), `users/${userData.id}/rooms`)
+        ).key;
         const updates = {};
-        updates[`users/${user.uid}/rooms/${roomId}`] = {
+        updates[`users/${userData.id}/rooms/${roomId}`] = {
             id: roomId,
             name: roomName,
             status: "pending",
@@ -109,23 +110,8 @@ export default function Rooms() {
         roomToPending(room, id);
     };
 
-    const getRooms = () => {
-        const rooms = ref(db, "rooms/");
-        onValue(rooms, (snapshot) => {
-            const data = snapshot.val();
-            let rooms = [];
-            for (let i in data) {
-                rooms.push(data[i]);
-            }
-            setRooms(rooms);
-        });
-    };
-    useEffect(() => {
-        getRooms();
-    }, []);
-
     const getJoinedRooms = () => {
-        const joinedRooms = ref(db, `users/${user.uid}/rooms`);
+        const joinedRooms = ref(db, `users/${userData.id}/rooms`);
         onValue(joinedRooms, (snapshot) => {
             const data = snapshot.val();
             let rooms = [];
@@ -139,15 +125,14 @@ export default function Rooms() {
 
     useEffect(() => {
         getJoinedRooms();
-    }, [user?.displayName, rooms]);
+    }, [rooms]);
 
     return (
         <>
             <Container>
-                {user.displayName && (
+                {userData && (
                     <>
-                        <CreateRoom rooms={rooms} />
-                        <h1>Joined Rooms</h1>
+                        <CreateRoom />
                         {joinedRooms?.map((room) => (
                             <RoomContainer onClick={() => setRoom(room)}>
                                 <Flex>
@@ -160,11 +145,10 @@ export default function Rooms() {
                                 </Flex>
                             </RoomContainer>
                         ))}
+                        <hr />
                     </>
                 )}
-                <hr></hr>
-                <h2>Another Rooms</h2>
-                {rooms.map((room) => {
+                {rooms?.map((room) => {
                     if (!joinedRooms.find((r) => r.name === room.name)) {
                         return (
                             <RoomContainer onClick={() => setRoom(room)}>
