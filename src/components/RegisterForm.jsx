@@ -1,15 +1,16 @@
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import CustomForm from "./CustomForm";
 import { auth, storage, firestoreDb, db } from "../../firebase-config";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { setDoc, doc } from "firebase/firestore";
-import { UsersContext } from "context/UsersContext";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
-import { AuthContext } from "context/AuthContext";
 import { set, ref as realref } from "firebase/database";
+import { useCollectionData } from "react-firebase-hooks/firestore";
+import { collection } from "firebase/firestore";
 
 export default function RegisterForm() {
-    const { users } = useContext(UsersContext);
+    const usersCol = collection(firestoreDb, "Users");
+    const [users, uloading, uerror, snapshot] = useCollectionData(usersCol);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
     const [success, setSuccess] = useState(false);
@@ -31,6 +32,7 @@ export default function RegisterForm() {
             );
             await set(realref(db, "users/" + user.user.uid), {
                 id: user.user.uid,
+                name: data.name,
             });
 
             // ========================================================================
@@ -90,7 +92,6 @@ export default function RegisterForm() {
                                 );
                             }
                         );
-                        // setloading(false);
                     }
                 }
             );

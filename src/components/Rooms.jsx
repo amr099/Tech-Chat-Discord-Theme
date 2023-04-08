@@ -1,164 +1,178 @@
 import React, { useEffect, useState, useContext } from "react";
-import { db } from "../../firebase-config";
+import { db, firestoreDb } from "../../firebase-config";
 import { RoomContext } from "../context/RoomContext";
 import { AuthContext } from "../context/AuthContext";
 import { ref, child, push, update, onValue } from "firebase/database";
 import styled from "styled-components";
 import CreateRoom from "components/CreateRoom";
-import { RoomsContext } from "context/RoomsContext";
+import { useCollectionData } from "react-firebase-hooks/firestore";
+import {
+    arrayUnion,
+    collection,
+    updateDoc,
+    doc,
+    onSnapshot,
+} from "firebase/firestore";
 
 const Container = styled.div`
-    background-color: #f9f9f9;
-    height: 90vh;
+    height: 93vh;
     overflow: auto;
-    border-right: 3px solid #f6f6f6;
+    border-right: 3px solid #f4f4f4;
 `;
 
 const RoomContainer = styled.div`
     padding: 1rem;
-    border-bottom: 2px solid #eee;
+    overflow: auto;
+    border-bottom: 1px solid #5538ee;
     &:hover {
-        background-color: #f2faf1;
-        border-top: 3px solid #c7f2ae;
+        background-color: #e7e7ff;
     }
-`;
-
-const Img = styled.img`
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
 `;
 
 const Flex = styled.div`
     display: flex;
     justify-content: space-between;
-    align-items: center;
     gap: 10px;
+`;
+
+const H3 = styled.h3`
+    flex-shrink: 0;
+    flex-basis: max-content;
 `;
 
 const P = styled.p`
     color: #c1c1c1;
+    align-self: end;
 `;
 
-const Button = styled.span`
-    all: unset;
-    font-size: 0.8rem;
-    padding: 10px 20px;
-    background-color: #f2f2f2;
+const Span = styled.span`
+    font-size: 0.7rem;
+    align-self: end;
+    text-overflow: ellipsis;
+`;
+
+const Button = styled.button`
+    color: #766fc3;
     font-weight: bold;
-    border-radius: 20px 20px;
+    border: 1px solid #766fc3;
+    border-radius: 20px;
+    padding: 5px 20px;
+    align-self: start;
 
     &:hover {
+        background-color: #6b4eff;
+        color: #fff;
         cursor: pointer;
-        background-color: #eee;
     }
 `;
 
 export default function Rooms() {
+    const [joinedRooms, setJoinedRooms] = useState([]);
     const { setRoom } = useContext(RoomContext);
     const { userData } = useContext(AuthContext);
-    const { rooms } = useContext(RoomsContext);
-    const [joinedRooms, setJoinedRooms] = useState([]);
+
+    const [rooms, loading, error, onSnap] = useCollectionData(
+        collection(firestoreDb, "Rooms")
+    );
+
+    const getJoinedRooms = () => {
+        onSnapshot(doc(firestoreDb, "Users", userData.id), (doc) => {
+            setJoinedRooms(doc.data().rooms);
+        });
+    };
+
+    useEffect(() => {
+        if (userData) {
+            getJoinedRooms();
+        }
+    }, [userData]);
 
     const sendJoinRequest = (creatorId, roomName, roomId) => {
         if (userData) {
+            // try {
+            //     const newNotificationKey = push(
+            //         child(ref(db), `users/${creatorId}`)
+            //     ).key;
+
+            //     const joinRequest = {
+            //         id: newNotificationKey,
+            //         userName: userData.name,
+            //         userID: userData.id,
+            //         userImg: userData.img,
+            //         roomName: roomName,
+            //         roomId: roomId,
+            //         note: `${userData.name} wanna join ${roomName}`,
+            //     };
+
+            //     const updates = {};
+            //     updates[
+            //         `users/${creatorId}/notifications/${newNotificationKey}/`
+            //     ] = joinRequest;
+
+            //     return update(ref(db), updates);
+            // } catch (e) {
+            //     console.log(e);
+            //     console.log("error sending request to join", roomName);
+            // }
             try {
-                const newNotificationKey = push(
-                    child(ref(db), `users/${creatorId}`)
-                ).key;
-
-                const joinRequest = {
-                    id: newNotificationKey,
-                    userName: userData.name,
-                    userID: userData.id,
-                    userImg: userData.img,
-                    roomName: roomName,
-                    roomId: roomId,
-                    note: `${userData.name} wanna join ${roomName}`,
-                };
-
-                const updates = {};
-                updates[
-                    `users/${creatorId}/notifications/${newNotificationKey}/`
-                ] = joinRequest;
-
-                return update(ref(db), updates);
-            } catch (e) {
-                console.log(e);
-                console.log("error sending request to join", roomName);
-            }
+                const creatorDoc = doc(firestoreDb, "Users", creatorId);
+                updateDoc(creatorDoc, {
+                    notifications: arrayUnion({
+                        userID: userData.id,
+                        userName: userData.name,
+                        userImg: userData.img,
+                        roomName: roomName,
+                        note: `${userData.name} wanna join your room: ${roomName}`,
+                    }),
+                });
+            } catch {}
         } else {
             alert("You have to log in first.");
         }
     };
 
-    const roomToPending = (roomName, roomId) => {
-        const newRoomKey = push(
-            child(ref(db), `users/${userData.id}/rooms`)
-        ).key;
-        const updates = {};
-        updates[`users/${userData.id}/rooms/${roomId}`] = {
-            id: roomId,
-            name: roomName,
-            status: "pending",
-        };
-        return update(ref(db), updates);
-    };
+    // const roomToPending = (roomName, roomId) => {
+    //     const newRoomKey = push(
+    //         child(ref(db), `users/${userData.id}/rooms`)
+    //     ).key;
+    //     const updates = {};
+    //     updates[`users/${userData.id}/rooms/${roomId}`] = {
+    //         id: roomId,
+    //         name: roomName,
+    //         status: "pending",
+    //     };
+    //     return update(ref(db), updates);
+    // };
 
     const join = (creatorId, room, id) => {
         sendJoinRequest(creatorId, room, id);
-        roomToPending(room, id);
+        // roomToPending(room, id);
     };
-
-    const getJoinedRooms = () => {
-        const joinedRooms = ref(db, `users/${userData?.id}/rooms`);
-        onValue(joinedRooms, (snapshot) => {
-            const data = snapshot.val();
-            let rooms = [];
-            for (let i in data) {
-                console.log(data[i]);
-                rooms.push(data[i]);
-            }
-            setJoinedRooms(rooms);
-        });
-    };
-
-    useEffect(() => {
-        getJoinedRooms();
-    }, [rooms, userData?.id]);
 
     return (
         <>
             <Container>
-                {userData && (
-                    <>
-                        <CreateRoom />
-                        {joinedRooms?.map((room) => (
-                            <RoomContainer onClick={() => setRoom(room)}>
-                                <Flex>
-                                    <Flex>
-                                        <Img src='https://media.istockphoto.com/id/1409329028/vector/no-picture-available-placeholder-thumbnail-icon-illustration-design.jpg?s=612x612&w=0&k=20&c=_zOuJu755g2eEUioiOUdz_mHKJQJn-tDgIAhQzyeKUQ='></Img>
-                                        <h4>{room.name}</h4>
-                                        <span>{room.status}</span>
-                                    </Flex>
-                                    <P>{room?.lastMsg}</P>
-                                </Flex>
-                            </RoomContainer>
-                        ))}
-                        <hr />
-                    </>
-                )}
+                <CreateRoom rooms={rooms} />
                 {rooms?.map((room) => {
-                    if (!joinedRooms.find((r) => r.name === room.name)) {
-                        return (
-                            <RoomContainer onClick={() => setRoom(room)}>
+                    return (
+                        <RoomContainer
+                            key={room.name}
+                            onClick={() => setRoom(room)}
+                        >
+                            <Flex>
                                 <Flex>
+                                    <H3>{room.name}</H3>
                                     <Flex>
-                                        <Img src='https://media.istockphoto.com/id/1409329028/vector/no-picture-available-placeholder-thumbnail-icon-illustration-design.jpg?s=612x612&w=0&k=20&c=_zOuJu755g2eEUioiOUdz_mHKJQJn-tDgIAhQzyeKUQ='></Img>
-                                        <h4>{room.name}</h4>
-                                        <span>{room.status}</span>
+                                        <P>
+                                            {room.lastMsg?.msg ||
+                                                "No Messages Yet!"}
+                                        </P>
+                                        <Span>{room.lastMsg?.time}</Span>
                                     </Flex>
-                                    <P>{room?.lastMsg}</P>
+                                </Flex>
+                                {!joinedRooms?.find(
+                                    (r) => r.name === room.name
+                                ) && (
                                     <Button
                                         onClick={() =>
                                             join(
@@ -170,10 +184,10 @@ export default function Rooms() {
                                     >
                                         Join
                                     </Button>
-                                </Flex>
-                            </RoomContainer>
-                        );
-                    }
+                                )}
+                            </Flex>
+                        </RoomContainer>
+                    );
                 })}
             </Container>
         </>

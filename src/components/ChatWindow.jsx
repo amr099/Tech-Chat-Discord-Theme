@@ -1,56 +1,47 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useContext } from "react";
 import Messages from "components/Messages";
 import SendMessage from "components/SendMessage";
 import styled from "styled-components";
 import { RoomContext } from "../context/RoomContext";
-import { ref, onValue } from "firebase/database";
-import { db } from "../../firebase-config";
 
-const RoomHeader = styled.div`
+const Header = styled.div`
+    height: 9vh;
     background-color: #fdfdfd;
-    border-bottom: 3px solid #eee;
-    // padding: 1.5rem 0;
+    border-bottom: 3px solid #f4f4f4;
     text-align: center;
-    padding: 5px 0;
+    padding: 10px 0;
 `;
 
-export default function ChatWindow() {
+const I = styled.i`
+    position: relative;
+    left: 47%;
+    font-size: 2rem;
+    &:hover {
+        color: #ddd;
+    }
+`;
+
+const H2 = styled.h2`
+    margin: 0;
+`;
+
+export default function ChatWindow({ membersCon, setMembersCon }) {
     const { room } = useContext(RoomContext);
-    const [members, setMembers] = useState([]);
-
-    const getMembers = () => {
-        const members = ref(db, `rooms/${room.name}/members`);
-        onValue(members, (snapshot) => {
-            const data = snapshot.val();
-            let members = [];
-            for (let i in data) {
-                members.push(data[i]);
-            }
-            setMembers(members);
-        });
-    };
-
-    useEffect(() => {
-        if (room) {
-            getMembers();
-        }
-    }, [room]);
     return (
-        <>
-            <RoomHeader>
-                {room && (
-                    <>
-                        <h2>{room?.name}</h2>
-                        <span>created by: {room?.creatorName}</span>
-                        <br></br>
-                        {members?.map((m) => (
-                            <span>{m.name},</span>
-                        ))}
-                    </>
-                )}
-            </RoomHeader>
-            <Messages />
-            <SendMessage />
-        </>
+        room && (
+            <>
+                <Header>
+                    <H2>{room?.name}</H2>
+                    <I
+                        className='bi bi-people-fill'
+                        onClick={() => {
+                            setMembersCon(!membersCon);
+                        }}
+                    ></I>
+                </Header>
+                <Messages />
+                <SendMessage />
+            </>
+        )
     );
 }

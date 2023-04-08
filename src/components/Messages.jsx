@@ -1,14 +1,17 @@
 import { ref, onValue } from "firebase/database";
-import { db } from "../../firebase-config";
+import { db, firestoreDb } from "../../firebase-config";
 
 import React, { useState, useContext, useEffect } from "react";
 import { RoomContext } from "../context/RoomContext";
 import styled from "styled-components";
 import { AuthContext } from "../context/AuthContext";
+import { UsersContext } from "./../context/UsersContext";
 const Container = styled.div`
-    height: 70vh;
+    height: 65vh;
+    padding: 1rem;
     overflow: auto;
     display: flex;
+    gap: 5px;
     flex-direction: column;
     background-color: #fdfdfd;
 `;
@@ -17,20 +20,22 @@ const MessageContainer = styled.div`
     display: flex;
     gap: 10px;
     max-width: 45%;
-    margin: 2rem 0;
+    margin: 1rem;
 `;
 const MyMessageContainer = styled(MessageContainer)`
     margin-left: auto;
 `;
 
 const Message = styled.div`
-    padding: 1rem;
-    background-color: #f1ffef;
-    border-radius: 10px;
+    padding: 0.5rem 1rem;
+    background-color: #e3e5e5;
+    border-radius: 0px 20px 20px 20px;
 `;
-const MyMessage = styled(Message)`
-    background-color: #f1f5fb;
-    float: right;
+const MyMessage = styled.div`
+    background-color: #5538ee;
+    border-radius: 20px 20px 0px 20px;
+    color: #fff;
+    padding: 0.5rem 1rem;
 `;
 
 const Msg = styled.p`
@@ -39,8 +44,7 @@ const Msg = styled.p`
 `;
 
 const Time = styled.span`
-    font-size: 0.8rem;
-    color: #ddd;
+    font-size: 0.5rem;
     float: right;
 `;
 
@@ -51,51 +55,34 @@ const UserImg = styled.img`
 `;
 
 export default function Messages() {
-    const [messages, setMessages] = useState();
-    const { room } = useContext(RoomContext);
+    const { messages } = useContext(RoomContext);
     const { userData } = useContext(AuthContext);
-
-    useEffect(() => {
-        if (room) {
-            const messages = ref(db, `messages/${room.name}/`);
-            onValue(messages, (snapshot) => {
-                const data = snapshot.val();
-                let messages = [];
-                for (let i in data) {
-                    messages.push(data[i]);
-                }
-                setMessages(
-                    messages.sort((a, b) => {
-                        const date1 = new Date(a.time);
-                        const date2 = new Date(b.time);
-                        return date1 - date2;
-                    })
-                );
-            });
-        }
-    }, [room]);
+    const { users } = useContext(UsersContext);
 
     return (
         <Container>
             {messages &&
                 messages?.map((msg) => {
-                    if (msg.uid === userData.id) {
+                    if (msg.uid === userData?.id) {
                         return (
-                            <MyMessageContainer>
-                                <Message>
+                            <MyMessageContainer key={msg.time}>
+                                <MyMessage>
                                     <Msg>{msg.msg}</Msg>
                                     <Time>{msg.time}</Time>
-                                </Message>
+                                </MyMessage>
                             </MyMessageContainer>
                         );
                     } else {
                         return (
-                            <MessageContainer>
+                            <MessageContainer key={msg.time}>
                                 <UserImg
-                                    src={
-                                        msg.userImg ||
-                                        "https://png.pngtree.com/png-clipart/20210915/ourmid/pngtree-user-avatar-login-interface-abstract-blue-icon-png-image_3917504.jpg"
-                                    }
+                                    src={(function () {
+                                        for (var i in users) {
+                                            if (users[i].id === msg.uid) {
+                                                return users[i].img;
+                                            }
+                                        }
+                                    })()}
                                 ></UserImg>
                                 <Message>
                                     <Msg>{msg.msg}</Msg>

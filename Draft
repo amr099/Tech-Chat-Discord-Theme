@@ -1,0 +1,17 @@
+Features:
+    - member list (toggle).(Done)
+    - member status.(Done)
+    - direct messages.(Hold)
+    - show if thier are new messages or notes.
+
+Todo:
+    - let only messages objects goes realtime.
+    - snackbar.(build context of its content)
+    - popups.
+    - fix rooms issues due to lastMsg added.
+    - optimize try and catch functions.
+    - styling:
+          - loading before viewing.
+          - submit status styling.
+          - font.
+          - add owner badge.

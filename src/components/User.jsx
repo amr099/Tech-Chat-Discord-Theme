@@ -6,37 +6,38 @@ import RegisterForm from "./RegisterForm";
 import LoginForm from "./LoginForm";
 import { LogOut } from "./LogOut";
 
-const ImgContainer = styled.div`
-    min-width: 80px;
-    max-width: 200px;
-    text-align: right;
-`;
-
 const Img = styled.img`
-    width: 30px;
-    height: 30px;
+    width: 40px;
+    height: 40px;
     border-radius: 50%;
-    align-self: center;
+
+    &:hover {
+        cursor: pointer;
+    }
 `;
 
 const LoginButton = styled.button`
+    color: #766fc3;
+    border: 1px solid #766fc3;
+    border-radius: 20px 20px;
+    padding: 5px 20px;
     min-width: 80px;
     max-width: 200px;
     display: flex;
     gap: 5px;
     align-items: center;
-    padding: 5px 10px;
 
     &:hover {
-        background-color: #aaa;
+        background-color: #6b4eff;
+        color: #fff;
         border-radius: 20px 20px;
         cursor: pointer;
-        color: #fff;
     }
 `;
 
 const Span = styled.span`
     font-weight: bold;
+    color: #6b4eff;
     &:hover {
         cursor: pointer;
     }
@@ -45,6 +46,8 @@ const Span = styled.span`
 const customStyles = {
     content: {
         borderRadius: "20px",
+        maxHeight: "90vh",
+        overflow: "auto",
         top: "50%",
         left: "50%",
         right: "auto",
@@ -62,12 +65,9 @@ export default function User() {
 
     return (
         <>
-            {logOut && <LogOut setLogOut={setLogOut} />}
+            <LogOut setLogOut={setLogOut} logOut={logOut} />
             {userData ? (
-                <ImgContainer onClick={() => setLogOut(!logOut)}>
-                    {" "}
-                    <Img src={userData.img || ""} />{" "}
-                </ImgContainer>
+                <Img src={userData.img} onClick={() => setLogOut(!logOut)} />
             ) : (
                 <>
                     <LoginButton onClick={() => setModal(true)}>
@@ -94,7 +94,7 @@ export default function User() {
                                 <p>
                                     <span>Already have an account. </span>{" "}
                                     <Span onClick={() => setForm("login")}>
-                                        Log In{" "}
+                                        Sign In
                                     </Span>
                                 </p>
                             </>

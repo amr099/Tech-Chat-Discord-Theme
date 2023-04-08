@@ -4,33 +4,29 @@ import { AuthContext } from "../context/AuthContext";
 import Notifications from "./Notifications";
 import User from "components/User";
 
-export const HeaderContainer = styled.div`
+const HeaderContainer = styled.div`
     display: flex;
+    justify-content: space-between;
     align-items: center;
-    font-size: 1rem;
-    height: 50px;
+    height: 7vh;
+    padding: 0 2.5%;
     background-color: #292929;
     color: #fff;
 `;
 
-const Container = styled.div`
-    width: 95%;
-    margin: auto;
-`;
-
 const H1 = styled.h1`
-    font-size: 1.2rem;
-    font-weight: 400;
+    font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
     letter-spacing: -1px;
 `;
 
 const Flex = styled.div`
-    width: ${(props) => props.width};
     display: flex;
-    gap: 20px;
-    justify-content: ${(props) => props.justfiy};
-    align-items: ${(props) => props.align};
-    flex-direction: ${(props) => props.direction};
+    gap: 2rem;
+    align-items: center;
+`;
+
+const I = styled.i`
+    font-size: 1.2rem;
 `;
 
 export default function Header() {
@@ -40,26 +36,20 @@ export default function Header() {
 
     return (
         <HeaderContainer>
-            <Container>
-                <Flex justfiy={"space-between"}>
-                    <H1>TechChat</H1>
-                    <Flex align={"center"}>
-                        {userData && (
-                            <i
-                                className={
-                                    bell ? "bi bi-bell-fill" : "bi bi-bell"
-                                }
-                                onClick={() => {
-                                    showNotifications(!notifications);
-                                    setBell(!bell);
-                                }}
-                            ></i>
-                        )}
-                        {notifications && <Notifications />}
-                        <User />
-                    </Flex>
-                </Flex>
-            </Container>
+            <H1>TechChat</H1>
+            <Flex>
+                {userData && (
+                    <I
+                        className={bell ? "bi bi-bell-fill" : "bi bi-bell"}
+                        onClick={() => {
+                            showNotifications(!notifications);
+                            setBell(!bell);
+                        }}
+                    ></I>
+                )}
+                {notifications && <Notifications />}
+                <User />
+            </Flex>
         </HeaderContainer>
     );
 }

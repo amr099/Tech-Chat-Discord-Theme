@@ -1,23 +1,33 @@
 import React, { createContext, useEffect, useState } from "react";
 import { auth, firestoreDb } from "../../firebase-config";
 import { onAuthStateChanged } from "firebase/auth";
-import { getDoc, doc, onSnapshot } from "firebase/firestore";
+import { doc, onSnapshot, updateDoc } from "firebase/firestore";
+import { useRef } from "react";
 
 export const AuthContext = createContext();
 
 export default function AuthContextProvider({ children }) {
-    // const [userId, setUserId] = useState();
     const [userData, setUserData] = useState();
+    const id = useRef();
 
-    onAuthStateChanged(auth, (user) => {
-        if (user) {
-            onSnapshot(doc(firestoreDb, "Users", user.uid), (doc) => {
-                setUserData(doc.data());
-            });
-        } else {
-            setUserData(false);
-        }
-    });
+    useEffect(() => {
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                id.current = user.uid;
+                onSnapshot(doc(firestoreDb, "Users", user.uid), (doc) => {
+                    setUserData(doc.data());
+                });
+                updateDoc(doc(firestoreDb, "Users", user.uid), {
+                    status: "online",
+                });
+            } else {
+                await updateDoc(doc(firestoreDb, "Users", id.current), {
+                    status: "offline",
+                });
+                setUserData(false);
+            }
+        });
+    }, []);
 
     return (
         <AuthContext.Provider value={{ userData }}>

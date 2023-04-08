@@ -33,7 +33,7 @@ export default function LoginForm({ setModal }) {
     return (
         <CustomForm
             onSubmit={onSubmit}
-            label={"Log In"}
+            label={"Sign In"}
             inputs={["email", "password"]}
             success={success}
             loading={loading}

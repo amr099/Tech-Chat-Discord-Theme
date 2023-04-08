@@ -2,54 +2,46 @@ import React, { useContext } from "react";
 import { useForm } from "react-hook-form";
 import styled from "styled-components";
 
-const H2 = styled.h2`
-    text-align: center;
-`;
-
 const InputGroup = styled.div`
     display: flex;
     flex-direction: column;
     margin: 1rem;
 `;
 
-const Label = styled.label`
-    margin-bottom: 2px;
-    font-size: 0.9rem;
-    font-weight: bold;
-`;
-
 const Input = styled.input`
     all: unset;
-    padding: 2px;
-    border: 0;
-    border-bottom: 1px solid;
+    border: 2px solid ${(props) => (props.gotError ? "#f00" : "#e3e5e5")};
+    border-radius: 10px;
+    padding: 10px;
+    font-size: 1.2rem;
     transitian: all 1s ease-in-out;
 
+    &:focus,
     &:autofill {
-        padding: 10px;
-        background-color: #eee;
+        border: 2px solid #6b4eff;
     }
-    &:focus {
-        padding: 10px;
-        border-bottom: 2px solid;
+
+    &:invalid {
+        border: 2px solid #f00;
     }
 `;
 
 const SubmitButton = styled.button`
+    background-color: #5538ee;
+    color: #fff;
+    font-size: 1.2rem;
     font-weight: bold;
-    background-color: #040404;
-    color: #f4f4f4;
-    padding: 10px 0;
     border-radius: 10px;
     text-align: center;
-    width: 100%;
+    width: 50%;
     margin: auto;
     margin-top: 2rem;
+    padding: 10px 20px;
 
     &:hover {
-        background-color: #ddd;
         cursor: pointer;
-        color: #040404;
+        background-color: #c6c4ff;
+        color: #5538ee;
     }
 `;
 
@@ -69,7 +61,6 @@ export default function CustomForm({
 
     return (
         <>
-            <H2>{label}</H2>
             <form
                 onSubmit={handleSubmit(onSubmit)}
                 style={{ display: "flex", flexDirection: "column" }}
@@ -77,8 +68,9 @@ export default function CustomForm({
                 {inputs?.find((i) => i === "email") && (
                     <>
                         <InputGroup>
-                            <Label>E-mail</Label>
+                            <h4>Email</h4>
                             <Input
+                                gotError={errors.email}
                                 type='email'
                                 {...register("email", {
                                     required: true,
@@ -96,8 +88,9 @@ export default function CustomForm({
                 {inputs?.find((i) => i === "password") && (
                     <>
                         <InputGroup>
-                            <Label>Password</Label>
+                            <h4>Password</h4>
                             <Input
+                                gotError={errors.password}
                                 type='password'
                                 {...register("password", {
                                     required: true,
@@ -115,8 +108,9 @@ export default function CustomForm({
                 {inputs?.find((i) => i === "name") && (
                     <>
                         <InputGroup>
-                            <Label>Name</Label>
+                            <h4>Name</h4>
                             <Input
+                                gotError={errors.name}
                                 type='text'
                                 name='name'
                                 {...register("name", {
@@ -135,8 +129,9 @@ export default function CustomForm({
                 {inputs?.find((i) => i === "image") && (
                     <>
                         <InputGroup>
-                            <Label>Image</Label>
+                            <h4>Image</h4>
                             <Input
+                                gotError={errors.image}
                                 type='file'
                                 {...register("image", {
                                     required: true,
@@ -154,9 +149,7 @@ export default function CustomForm({
                 {error && <h4 style={{ color: "red" }}>{error}</h4>}
                 {loading && <h4>Loading....</h4>}
                 {success && <h4 style={{ color: "green" }}>Done!</h4>}
-                <SubmitButton type='submit'>
-                    {label} <i class='bi bi-arrow-right-circle-fill'></i>
-                </SubmitButton>
+                <SubmitButton type='submit'>{label}</SubmitButton>
             </form>
         </>
     );

@@ -1,20 +1,19 @@
-import React from "react";
 import { createGlobalStyle } from "styled-components";
+import inria from "fonts/InriaSans-Light.ttf";
 
 export const GlobalStyle = createGlobalStyle`
-    html{
-        max-height:80vh;
+
+    * {
+        font-family: sans-serif;
     }
-    
 
     body{
         margin:0;
-        font-family:sans-serif;
-        height:80vh;
     }
 
-    h2{
-        margin:0;
+    .error{
+        margin-top:0.5rem;
+        color:#f00;
     }
 
     button{
@@ -22,23 +21,8 @@ export const GlobalStyle = createGlobalStyle`
     }
 
     i{
-        font-size:1rem;
         &:hover{
             cursor:pointer;
         }
     }
-
-    
-
-    ::placeholder{
-        color:#CFCFCF;
-    }
-
-    .bi-plus
-    {
-        &:hover{
-        background-color:#292929;
-        color:#fff;
-        border-radius:5px;
-}
     `;
