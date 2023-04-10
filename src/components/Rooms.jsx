@@ -13,6 +13,7 @@ import {
     doc,
     onSnapshot,
 } from "firebase/firestore";
+import { UsersContext } from "context/UsersContext";
 
 const Container = styled.div`
     height: 93vh;
@@ -70,50 +71,24 @@ export default function Rooms() {
     const [joinedRooms, setJoinedRooms] = useState([]);
     const { setRoom } = useContext(RoomContext);
     const { userData } = useContext(AuthContext);
+    const { users } = useContext(UsersContext);
 
     const [rooms, loading, error, onSnap] = useCollectionData(
         collection(firestoreDb, "Rooms")
     );
 
-    const getJoinedRooms = () => {
-        onSnapshot(doc(firestoreDb, "Users", userData.id), (doc) => {
-            setJoinedRooms(doc.data().rooms);
-        });
-    };
-
     useEffect(() => {
         if (userData) {
-            getJoinedRooms();
+            for (let i in users) {
+                if (users[i].id === userData.id) {
+                    setJoinedRooms(users[i].rooms);
+                }
+            }
         }
     }, [userData]);
 
-    const sendJoinRequest = (creatorId, roomName, roomId) => {
+    const sendJoinRequest = (creatorId, roomName) => {
         if (userData) {
-            // try {
-            //     const newNotificationKey = push(
-            //         child(ref(db), `users/${creatorId}`)
-            //     ).key;
-
-            //     const joinRequest = {
-            //         id: newNotificationKey,
-            //         userName: userData.name,
-            //         userID: userData.id,
-            //         userImg: userData.img,
-            //         roomName: roomName,
-            //         roomId: roomId,
-            //         note: `${userData.name} wanna join ${roomName}`,
-            //     };
-
-            //     const updates = {};
-            //     updates[
-            //         `users/${creatorId}/notifications/${newNotificationKey}/`
-            //     ] = joinRequest;
-
-            //     return update(ref(db), updates);
-            // } catch (e) {
-            //     console.log(e);
-            //     console.log("error sending request to join", roomName);
-            // }
             try {
                 const creatorDoc = doc(firestoreDb, "Users", creatorId);
                 updateDoc(creatorDoc, {
@@ -123,6 +98,7 @@ export default function Rooms() {
                         userImg: userData.img,
                         roomName: roomName,
                         note: `${userData.name} wanna join your room: ${roomName}`,
+                        time: new Date().toLocaleTimeString(),
                     }),
                 });
             } catch {}
@@ -131,22 +107,22 @@ export default function Rooms() {
         }
     };
 
-    // const roomToPending = (roomName, roomId) => {
-    //     const newRoomKey = push(
-    //         child(ref(db), `users/${userData.id}/rooms`)
-    //     ).key;
-    //     const updates = {};
-    //     updates[`users/${userData.id}/rooms/${roomId}`] = {
-    //         id: roomId,
-    //         name: roomName,
-    //         status: "pending",
-    //     };
-    //     return update(ref(db), updates);
-    // };
+    const roomToPending = (room) => {
+        try {
+            const userDoc = doc(firestoreDb, "Users", userData.id);
+            updateDoc(userDoc, {
+                rooms: arrayUnion({ name: room, role: "pending" }),
+                notifications: arrayUnion({
+                    note: `You have sent request to join room: ${room}`,
+                    time: new Date().toLocaleTimeString(),
+                }),
+            });
+        } catch (e) {}
+    };
 
-    const join = (creatorId, room, id) => {
-        sendJoinRequest(creatorId, room, id);
-        // roomToPending(room, id);
+    const join = (creatorId, room) => {
+        sendJoinRequest(creatorId, room);
+        roomToPending(room);
     };
 
     return (
@@ -175,11 +151,7 @@ export default function Rooms() {
                                 ) && (
                                     <Button
                                         onClick={() =>
-                                            join(
-                                                room.creatorId,
-                                                room.name,
-                                                room.id
-                                            )
+                                            join(room.creatorId, room.name)
                                         }
                                     >
                                         Join

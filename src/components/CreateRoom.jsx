@@ -32,7 +32,7 @@ export default function CreateRoom({ rooms }) {
 
     function onSubmit(data) {
         if (userData) {
-            if (!rooms.find((r) => r.name === data.roomName)) {
+            if (!rooms?.find((r) => r.name === data.roomName)) {
                 try {
                     try {
                         // New Room at Rooms Collections.
@@ -50,7 +50,14 @@ export default function CreateRoom({ rooms }) {
                     try {
                         // New Room at Users rooms.
                         updateDoc(doc(firestoreDb, "Users", userData.id), {
-                            room: arrayUnion(data.roomName),
+                            rooms: arrayUnion({
+                                name: data.roomName,
+                                role: "owner",
+                            }),
+                            notifications: arrayUnion({
+                                note: `You have created room: ${data.roomName} successfully!`,
+                                time: new Date().toLocaleString(),
+                            }),
                         });
                     } catch (e) {
                         console.log(e);
@@ -74,65 +81,6 @@ export default function CreateRoom({ rooms }) {
                             "error setting new room into messages collection"
                         );
                     }
-
-                    // try {
-                    //     // New room object into rooms.
-                    //     set(ref(db, `rooms/${data.roomName}/`), {
-                    //         members: {
-                    //             Owner: {
-                    //                 id: userData.id,
-                    //                 name: userData.name,
-                    //                 memberImg: userData.img,
-                    //                 status: "owner",
-                    //             },
-                    //         },
-                    //     });
-                    // } catch (e) {
-                    //     console.log(e);
-                    //     console.log(
-                    //         "error setting new room into messages collection"
-                    //     );
-                    // }
-
-                    // try {
-                    //     // New room into creator's rooms.
-                    //     const newRoomKey = push(
-                    //         child(ref(db), `users/${userData.id}/rooms`)
-                    //     ).key;
-                    //     const updates = {};
-                    //     updates[`users/${userData.id}/rooms/${roomId}`] = {
-                    //         id: roomId,
-                    //         name: data.roomName,
-                    //         status: "owner",
-                    //     };
-                    //     return update(ref(db), updates);
-                    // } catch (e) {
-                    //     console.log(e);
-                    //     console.log(
-                    //         "error adding new room into creator's rooms"
-                    //     );
-                    // }
-
-                    // try {
-                    //     // New notification to creator.
-                    //     const newNoteKey = push(
-                    //         child(ref(db), `users/${userData.id}/notifications`)
-                    //     ).key;
-                    //     const updates = {};
-                    //     updates[
-                    //         `users/${userData.id}/notifications/${newNoteKey}`
-                    //     ] = {
-                    //         note: `You have created '${
-                    //             data.roomName
-                    //         }' room successfully at ${new Date().toLocaleDateString()} `,
-                    //     };
-                    //     return update(ref(db), updates);
-                    // } catch (e) {
-                    //     console.log(e);
-                    //     console.log(
-                    //         "error adding new room into creator's rooms"
-                    //     );
-                    // }
                 } catch (e) {
                     console.log(e);
                 }

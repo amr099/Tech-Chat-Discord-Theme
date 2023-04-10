@@ -16,6 +16,7 @@ const Container = styled.div`
     border-radius: 20px 20px;
     padding: 0.5rem 1rem;
     transition: ease-in-out 0.2s;
+    font-weight: bold;
     opacity: ${(props) => (props.opacity === "true" ? "1" : "0")};
 
     &:hover {

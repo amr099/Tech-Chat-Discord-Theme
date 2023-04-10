@@ -51,10 +51,12 @@ export default function SendMessage() {
     const { userData } = useContext(AuthContext);
     const { register, handleSubmit } = useForm();
 
+    console.log(members);
+
     function onSubmit(data) {
         if (userData) {
             if (
-                members.find((m) => m == userData.id) ||
+                members?.find((m) => m == userData.id) ||
                 room.creatorId == userData.id
             ) {
                 try {

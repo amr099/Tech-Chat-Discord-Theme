@@ -11,7 +11,13 @@ import { db, firestoreDb } from "../../firebase-config";
 import React, { useState, useContext, useEffect } from "react";
 import { AuthContext } from "../context/AuthContext";
 import styled from "styled-components";
-import { arrayUnion, doc, onSnapshot, updateDoc } from "firebase/firestore";
+import {
+    arrayRemove,
+    arrayUnion,
+    doc,
+    onSnapshot,
+    updateDoc,
+} from "firebase/firestore";
 
 const Container = styled.div`
     user-select: none;
@@ -80,68 +86,58 @@ export default function Notifications() {
         });
     }, []);
 
-    const updateUserRooms = (id, room) => {
+    const accept = (id, room, note) => {
+        // Update User's rooms.
+        // Send acceptance note.
         try {
             const userDoc = doc(firestoreDb, "Users", id);
             updateDoc(userDoc, {
-                rooms: arrayUnion(room),
+                rooms: arrayRemove({ name: room, role: "pending" }),
+                rooms: arrayUnion({ name: room, role: "member" }),
+                notifications: arrayUnion({
+                    note: `You have joined room : ${room}!`,
+                    time: new Date().toLocaleTimeString(),
+                }),
             });
-        } catch (e) {}
-    };
+        } catch (e) {
+            console.log(e);
+            console.log("Error adding new room and notififcation to user.");
+        }
 
-    const updateRoomMembers = (id, room) => {
+        // Update Room's members.
         try {
             const roomDoc = doc(firestoreDb, "Rooms", room);
             updateDoc(roomDoc, {
                 members: arrayUnion(id),
             });
         } catch (e) {}
-    };
-    const sendAcceptNote = (id, room) => {
+
+        // Delete note after acceptance.
         try {
-            const userDoc = doc(firestoreDb, "Users", id);
-            updateDoc(userDoc, {
-                notifications: arrayUnion({
-                    note: `You have joined room : ${room}!`,
-                }),
-            });
-        } catch (e) {}
+            onDelete(note);
+        } catch {
+            console.log(e);
+            console.log("error deleting note after acceptance.");
+        }
     };
 
-    const accept = (id, room) => {
-        updateUserRooms(id, room);
-        updateRoomMembers(id, room);
-        sendAcceptNote(id, room);
+    const onDelete = async (note) => {
+        const userDoc = doc(firestoreDb, "Users", userData.id);
+        updateDoc(userDoc, {
+            notifications: arrayRemove(note),
+        });
     };
-
-    // const onDelete = async (id) => {
-    //     const userDoc = doc(firestoreDb, "Users", userData.id);
-    //     updateDoc(userDoc, {
-    //         notifications: removeUnion(''),
-    //     });
-    // };
 
     return (
-        // <ul>
-        //     {notifications?.map((n) => (
-        //         <li>
-        //             {n.userName} wanna join room {n.room}
-        //             <button
-        //                 onClick={() => accept(n.userName, n.userID, n.room)}
-        //             >
-        //                 accept
-        //             </button>
-        //         </li>
-        //     ))}
-        // </ul>
-
         <Container>
             <h2>Notifications</h2>
             {notifications?.map((note) => (
                 <Flex justfiy={"space-between"} align={"center"}>
                     <Flex align={"center"}>
                         {note.userImg && <Img src={note.userImg}></Img>}
-                        <Note>{note.note}</Note>
+                        <Note>
+                            {note.note} <span>{note.time}</span>
+                        </Note>
                     </Flex>
                     <Flex align={"center"}>
                         {note.userImg && (
@@ -149,14 +145,14 @@ export default function Notifications() {
                                 <Accept
                                     className='bi bi-check-circle'
                                     onClick={() =>
-                                        accept(note.userID, note.roomName)
+                                        accept(note.userID, note.roomName, note)
                                     }
                                 ></Accept>
                             </>
                         )}
                         <Remove
                             className='bi bi-x'
-                            onClick={() => onDelete(note.id)}
+                            onClick={() => onDelete(note)}
                         ></Remove>
                     </Flex>
                 </Flex>

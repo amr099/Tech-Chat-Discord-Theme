@@ -27,7 +27,7 @@ const MyMessageContainer = styled(MessageContainer)`
 `;
 
 const Message = styled.div`
-    padding: 0.5rem 1rem;
+    padding: 1rem;
     background-color: #e3e5e5;
     border-radius: 0px 20px 20px 20px;
 `;
@@ -38,7 +38,7 @@ const MyMessage = styled.div`
     padding: 0.5rem 1rem;
 `;
 
-const Msg = styled.p`
+const Bold = styled.p`
     font-size: 1rem;
     font-weight: bold;
 `;
@@ -67,7 +67,7 @@ export default function Messages() {
                         return (
                             <MyMessageContainer key={msg.time}>
                                 <MyMessage>
-                                    <Msg>{msg.msg}</Msg>
+                                    <Bold>{msg.msg}</Bold>
                                     <Time>{msg.time}</Time>
                                 </MyMessage>
                             </MyMessageContainer>
@@ -76,7 +76,7 @@ export default function Messages() {
                         return (
                             <MessageContainer key={msg.time}>
                                 <UserImg
-                                    src={(function () {
+                                    src={(() => {
                                         for (var i in users) {
                                             if (users[i].id === msg.uid) {
                                                 return users[i].img;
@@ -84,10 +84,21 @@ export default function Messages() {
                                         }
                                     })()}
                                 ></UserImg>
-                                <Message>
-                                    <Msg>{msg.msg}</Msg>
-                                    <Time>{msg.time}</Time>
-                                </Message>
+                                <div>
+                                    <Bold>
+                                        {(() => {
+                                            for (var i in users) {
+                                                if (users[i].id === msg.uid) {
+                                                    return users[i].name;
+                                                }
+                                            }
+                                        })()}
+                                    </Bold>
+                                    <Message>
+                                        <Bold>{msg.msg}</Bold>
+                                        <Time>{msg.time}</Time>
+                                    </Message>
+                                </div>
                             </MessageContainer>
                         );
                     }

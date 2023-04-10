@@ -11,25 +11,11 @@ export default function RoomContextProvider({ children }) {
     const [members, setMembers] = useState([]);
 
     const getMembers = () => {
-        // if (room) {
-        //     try {
-        //         const roomMembers = ref(db, `rooms/${room.name}/members`);
-        //         onValue(roomMembers, (snapshot) => {
-        //             let members = [];
-        //             const data = snapshot.val();
-        //             for (let i in data) {
-        //                 members.push(data[i]?.id);
-        //             }
-        //             setMembers(members);
-        //         });
-        //     } catch (e) {
-        //         console.log(e);
-        //     }
-        // }
         if (room) {
             onSnapshot(doc(firestoreDb, "Rooms", room.name), (doc) => {
                 setMembers(doc.data().members);
             });
+            console.log(members);
         }
     };
     const getMessages = () => {

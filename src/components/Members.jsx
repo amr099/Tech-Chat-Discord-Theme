@@ -53,7 +53,7 @@ export default function Members() {
                 <h2>Members</h2>
             </Flex>
             {users?.map((user) => {
-                if (members.find((m) => m === user.id)) {
+                if (members?.find((m) => m === user.id)) {
                     return (
                         <Flex justify={"space-between"} key={user.email}>
                             <Flex>
