@@ -2,14 +2,9 @@ Features:
     - member list (toggle).(Done)
     - member status.(Done)
     - direct messages.(Hold)
-    - show if thier are new messages or notes.(use time, hover,LastLogged)
+    - show if thier are new messages or notes.(Hold)
 
 Todo:
-    - optimize try and catch functions.
     - styling:
-          - snackbar.(build context of its content)
-          - popups.
           - loading before viewing.
-          - submit status styling.
           - font.
-          - add owner badge.

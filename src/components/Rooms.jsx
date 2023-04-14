@@ -14,6 +14,7 @@ import {
     onSnapshot,
 } from "firebase/firestore";
 import { UsersContext } from "context/UsersContext";
+import { SnackContext } from "context/SnackContext";
 
 const Container = styled.div`
     height: 93vh;
@@ -72,6 +73,7 @@ export default function Rooms() {
     const { setRoom } = useContext(RoomContext);
     const { userData } = useContext(AuthContext);
     const { users } = useContext(UsersContext);
+    const { setShow, setContent, setType } = useContext(SnackContext);
 
     const [rooms, loading, error, onSnap] = useCollectionData(
         collection(firestoreDb, "Rooms")
@@ -84,6 +86,8 @@ export default function Rooms() {
                     setJoinedRooms(users[i].rooms);
                 }
             }
+        } else {
+            setJoinedRooms([]);
         }
     }, [userData]);
 
@@ -101,9 +105,18 @@ export default function Rooms() {
                         time: new Date().toLocaleTimeString(),
                     }),
                 });
-            } catch {}
+                setContent(
+                    `Your request to join room: ${roomName} has been sent successfully!`
+                );
+                setShow(true);
+                setType("success");
+            } catch (e) {
+                console.log(e);
+            }
         } else {
-            alert("You have to log in first.");
+            setContent("You have to login first!");
+            setShow(true);
+            setType("error");
         }
     };
 
@@ -117,7 +130,9 @@ export default function Rooms() {
                     time: new Date().toLocaleTimeString(),
                 }),
             });
-        } catch (e) {}
+        } catch (e) {
+            console.log(e);
+        }
     };
 
     const join = (creatorId, room) => {

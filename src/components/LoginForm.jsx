@@ -1,30 +1,23 @@
-import React, { useContext, useState } from "react";
 import CustomForm from "./CustomForm";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../../firebase-config";
-import { AuthContext } from "context/AuthContext";
 
-export default function LoginForm({ setModal }) {
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState("");
-    const [success, setSuccess] = useState(false);
-
+export default function LoginForm({ setModal, dispatch, state }) {
     const onSubmit = async (data) => {
-        setError(false);
-        setLoading(true);
+        dispatch({ type: "LOADING" });
         try {
             await signInWithEmailAndPassword(auth, data.email, data.password);
             setModal(false);
-            setLoading(false);
-            setSuccess(true);
+            dispatch({ type: "SUCCESS" });
         } catch (e) {
-            if (e.message === "Firebase: Error (auth/invalid-email).") {
-                setError("Invalid Email.");
-                setLoading(false);
+            if (
+                e.message === "Firebase: Error (auth/invalid-email)." ||
+                "Firebase: Error (auth/user-not-found)."
+            ) {
+                dispatch({ type: "ERROR", payload: "Invalid Email." });
                 console.log(e);
             } else if (e.message === "Firebase: Error (auth/wrong-password).") {
-                setError("Wrong Password.");
-                setLoading(false);
+                dispatch({ type: "ERROR", payload: "Wrong Password." });
                 console.log(e);
             }
         }
@@ -35,9 +28,7 @@ export default function LoginForm({ setModal }) {
             onSubmit={onSubmit}
             label={"Sign In"}
             inputs={["email", "password"]}
-            success={success}
-            loading={loading}
-            error={error}
+            state={state}
         />
     );
 }

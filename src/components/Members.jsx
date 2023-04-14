@@ -1,9 +1,6 @@
 import { RoomContext } from "context/RoomContext";
-import React, { useContext, useState } from "react";
+import React, { useContext } from "react";
 import styled from "styled-components";
-import { collection } from "firebase/firestore";
-import { useCollectionData } from "react-firebase-hooks/firestore";
-import { firestoreDb } from "../../firebase-config";
 import { AuthContext } from "context/AuthContext";
 import { UsersContext } from "context/UsersContext";
 
@@ -53,22 +50,21 @@ export default function Members() {
                 <h2>Members</h2>
             </Flex>
             {users?.map((user) => {
-                if (members?.find((m) => m === user.id)) {
+                if (members?.find((m) => m === user?.id)) {
                     return (
                         <Flex justify={"space-between"} key={user.email}>
                             <Flex>
                                 <Img src={user.img}></Img>
                                 <Span>{user.name}</Span>
                             </Flex>
-                            {user.id === userData.id ? (
+                            {user?.id === userData?.id ? (
                                 "You"
                             ) : (
-                                <Status status={user.status}></Status>
+                                <Status status={user?.status}></Status>
                             )}
                         </Flex>
                     );
                 }
-                user;
             })}
         </Container>
     );

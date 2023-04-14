@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import Rooms from "components/Rooms";
 import Header from "components/Header";
 import ChatWindow from "components/ChatWindow";
@@ -7,6 +7,8 @@ import { GlobalStyle } from "components/GlobalStyles";
 import Modal from "react-modal";
 import Members from "components/Members";
 import Snackbar from "components/Snackbar";
+import { SnackContext } from "context/SnackContext";
+import Loading from "./components/Loading";
 
 const Grid = styled.div`
     display: grid;
@@ -20,6 +22,7 @@ Modal.setAppElement("#root");
 
 function App() {
     const [membersCon, setMembersCon] = useState(false);
+    const { show } = useContext(SnackContext);
     return (
         <>
             <GlobalStyle />
@@ -39,6 +42,7 @@ function App() {
                         <Members />
                     </GridItem>
                 )}
+                {show && <Snackbar />}
             </Grid>
         </>
     );

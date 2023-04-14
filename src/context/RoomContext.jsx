@@ -7,6 +7,7 @@ export const RoomContext = createContext();
 
 export default function RoomContextProvider({ children }) {
     const [room, setRoom] = useState();
+    const [owner, setOwner] = useState();
     const [messages, setMessages] = useState();
     const [members, setMembers] = useState([]);
 
@@ -14,8 +15,8 @@ export default function RoomContextProvider({ children }) {
         if (room) {
             onSnapshot(doc(firestoreDb, "Rooms", room.name), (doc) => {
                 setMembers(doc.data().members);
+                setOwner(doc.data().creatorId);
             });
-            console.log(members);
         }
     };
     const getMessages = () => {
@@ -44,7 +45,9 @@ export default function RoomContextProvider({ children }) {
     }, [room]);
 
     return (
-        <RoomContext.Provider value={{ room, setRoom, members, messages }}>
+        <RoomContext.Provider
+            value={{ room, setRoom, members, messages, owner }}
+        >
             {children}
         </RoomContext.Provider>
     );

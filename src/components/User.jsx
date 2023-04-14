@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useReducer } from "react";
 import { AuthContext } from "../context/AuthContext";
 import styled from "styled-components";
 import Modal from "react-modal";
@@ -57,11 +57,29 @@ const customStyles = {
     },
 };
 
+const reducer = (state, action) => {
+    switch (action.type) {
+        case "SUCCESS":
+            return { success: true, error: "", loading: false };
+        case "ERROR":
+            return { success: false, error: action.payload, loading: false };
+        case "LOADING":
+            return { success: false, error: "", loading: true };
+        default:
+            return state;
+    }
+};
+
 export default function User() {
     const { userData } = useContext(AuthContext);
     const [logOut, setLogOut] = useState(false);
     const [modal, setModal] = useState(false);
     const [form, setForm] = useState("login");
+    const [state, dispatch] = useReducer(reducer, {
+        loading: false,
+        error: "",
+        success: false,
+    });
 
     return (
         <>
@@ -80,7 +98,11 @@ export default function User() {
                     >
                         {form === "login" ? (
                             <>
-                                <LoginForm setModal={setModal} />
+                                <LoginForm
+                                    setModal={setModal}
+                                    dispatch={dispatch}
+                                    state={state}
+                                />
                                 <p>
                                     <span>Don't have an account. </span>{" "}
                                     <Span onClick={() => setForm("register")}>
@@ -90,7 +112,11 @@ export default function User() {
                             </>
                         ) : (
                             <>
-                                <RegisterForm setModal={setModal} />
+                                <RegisterForm
+                                    setModal={setModal}
+                                    dispatch={dispatch}
+                                    state={state}
+                                />
                                 <p>
                                     <span>Already have an account. </span>{" "}
                                     <Span onClick={() => setForm("login")}>

@@ -6,7 +6,8 @@ import { RoomContext } from "../context/RoomContext";
 import { useForm } from "react-hook-form";
 import styled from "styled-components";
 import Snackbar from "./Snackbar";
-import { setDoc, updateDoc, doc } from "firebase/firestore";
+import { updateDoc, doc } from "firebase/firestore";
+import { SnackContext } from "context/SnackContext";
 
 const Container = styled.div`
     margin: 1rem;
@@ -50,8 +51,7 @@ export default function SendMessage() {
     const { room, members } = useContext(RoomContext);
     const { userData } = useContext(AuthContext);
     const { register, handleSubmit } = useForm();
-
-    console.log(members);
+    const { setContent, setType, setShow } = useContext(SnackContext);
 
     function onSubmit(data) {
         if (userData) {
@@ -81,10 +81,14 @@ export default function SendMessage() {
                     console.log("error sending message.");
                 }
             } else {
-                alert("You should be a member to send a message.");
+                setContent("You have to login first!");
+                setShow(true);
+                setType("error");
             }
         } else {
-            alert("You have to log in first.");
+            setContent("You have to login first!");
+            setShow(true);
+            setType("error");
         }
     }
     return (

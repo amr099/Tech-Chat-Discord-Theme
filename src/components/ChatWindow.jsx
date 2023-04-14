@@ -2,7 +2,7 @@ import React, { useContext } from "react";
 import Messages from "components/Messages";
 import SendMessage from "components/SendMessage";
 import styled from "styled-components";
-import { RoomContext } from "../context/RoomContext";
+import { RoomContext } from "context/RoomContext";
 import { UsersContext } from "context/UsersContext";
 
 const Header = styled.div`
@@ -17,13 +17,35 @@ const I = styled.i`
     position: relative;
     left: 47%;
     font-size: 2rem;
-    &:hover {
-        color: #ddd;
-    }
 `;
 
 const H2 = styled.h2`
     margin: 0;
+`;
+
+const UserImg = styled.img`
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+`;
+
+const Owner = styled.div`
+    width: fit-content;
+    margin: auto;
+    margin-top: 5px;
+    display: flex;
+    gap: 5px;
+    align-items: center;
+    font-weight: bold;
+    font-size: 0.8rem;
+`;
+
+const Status = styled.div`
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background-color: ${(props) =>
+        props.status === "online" ? "green" : "red"};
 `;
 
 export default function ChatWindow({ membersCon, setMembersCon }) {
@@ -34,18 +56,25 @@ export default function ChatWindow({ membersCon, setMembersCon }) {
             <>
                 <Header>
                     <H2>{room?.name}</H2>
-                    <p>
-                        Owner :{" "}
-                        {(() => {
-                            for (let i in users) {
-                                if (users[i].id === room.creatorId) {
-                                    return users[i].name;
-                                }
+                    {(() => {
+                        for (let i in users) {
+                            if (users[i].id === room.creatorId) {
+                                return (
+                                    <Owner>
+                                        <UserImg src={users[i].img}></UserImg>
+                                        <span>{users[i].name}</span>
+                                        <Status
+                                            status={users[i].status}
+                                        ></Status>
+                                    </Owner>
+                                );
                             }
-                        })()}
-                    </p>
+                        }
+                    })()}
                     <I
-                        className='bi bi-people-fill'
+                        className={
+                            membersCon ? "bi bi-people-fill" : "bi bi-people"
+                        }
                         onClick={() => {
                             setMembersCon(!membersCon);
                         }}

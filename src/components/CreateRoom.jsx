@@ -1,10 +1,11 @@
 import React, { useContext } from "react";
-import { ref, set, update, push, child } from "firebase/database";
+import { ref, set } from "firebase/database";
 import { db, firestoreDb } from "../../firebase-config";
 import { AuthContext } from "../context/AuthContext";
 import { useForm } from "react-hook-form";
 import styled from "styled-components";
 import { setDoc, doc, updateDoc, arrayUnion } from "firebase/firestore";
+import { SnackContext } from "context/SnackContext";
 
 const Container = styled.div`
     display: flex;
@@ -29,6 +30,7 @@ const I = styled.i`
 export default function CreateRoom({ rooms }) {
     const { register, handleSubmit } = useForm();
     const { userData } = useContext(AuthContext);
+    const { setContent, setShow, setType } = useContext(SnackContext);
 
     function onSubmit(data) {
         if (userData) {
@@ -61,9 +63,7 @@ export default function CreateRoom({ rooms }) {
                         });
                     } catch (e) {
                         console.log(e);
-                        console.log(
-                            "error setting new room into rooms collection"
-                        );
+                        console.log("error setting new room into User's rooms");
                     }
 
                     try {
@@ -75,6 +75,11 @@ export default function CreateRoom({ rooms }) {
                                 time: new Date().toLocaleString(),
                             },
                         });
+                        setContent(
+                            `Room: ${data.roomName} has been created successfully.`
+                        );
+                        setShow(true);
+                        setType("success");
                     } catch (e) {
                         console.log(e);
                         console.log(
@@ -85,10 +90,14 @@ export default function CreateRoom({ rooms }) {
                     console.log(e);
                 }
             } else {
-                alert("this room name is already used.");
+                setContent("Room name already exists.");
+                setShow(true);
+                setType("error");
             }
         } else {
-            alert("You have to log in first.");
+            setContent("You have to sign in first.");
+            setShow(true);
+            setType("error");
         }
     }
     return (

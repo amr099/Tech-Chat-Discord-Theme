@@ -1,4 +1,3 @@
-import React, { useState } from "react";
 import CustomForm from "./CustomForm";
 import { auth, storage, firestoreDb, db } from "../../firebase-config";
 import { createUserWithEmailAndPassword } from "firebase/auth";
@@ -8,20 +7,17 @@ import { set, ref as realref } from "firebase/database";
 import { useCollectionData } from "react-firebase-hooks/firestore";
 import { collection } from "firebase/firestore";
 
-export default function RegisterForm() {
+export default function RegisterForm({ state, dispatch }) {
     const usersCol = collection(firestoreDb, "Users");
     const [users, uloading, uerror, snapshot] = useCollectionData(usersCol);
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState("");
-    const [success, setSuccess] = useState(false);
 
     const onSubmit = async (data) => {
-        setLoading(true);
-
+        dispatch({ type: "LOADING" });
         if (users?.find((e) => e.name === data.name)) {
-            let alert = "Username is already exists.";
-            setError(alert);
-            console.log(alert);
+            dispatch({
+                type: "ERROR",
+                payloading: "Username is already exists.",
+            });
             return;
         }
         try {
@@ -67,13 +63,23 @@ export default function RegisterForm() {
                 (error) => {
                     switch (error.code) {
                         case "storage/unauthorized":
-                            setError("Error uploading Image (unauthorized)");
+                            dispatch({
+                                type: "ERROR",
+                                payloading:
+                                    "Error uploading Image (unauthorized)",
+                            });
                             break;
                         case "storage/canceled":
-                            setError("Error uploading Image (canceled)");
+                            dispatch({
+                                type: "ERROR",
+                                payloading: "Error uploading Image (canceled)",
+                            });
                             break;
                         case "storage/unknown":
-                            setError("Error uploading Image (unknown)");
+                            dispatch({
+                                type: "ERROR",
+                                payloading: "Error uploading Image (unknown)",
+                            });
                             break;
                     }
                 },
@@ -96,27 +102,34 @@ export default function RegisterForm() {
                 }
             );
 
-            setLoading(false);
-            setSuccess(true);
+            dispatch({
+                type: "SUCCESS",
+            });
 
             // ===============================================================================
         } catch (e) {
             console.log(e.message);
             if (e.message === "Firebase: Error (auth/email-already-in-use).") {
-                setError("Email is already exists.");
-                setLoading(false);
+                dispatch({
+                    type: "ERROR",
+                    payloading: "Email is already exists.",
+                });
             }
 
             if (e.message === "Firebase: Error (auth/invalid-email).") {
-                setError("Email is Invalid.");
-                setLoading(false);
+                dispatch({
+                    type: "ERROR",
+                    payloading: "Email is Invalid.",
+                });
             }
             if (
                 e.message ===
                 "Firebase: Password should be at least 6 characters (auth/weak-password)."
             ) {
-                setError("Password should be at least 6 characters.");
-                setLoading(false);
+                dispatch({
+                    type: "ERROR",
+                    payloading: "Password should be at least 6 characters.",
+                });
             }
         }
     };
@@ -125,9 +138,7 @@ export default function RegisterForm() {
             label={"Register"}
             onSubmit={onSubmit}
             inputs={["name", "email", "password", "image"]}
-            success={success}
-            loading={loading}
-            error={error}
+            state={state}
         />
     );
 }

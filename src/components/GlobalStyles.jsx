@@ -1,5 +1,4 @@
 import { createGlobalStyle } from "styled-components";
-import inria from "fonts/InriaSans-Light.ttf";
 
 export const GlobalStyle = createGlobalStyle`
 

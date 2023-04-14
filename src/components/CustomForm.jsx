@@ -1,7 +1,11 @@
-import React, { useContext } from "react";
+import React from "react";
 import { useForm } from "react-hook-form";
 import styled from "styled-components";
 
+const Form = styled.form`
+    display: flex;
+    flex-direction: column;
+`;
 const InputGroup = styled.div`
     display: flex;
     flex-direction: column;
@@ -45,26 +49,18 @@ const SubmitButton = styled.button`
     }
 `;
 
-export default function CustomForm({
-    label,
-    loading,
-    success,
-    error,
-    onSubmit,
-    inputs,
-}) {
+export default function CustomForm({ label, state, onSubmit, inputs }) {
     const {
         register,
         handleSubmit,
         formState: { errors },
     } = useForm();
 
+    console.log(state);
+
     return (
         <>
-            <form
-                onSubmit={handleSubmit(onSubmit)}
-                style={{ display: "flex", flexDirection: "column" }}
-            >
+            <Form onSubmit={handleSubmit(onSubmit)}>
                 {inputs?.find((i) => i === "email") && (
                     <>
                         <InputGroup>
@@ -146,11 +142,16 @@ export default function CustomForm({
                         </InputGroup>
                     </>
                 )}
-                {error && <h4 style={{ color: "red" }}>{error}</h4>}
-                {loading && <h4>Loading....</h4>}
-                {success && <h4 style={{ color: "green" }}>Done!</h4>}
-                <SubmitButton type='submit'>{label}</SubmitButton>
-            </form>
+                <InputGroup>
+                    {state.error && (
+                        <h4 style={{ color: "red" }}>{state.error}</h4>
+                    )}
+                    {state.success && <h4 style={{ color: "green" }}>Done!</h4>}
+                </InputGroup>
+                <SubmitButton type='submit'>
+                    {state.loading ? "Loading..." : label}
+                </SubmitButton>
+            </Form>
         </>
     );
 }

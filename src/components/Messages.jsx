@@ -1,11 +1,9 @@
-import { ref, onValue } from "firebase/database";
-import { db, firestoreDb } from "../../firebase-config";
-
-import React, { useState, useContext, useEffect } from "react";
+import React, { useContext } from "react";
 import { RoomContext } from "../context/RoomContext";
 import styled from "styled-components";
 import { AuthContext } from "../context/AuthContext";
 import { UsersContext } from "./../context/UsersContext";
+
 const Container = styled.div`
     height: 65vh;
     padding: 1rem;
@@ -18,8 +16,9 @@ const Container = styled.div`
 
 const MessageContainer = styled.div`
     display: flex;
+    align-items: start;
     gap: 10px;
-    max-width: 45%;
+    max-width: 90%;
     margin: 1rem;
 `;
 const MyMessageContainer = styled(MessageContainer)`
@@ -38,9 +37,24 @@ const MyMessage = styled.div`
     padding: 0.5rem 1rem;
 `;
 
-const Bold = styled.p`
+const Name = styled.p`
     font-size: 1rem;
+    margin: 0;
+    margin-bottom: 10px;
     font-weight: bold;
+`;
+
+const Msg = styled.p`
+    font-weight: bold;
+    margin: 0.5rem 0;
+`;
+
+const I = styled.i`
+    margin: 0 5px;
+    &:hover {
+        color: orange;
+        cursor: inherit;
+    }
 `;
 
 const Time = styled.span`
@@ -55,7 +69,7 @@ const UserImg = styled.img`
 `;
 
 export default function Messages() {
-    const { messages } = useContext(RoomContext);
+    const { owner, messages } = useContext(RoomContext);
     const { userData } = useContext(AuthContext);
     const { users } = useContext(UsersContext);
 
@@ -67,7 +81,7 @@ export default function Messages() {
                         return (
                             <MyMessageContainer key={msg.time}>
                                 <MyMessage>
-                                    <Bold>{msg.msg}</Bold>
+                                    <Msg>{msg.msg}</Msg>
                                     <Time>{msg.time}</Time>
                                 </MyMessage>
                             </MyMessageContainer>
@@ -84,8 +98,9 @@ export default function Messages() {
                                         }
                                     })()}
                                 ></UserImg>
+
                                 <div>
-                                    <Bold>
+                                    <Name>
                                         {(() => {
                                             for (var i in users) {
                                                 if (users[i].id === msg.uid) {
@@ -93,9 +108,12 @@ export default function Messages() {
                                                 }
                                             }
                                         })()}
-                                    </Bold>
+                                        {msg.uid === owner && (
+                                            <I className='bi bi-star-fill'></I>
+                                        )}
+                                    </Name>
                                     <Message>
-                                        <Bold>{msg.msg}</Bold>
+                                        <Msg>{msg.msg}</Msg>
                                         <Time>{msg.time}</Time>
                                     </Message>
                                 </div>

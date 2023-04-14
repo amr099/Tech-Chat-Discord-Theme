@@ -1,13 +1,4 @@
-import {
-    ref,
-    update,
-    onValue,
-    push,
-    child,
-    get,
-    remove,
-} from "firebase/database";
-import { db, firestoreDb } from "../../firebase-config";
+import { firestoreDb } from "../../firebase-config";
 import React, { useState, useContext, useEffect } from "react";
 import { AuthContext } from "../context/AuthContext";
 import styled from "styled-components";
@@ -18,6 +9,7 @@ import {
     onSnapshot,
     updateDoc,
 } from "firebase/firestore";
+import { SnackContext } from "context/SnackContext";
 
 const Container = styled.div`
     user-select: none;
@@ -79,6 +71,7 @@ const Remove = styled.i`
 export default function Notifications() {
     const [notifications, setNotifications] = useState();
     const { userData } = useContext(AuthContext);
+    const { setContent, setShow, setType } = useContext(SnackContext);
 
     useEffect(() => {
         onSnapshot(doc(firestoreDb, "Users", userData.id), (doc) => {
@@ -86,46 +79,76 @@ export default function Notifications() {
         });
     }, []);
 
-    const accept = (id, room, note) => {
+    const accept = (note) => {
         // Update User's rooms.
         // Send acceptance note.
         try {
-            const userDoc = doc(firestoreDb, "Users", id);
-            updateDoc(userDoc, {
-                rooms: arrayRemove({ name: room, role: "pending" }),
-                rooms: arrayUnion({ name: room, role: "member" }),
-                notifications: arrayUnion({
-                    note: `You have joined room : ${room}!`,
-                    time: new Date().toLocaleTimeString(),
-                }),
-            });
+            try {
+                const userDoc = doc(firestoreDb, "Users", note.userID);
+                updateDoc(userDoc, {
+                    rooms: arrayRemove({
+                        name: note.roomName,
+                        role: "pending",
+                    }),
+                    rooms: arrayUnion({ name: note.roomName, role: "member" }),
+                    notifications: arrayUnion({
+                        note: `You have joined room : ${note.roomName}!`,
+                        time: new Date().toLocaleTimeString(),
+                    }),
+                });
+            } catch (e) {
+                console.log(e);
+                console.log("Error adding new room and notififcation to user.");
+            }
+
+            // Update Room's members.
+            try {
+                const roomDoc = doc(firestoreDb, "Rooms", note.roomName);
+                updateDoc(roomDoc, {
+                    members: arrayUnion(note.userID),
+                });
+            } catch (e) {}
+
+            // Delete note after acceptance.
+            try {
+                const userDoc = doc(firestoreDb, "Users", userData.id);
+                updateDoc(userDoc, {
+                    notifications: arrayRemove(note),
+                });
+            } catch {
+                console.log(e);
+                console.log("error deleting note after acceptance.");
+            }
+            setContent(
+                `You have accepted new member to room: ${note.roomName}!`
+            );
+            setShow(true);
+            setType("success");
         } catch (e) {
             console.log(e);
-            console.log("Error adding new room and notififcation to user.");
-        }
-
-        // Update Room's members.
-        try {
-            const roomDoc = doc(firestoreDb, "Rooms", room);
-            updateDoc(roomDoc, {
-                members: arrayUnion(id),
-            });
-        } catch (e) {}
-
-        // Delete note after acceptance.
-        try {
-            onDelete(note);
-        } catch {
-            console.log(e);
-            console.log("error deleting note after acceptance.");
         }
     };
 
     const onDelete = async (note) => {
-        const userDoc = doc(firestoreDb, "Users", userData.id);
-        updateDoc(userDoc, {
-            notifications: arrayRemove(note),
-        });
+        try {
+            const userDoc = doc(firestoreDb, "Users", userData.id);
+            updateDoc(userDoc, {
+                notifications: arrayRemove(note),
+            });
+            const memberDoc = doc(firestoreDb, "Users", note.userID);
+            updateDoc(memberDoc, {
+                rooms: arrayRemove({ name: note.roomName, role: "pending" }),
+                notifications: arrayUnion({
+                    note: `You have been rejected to join room : ${note.roomName}!`,
+                    time: new Date().toLocaleTimeString(),
+                }),
+            });
+            setContent(`Request has been deleted successfully!`);
+            setShow(true);
+            setType("success");
+        } catch (e) {
+            console.log(e);
+        }
     };
 
     return (
@@ -136,7 +159,7 @@ export default function Notifications() {
                     <Flex align={"center"}>
                         {note.userImg && <Img src={note.userImg}></Img>}
                         <Note>
-                            {note.note} <span>{note.time}</span>
+                            {note.note} <span>{note.time} </span>
                         </Note>
                     </Flex>
                     <Flex align={"center"}>
@@ -144,9 +167,7 @@ export default function Notifications() {
                             <>
                                 <Accept
                                     className='bi bi-check-circle'
-                                    onClick={() =>
-                                        accept(note.userID, note.roomName, note)
-                                    }
+                                    onClick={() => accept(note)}
                                 ></Accept>
                             </>
                         )}
