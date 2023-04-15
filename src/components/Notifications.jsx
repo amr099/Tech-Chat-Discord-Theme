@@ -146,18 +146,25 @@ export default function Notifications() {
 
     const onDelete = async (note) => {
         try {
+            // Delete note.
             const userDoc = doc(firestoreDb, "Users", userData.id);
             updateDoc(userDoc, {
                 notifications: arrayRemove(note),
             });
-            const memberDoc = doc(firestoreDb, "Users", note.userID);
-            updateDoc(memberDoc, {
-                rooms: arrayRemove({ name: note.roomName, role: "pending" }),
-                notifications: arrayUnion({
-                    note: `You have been rejected to join room : ${note.roomName}!`,
-                    time: new Date().toLocaleTimeString(),
-                }),
-            });
+            // send rejection via note.
+            if (note.userID) {
+                const memberDoc = doc(firestoreDb, "Users", note.userID);
+                updateDoc(memberDoc, {
+                    rooms: arrayRemove({
+                        name: note.roomName,
+                        role: "pending",
+                    }),
+                    notifications: arrayUnion({
+                        note: `You have been rejected to join room : ${note.roomName}!`,
+                        time: new Date().toLocaleString(),
+                    }),
+                });
+            }
             showSnack(`Request has been deleted successfully!`, "success");
         } catch (e) {
             console.log(e);

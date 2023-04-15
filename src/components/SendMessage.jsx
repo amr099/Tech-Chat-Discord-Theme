@@ -82,7 +82,7 @@ export default function SendMessage() {
                     console.log("error sending message.");
                 }
             } else {
-                showSnack("You have to login first!", "error");
+                showSnack("Members only can send to room!", "error");
             }
         } else {
             showSnack("You have to login first!", "error");
