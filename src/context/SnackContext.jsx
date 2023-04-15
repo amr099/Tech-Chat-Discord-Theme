@@ -1,16 +1,36 @@
-import React, { createContext, useState } from "react";
+import React, { createContext, useReducer } from "react";
 
 export const SnackContext = createContext();
 
+const reducer = (state, action) => {
+    switch (action.type) {
+        case "show":
+            return {
+                show: true,
+                content: action.content,
+                snackType: action.snackType,
+            };
+        case "hide":
+            return { ...state, show: false };
+    }
+};
+
 export default function SnackContextProvider({ children }) {
-    const [show, setShow] = useState(false);
-    const [content, setContent] = useState("");
-    const [type, setType] = useState("");
+    const [snackData, dispatch] = useReducer(reducer, {
+        show: false,
+        content: "",
+        snackType: "",
+    });
+
+    const showSnack = (content, type) => {
+        dispatch({ type: "show", content: content, snackType: type });
+    };
+    const hideSnack = () => {
+        dispatch({ type: "hide" });
+    };
 
     return (
-        <SnackContext.Provider
-            value={{ show, setShow, content, setContent, type, setType }}
-        >
+        <SnackContext.Provider value={{ snackData, showSnack, hideSnack }}>
             {children}
         </SnackContext.Provider>
     );

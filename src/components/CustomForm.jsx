@@ -30,6 +30,10 @@ const Input = styled.input`
     }
 `;
 
+const SubmitState = styled.div`
+    margin: 0 1rem;
+`;
+
 const SubmitButton = styled.button`
     background-color: #5538ee;
     color: #fff;
@@ -56,50 +60,52 @@ export default function CustomForm({ label, state, onSubmit, inputs }) {
         formState: { errors },
     } = useForm();
 
-    console.log(state);
-
     return (
         <>
             <Form onSubmit={handleSubmit(onSubmit)}>
                 {inputs?.find((i) => i === "email") && (
-                    <>
-                        <InputGroup>
-                            <h4>Email</h4>
-                            <Input
-                                gotError={errors.email}
-                                type='email'
-                                {...register("email", {
-                                    required: true,
-                                })}
-                            />
-                            {errors.email?.type === "required" && (
-                                <span className='error'>
-                                    {" "}
-                                    This field is required.
-                                </span>
-                            )}
-                        </InputGroup>
-                    </>
+                    <InputGroup>
+                        <h4>Email</h4>
+                        <Input
+                            gotError={errors.email}
+                            name='email'
+                            type='email'
+                            {...register("email", {
+                                required: true,
+                            })}
+                        />
+                        {errors.email?.type === "required" && (
+                            <span className='error'>
+                                {" "}
+                                This field is required.
+                            </span>
+                        )}
+                    </InputGroup>
                 )}
                 {inputs?.find((i) => i === "password") && (
-                    <>
-                        <InputGroup>
-                            <h4>Password</h4>
-                            <Input
-                                gotError={errors.password}
-                                type='password'
-                                {...register("password", {
-                                    required: true,
-                                })}
-                            />
-                            {errors.password?.type === "required" && (
-                                <span className='error'>
-                                    {" "}
-                                    This field is required.
-                                </span>
-                            )}
-                        </InputGroup>
-                    </>
+                    <InputGroup>
+                        <h4>Password</h4>
+                        <Input
+                            gotError={errors.password}
+                            type='password'
+                            {...register("password", {
+                                required: true,
+                                minLength: "6",
+                            })}
+                        />
+                        {errors.password?.type === "required" && (
+                            <span className='error'>
+                                {" "}
+                                This field is required.
+                            </span>
+                        )}
+                        {errors.password?.type === "minLength" && (
+                            <span className='error'>
+                                {" "}
+                                Password should be 6 characters at least.
+                            </span>
+                        )}
+                    </InputGroup>
                 )}
                 {inputs?.find((i) => i === "name") && (
                     <>
@@ -142,12 +148,12 @@ export default function CustomForm({ label, state, onSubmit, inputs }) {
                         </InputGroup>
                     </>
                 )}
-                <InputGroup>
+                <SubmitState>
                     {state.error && (
                         <h4 style={{ color: "red" }}>{state.error}</h4>
                     )}
                     {state.success && <h4 style={{ color: "green" }}>Done!</h4>}
-                </InputGroup>
+                </SubmitState>
                 <SubmitButton type='submit'>
                     {state.loading ? "Loading..." : label}
                 </SubmitButton>

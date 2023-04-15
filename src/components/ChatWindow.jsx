@@ -49,16 +49,17 @@ const Status = styled.div`
 `;
 
 export default function ChatWindow({ membersCon, setMembersCon }) {
-    const { room } = useContext(RoomContext);
-    const { users } = useContext(UsersContext);
+    const { roomData } = useContext(RoomContext);
+    const users = useContext(UsersContext);
+
     return (
-        room && (
+        roomData.name && (
             <>
                 <Header>
-                    <H2>{room?.name}</H2>
+                    <H2>{roomData?.name}</H2>
                     {(() => {
                         for (let i in users) {
-                            if (users[i].id === room.creatorId) {
+                            if (users[i].id === roomData.owner) {
                                 return (
                                     <Owner>
                                         <UserImg src={users[i].img}></UserImg>

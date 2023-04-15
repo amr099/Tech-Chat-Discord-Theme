@@ -31,8 +31,17 @@ const I = styled.i`
 
 export default function Header() {
     const { userData } = useContext(AuthContext);
-    const [notifications, showNotifications] = useState(false);
-    const [bell, setBell] = useState(false);
+    const [notifications, setNotifications] = useState({
+        icon: false,
+        window: false,
+    });
+
+    const toggleNotifications = () => {
+        setNotifications({
+            icon: !notifications.icon,
+            window: !notifications.window,
+        });
+    };
 
     return (
         <HeaderContainer>
@@ -40,14 +49,15 @@ export default function Header() {
             <Flex>
                 {userData && (
                     <I
-                        className={bell ? "bi bi-bell-fill" : "bi bi-bell"}
-                        onClick={() => {
-                            showNotifications(!notifications);
-                            setBell(!bell);
-                        }}
+                        className={
+                            notifications.icon
+                                ? "bi bi-bell-fill"
+                                : "bi bi-bell"
+                        }
+                        onClick={toggleNotifications}
                     ></I>
                 )}
-                {notifications && <Notifications />}
+                {notifications.window && <Notifications />}
                 <User />
             </Flex>
         </HeaderContainer>

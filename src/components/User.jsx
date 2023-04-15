@@ -72,7 +72,7 @@ const reducer = (state, action) => {
 
 export default function User() {
     const { userData } = useContext(AuthContext);
-    const [logOut, setLogOut] = useState(false);
+    const [logOutBtn, setLogOutBtn] = useState(false);
     const [modal, setModal] = useState(false);
     const [form, setForm] = useState("login");
     const [state, dispatch] = useReducer(reducer, {
@@ -81,26 +81,41 @@ export default function User() {
         success: false,
     });
 
+    const setFormState = (type, payload) => {
+        dispatch({ type: type, payload: payload });
+    };
+
+    const showModal = () => {
+        setModal(true);
+    };
+    const hideModal = () => {
+        setModal(false);
+    };
+
+    const toggleLogOutButton = () => {
+        setLogOutBtn(!logOutBtn);
+    };
+
     return (
         <>
-            <LogOut setLogOut={setLogOut} logOut={logOut} />
+            <LogOut setLogOutBtn={setLogOutBtn} logOutBtn={logOutBtn} />
             {userData ? (
-                <Img src={userData.img} onClick={() => setLogOut(!logOut)} />
+                <Img src={userData.img} onClick={toggleLogOutButton} />
             ) : (
                 <>
-                    <LoginButton onClick={() => setModal(true)}>
+                    <LoginButton onClick={showModal}>
                         <i className='bi bi-person-circle'></i> Sign In
                     </LoginButton>
                     <Modal
                         isOpen={modal}
-                        onRequestClose={() => setModal(false)}
+                        onRequestClose={hideModal}
                         style={customStyles}
                     >
                         {form === "login" ? (
                             <>
                                 <LoginForm
-                                    setModal={setModal}
-                                    dispatch={dispatch}
+                                    hideModal={hideModal}
+                                    setFormState={setFormState}
                                     state={state}
                                 />
                                 <p>
@@ -113,8 +128,8 @@ export default function User() {
                         ) : (
                             <>
                                 <RegisterForm
-                                    setModal={setModal}
-                                    dispatch={dispatch}
+                                    hideModal={hideModal}
+                                    setFormState={setFormState}
                                     state={state}
                                 />
                                 <p>

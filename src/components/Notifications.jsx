@@ -1,5 +1,5 @@
 import { firestoreDb } from "../../firebase-config";
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext, useEffect, useMemo } from "react";
 import { AuthContext } from "../context/AuthContext";
 import styled from "styled-components";
 import {
@@ -68,10 +68,19 @@ const Remove = styled.i`
     }
 `;
 
+const Span = styled.span`
+    font-size: 0.7rem;
+    align-self: end;
+    text-overflow: ellipsis;
+    color: #aaa;
+    float: right;
+    margin: 5px 0;
+`;
+
 export default function Notifications() {
-    const [notifications, setNotifications] = useState();
+    const [notifications, setNotifications] = useState([]);
     const { userData } = useContext(AuthContext);
-    const { setContent, setShow, setType } = useContext(SnackContext);
+    const { showSnack } = useContext(SnackContext);
 
     useEffect(() => {
         onSnapshot(doc(firestoreDb, "Users", userData.id), (doc) => {
@@ -97,6 +106,7 @@ export default function Notifications() {
                     }),
                 });
             } catch (e) {
+                showSnack(`Error!`, "error");
                 console.log(e);
                 console.log("Error adding new room and notififcation to user.");
             }
@@ -107,7 +117,10 @@ export default function Notifications() {
                 updateDoc(roomDoc, {
                     members: arrayUnion(note.userID),
                 });
-            } catch (e) {}
+            } catch (e) {
+                console.log(e.message);
+                showSnack(`Error!`, "error");
+            }
 
             // Delete note after acceptance.
             try {
@@ -116,16 +129,18 @@ export default function Notifications() {
                     notifications: arrayRemove(note),
                 });
             } catch {
+                showSnack(`Error!`, "error");
                 console.log(e);
                 console.log("error deleting note after acceptance.");
             }
-            setContent(
-                `You have accepted new member to room: ${note.roomName}!`
+
+            showSnack(
+                `You have accepted new member to room: ${note.roomName}!`,
+                "success"
             );
-            setShow(true);
-            setType("success");
         } catch (e) {
             console.log(e);
+            showSnack(`Error!`, "error");
         }
     };
 
@@ -143,11 +158,10 @@ export default function Notifications() {
                     time: new Date().toLocaleTimeString(),
                 }),
             });
-            setContent(`Request has been deleted successfully!`);
-            setShow(true);
-            setType("success");
+            showSnack(`Request has been deleted successfully!`, "success");
         } catch (e) {
             console.log(e);
+            showSnack(`Error!`, "error");
         }
     };
 
@@ -159,7 +173,7 @@ export default function Notifications() {
                     <Flex align={"center"}>
                         {note.userImg && <Img src={note.userImg}></Img>}
                         <Note>
-                            {note.note} <span>{note.time} </span>
+                            {note.note} <Span>{note.time} </Span>
                         </Note>
                     </Flex>
                     <Flex align={"center"}>

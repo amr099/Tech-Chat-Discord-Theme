@@ -7,17 +7,15 @@ import { set, ref as realref } from "firebase/database";
 import { useCollectionData } from "react-firebase-hooks/firestore";
 import { collection } from "firebase/firestore";
 
-export default function RegisterForm({ state, dispatch }) {
+export default function RegisterForm({ state, setFormState }) {
     const usersCol = collection(firestoreDb, "Users");
     const [users, uloading, uerror, snapshot] = useCollectionData(usersCol);
 
     const onSubmit = async (data) => {
-        dispatch({ type: "LOADING" });
+        setFormState("LOADING");
         if (users?.find((e) => e.name === data.name)) {
-            dispatch({
-                type: "ERROR",
-                payloading: "Username is already exists.",
-            });
+            setFormState("ERROR", "Username is already exists.");
+
             return;
         }
         try {
@@ -63,23 +61,22 @@ export default function RegisterForm({ state, dispatch }) {
                 (error) => {
                     switch (error.code) {
                         case "storage/unauthorized":
-                            dispatch({
-                                type: "ERROR",
-                                payloading:
-                                    "Error uploading Image (unauthorized)",
-                            });
+                            setFormState(
+                                "ERROR",
+                                "Error uploading Image (unauthorized)"
+                            );
                             break;
                         case "storage/canceled":
-                            dispatch({
-                                type: "ERROR",
-                                payloading: "Error uploading Image (canceled)",
-                            });
+                            setFormState(
+                                "ERROR",
+                                "Error uploading Image (canceled)"
+                            );
                             break;
                         case "storage/unknown":
-                            dispatch({
-                                type: "ERROR",
-                                payloading: "Error uploading Image (unknown)",
-                            });
+                            setFormState(
+                                "ERROR",
+                                "Error uploading Image (unknown)"
+                            );
                             break;
                     }
                 },
@@ -101,35 +98,26 @@ export default function RegisterForm({ state, dispatch }) {
                     }
                 }
             );
-
-            dispatch({
-                type: "SUCCESS",
-            });
+            setFormState("SUCCESS");
 
             // ===============================================================================
         } catch (e) {
             console.log(e.message);
             if (e.message === "Firebase: Error (auth/email-already-in-use).") {
-                dispatch({
-                    type: "ERROR",
-                    payloading: "Email is already exists.",
-                });
+                setFormState("ERROR", "Email is already exists.");
             }
 
             if (e.message === "Firebase: Error (auth/invalid-email).") {
-                dispatch({
-                    type: "ERROR",
-                    payloading: "Email is Invalid.",
-                });
+                setFormState("ERROR", "Email is Invalid.");
             }
             if (
                 e.message ===
                 "Firebase: Password should be at least 6 characters (auth/weak-password)."
             ) {
-                dispatch({
-                    type: "ERROR",
-                    payloading: "Password should be at least 6 characters.",
-                });
+                setFormState(
+                    "ERROR",
+                    "Password should be at least 6 characters."
+                );
             }
         }
     };

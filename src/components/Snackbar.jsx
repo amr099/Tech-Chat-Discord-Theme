@@ -1,5 +1,5 @@
 import { SnackContext } from "context/SnackContext";
-import React, { useContext, useState } from "react";
+import React, { useContext } from "react";
 import styled from "styled-components";
 
 const Container = styled.div`
@@ -30,16 +30,12 @@ const I = styled.i`
 `;
 
 export default function Snackbar() {
-    const { setShow, content, type } = useContext(SnackContext);
+    const { snackData, hideSnack } = useContext(SnackContext);
+
     return (
-        <Container type={type}>
-            <p>{content}</p>
-            <I
-                className='bi bi-x'
-                onClick={() => {
-                    setShow(false);
-                }}
-            ></I>
+        <Container type={snackData?.snackType}>
+            <p>{snackData?.content}</p>
+            <I className='bi bi-x' onClick={hideSnack}></I>
         </Container>
     );
 }

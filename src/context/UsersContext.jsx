@@ -11,8 +11,6 @@ export default function UsersContextProvider({ children }) {
     );
 
     return (
-        <UsersContext.Provider value={{ users }}>
-            {children}
-        </UsersContext.Provider>
+        <UsersContext.Provider value={users}>{children}</UsersContext.Provider>
     );
 }

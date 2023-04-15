@@ -4,10 +4,8 @@ export const GlobalStyle = createGlobalStyle`
 
     * {
         font-family: sans-serif;
-    }
-
-    body{
         margin:0;
+        padding:0;
     }
 
     .error{

@@ -1,10 +1,10 @@
 import React, { useContext } from "react";
-import { ref, set } from "firebase/database";
 import { db, firestoreDb } from "../../firebase-config";
-import { AuthContext } from "../context/AuthContext";
-import { useForm } from "react-hook-form";
 import styled from "styled-components";
+import { useForm } from "react-hook-form";
+import { ref, set } from "firebase/database";
 import { setDoc, doc, updateDoc, arrayUnion } from "firebase/firestore";
+import { AuthContext } from "../context/AuthContext";
 import { SnackContext } from "context/SnackContext";
 
 const Container = styled.div`
@@ -25,15 +25,19 @@ const Input = styled.input`
 const I = styled.i`
     font-size: 2rem;
     margin: 1rem;
+
+    &:hover {
+        color: #aaa;
+    }
 `;
 
 export default function CreateRoom({ rooms }) {
     const { register, handleSubmit } = useForm();
     const { userData } = useContext(AuthContext);
-    const { setContent, setShow, setType } = useContext(SnackContext);
+    const { showSnack } = useContext(SnackContext);
 
     function onSubmit(data) {
-        if (userData) {
+        if (userData.id) {
             if (!rooms?.find((r) => r.name === data.roomName)) {
                 try {
                     try {
@@ -47,6 +51,7 @@ export default function CreateRoom({ rooms }) {
                         console.log(
                             "error setting new room into rooms collection"
                         );
+                        showSnack("Error!.", "error");
                     }
 
                     try {
@@ -64,6 +69,7 @@ export default function CreateRoom({ rooms }) {
                     } catch (e) {
                         console.log(e);
                         console.log("error setting new room into User's rooms");
+                        showSnack("Error!.", "error");
                     }
 
                     try {
@@ -75,35 +81,34 @@ export default function CreateRoom({ rooms }) {
                                 time: new Date().toLocaleString(),
                             },
                         });
-                        setContent(
-                            `Room: ${data.roomName} has been created successfully.`
+                        showSnack(
+                            `Room: ${data.roomName} has been created successfully.`,
+                            "success"
                         );
-                        setShow(true);
-                        setType("success");
                     } catch (e) {
                         console.log(e);
                         console.log(
                             "error setting new room into messages collection"
                         );
+                        showSnack("Error!.", "error");
                     }
                 } catch (e) {
                     console.log(e);
+                    console.log("error creating new room");
+                    showSnack("Error!.", "error");
                 }
             } else {
-                setContent("Room name already exists.");
-                setShow(true);
-                setType("error");
+                showSnack("Room name already exists.", "error");
             }
         } else {
-            setContent("You have to sign in first.");
-            setShow(true);
-            setType("error");
+            showSnack("You have to sign in first.", "error");
         }
     }
     return (
         <form onSubmit={handleSubmit(onSubmit)}>
             <Container>
                 <Input
+                    autoComplete='off'
                     {...register("roomName")}
                     placeholder='Create new room ...'
                 />

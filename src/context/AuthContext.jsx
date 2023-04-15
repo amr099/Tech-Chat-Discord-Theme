@@ -24,9 +24,6 @@ export default function AuthContextProvider({ children }) {
                 await updateDoc(doc(firestoreDb, "Users", id.current), {
                     status: "offline",
                 });
-                await updateDoc(doc(firestoreDb, "Users", id.current), {
-                    lastActivity: new Date().toLocaleString(),
-                });
                 setUserData(false);
             }
         });

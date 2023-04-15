@@ -1,53 +1,67 @@
-import React, { createContext, useState, useEffect } from "react";
+import React, { createContext, useState, useEffect, useReducer } from "react";
 import { onValue, ref } from "firebase/database";
 import { db, firestoreDb } from "../../firebase-config";
 import { onSnapshot, doc } from "firebase/firestore";
 
 export const RoomContext = createContext();
 
+const reducer = (state, action) => {
+    switch (action.type) {
+        case "name":
+            return { ...state, name: action.payload };
+        case "owner":
+            return { ...state, owner: action.payload };
+        case "messages":
+            return { ...state, messages: action.payload };
+        case "members":
+            return { ...state, members: action.payload };
+    }
+};
+
 export default function RoomContextProvider({ children }) {
-    const [room, setRoom] = useState();
-    const [owner, setOwner] = useState();
-    const [messages, setMessages] = useState();
-    const [members, setMembers] = useState([]);
+    const [roomData, dispatch] = useReducer(reducer, {
+        name: "",
+        owner: "",
+        messages: [],
+        members: [],
+    });
+
+    const selectRoom = (name) => {
+        dispatch({ type: "name", payload: name });
+    };
 
     const getMembers = () => {
-        if (room) {
-            onSnapshot(doc(firestoreDb, "Rooms", room.name), (doc) => {
-                setMembers(doc.data().members);
-                setOwner(doc.data().creatorId);
-            });
-        }
+        onSnapshot(doc(firestoreDb, "Rooms", roomData.name), (doc) => {
+            dispatch({ type: "members", payload: doc.data().members });
+            dispatch({ type: "owner", payload: doc.data().creatorId });
+        });
     };
     const getMessages = () => {
-        if (room) {
-            const messages = ref(db, `messages/${room.name}/`);
-            onValue(messages, (snapshot) => {
-                const data = snapshot.val();
-                let messages = [];
-                for (let i in data) {
-                    messages.push(data[i]);
-                }
-                setMessages(
-                    messages.sort((a, b) => {
-                        const date1 = new Date(a.time);
-                        const date2 = new Date(b.time);
-                        return date1 - date2;
-                    })
-                );
+        const messages = ref(db, `messages/${roomData.name}/`);
+        onValue(messages, (snapshot) => {
+            const data = snapshot.val();
+            let messages = [];
+            for (let i in data) {
+                messages.push(data[i]);
+            }
+            const sortedMessages = messages.sort((a, b) => {
+                const date1 = new Date(a.time);
+                const date2 = new Date(b.time);
+                return date1 - date2;
             });
-        }
+            dispatch({ type: "messages", payload: sortedMessages });
+        });
     };
 
     useEffect(() => {
-        getMembers();
-        getMessages();
-    }, [room]);
+        if (roomData.name) {
+            getMembers();
+            getMessages();
+        }
+    }, [roomData.name]);
 
     return (
-        <RoomContext.Provider
-            value={{ room, setRoom, members, messages, owner }}
-        >
+        <RoomContext.Provider value={{ selectRoom, roomData }}>
             {children}
         </RoomContext.Provider>
     );

@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useRef } from "react";
 import { RoomContext } from "../context/RoomContext";
 import styled from "styled-components";
 import { AuthContext } from "../context/AuthContext";
@@ -69,58 +69,62 @@ const UserImg = styled.img`
 `;
 
 export default function Messages() {
-    const { owner, messages } = useContext(RoomContext);
+    const { roomData } = useContext(RoomContext);
     const { userData } = useContext(AuthContext);
-    const { users } = useContext(UsersContext);
+    const users = useContext(UsersContext);
+    const window = useRef();
+
+    useEffect(() => {
+        window.current.scrollTop = window.current.scrollHeight;
+    }, [roomData.messages]);
 
     return (
-        <Container>
-            {messages &&
-                messages?.map((msg) => {
-                    if (msg.uid === userData?.id) {
-                        return (
-                            <MyMessageContainer key={msg.time}>
-                                <MyMessage>
-                                    <Msg>{msg.msg}</Msg>
-                                    <Time>{msg.time}</Time>
-                                </MyMessage>
-                            </MyMessageContainer>
-                        );
-                    } else {
-                        return (
-                            <MessageContainer key={msg.time}>
-                                <UserImg
-                                    src={(() => {
+        <Container ref={window}>
+            {roomData?.messages?.map((msg) => {
+                if (msg.uid === userData?.id) {
+                    return (
+                        <MyMessageContainer key={msg.time}>
+                            <MyMessage>
+                                <Msg>{msg.msg}</Msg>
+                                <Time>{msg.time}</Time>
+                            </MyMessage>
+                        </MyMessageContainer>
+                    );
+                } else {
+                    return (
+                        <MessageContainer key={msg.time}>
+                            <UserImg
+                                src={(() => {
+                                    for (var i in users) {
+                                        if (users[i].id === msg.uid) {
+                                            return users[i].img;
+                                        }
+                                    }
+                                })()}
+                            ></UserImg>
+
+                            <div>
+                                <Name>
+                                    {(() => {
                                         for (var i in users) {
                                             if (users[i].id === msg.uid) {
-                                                return users[i].img;
+                                                return users[i].name;
                                             }
                                         }
                                     })()}
-                                ></UserImg>
-
-                                <div>
-                                    <Name>
-                                        {(() => {
-                                            for (var i in users) {
-                                                if (users[i].id === msg.uid) {
-                                                    return users[i].name;
-                                                }
-                                            }
-                                        })()}
-                                        {msg.uid === owner && (
-                                            <I className='bi bi-star-fill'></I>
-                                        )}
-                                    </Name>
-                                    <Message>
-                                        <Msg>{msg.msg}</Msg>
-                                        <Time>{msg.time}</Time>
-                                    </Message>
-                                </div>
-                            </MessageContainer>
-                        );
-                    }
-                })}
+                                    {msg.uid === roomData?.owner && (
+                                        <I className='bi bi-star-fill'></I>
+                                    )}
+                                </Name>
+                                <Message>
+                                    <Msg>{msg.msg}</Msg>
+                                    <Time>{msg.time}</Time>
+                                </Message>
+                            </div>
+                        </MessageContainer>
+                    );
+                }
+            })}
         </Container>
     );
 }

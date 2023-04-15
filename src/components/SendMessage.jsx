@@ -48,16 +48,16 @@ const I = styled.i`
 `;
 
 export default function SendMessage() {
-    const { room, members } = useContext(RoomContext);
+    const { roomData } = useContext(RoomContext);
     const { userData } = useContext(AuthContext);
+    const { showSnack } = useContext(SnackContext);
     const { register, handleSubmit } = useForm();
-    const { setContent, setType, setShow } = useContext(SnackContext);
 
     function onSubmit(data) {
         if (userData) {
             if (
-                members?.find((m) => m == userData.id) ||
-                room.creatorId == userData.id
+                roomData.members?.find((m) => m == userData.id) ||
+                roomData.owner == userData.id
             ) {
                 try {
                     const msg = {
@@ -68,27 +68,24 @@ export default function SendMessage() {
 
                     const newMsgKey = push(child(ref(db), "messages")).key;
                     const updates = {};
-                    updates[`messages/${room.name}/${newMsgKey}/`] = msg;
+                    updates[`messages/${roomData.name}/${newMsgKey}/`] = msg;
                     update(ref(db), updates);
-                    updateDoc(doc(firestoreDb, "Rooms", room.name), {
+                    updateDoc(doc(firestoreDb, "Rooms", roomData.name), {
                         lastMsg: {
                             msg: data.message,
-                            time: new Date().toLocaleTimeString(),
+                            time: new Date().toLocaleString(),
                         },
                     });
                 } catch (e) {
+                    showSnack("Error!", "error");
                     console.log(e);
                     console.log("error sending message.");
                 }
             } else {
-                setContent("You have to login first!");
-                setShow(true);
-                setType("error");
+                showSnack("You have to login first!", "error");
             }
         } else {
-            setContent("You have to login first!");
-            setShow(true);
-            setType("error");
+            showSnack("You have to login first!", "error");
         }
     }
     return (
@@ -97,6 +94,7 @@ export default function SendMessage() {
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <FormContainer>
                         <Input
+                            autoComplete='off'
                             {...register("message")}
                             placeholder='Type a message ...'
                         />

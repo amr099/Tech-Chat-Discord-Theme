@@ -2,22 +2,22 @@ import CustomForm from "./CustomForm";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../../firebase-config";
 
-export default function LoginForm({ setModal, dispatch, state }) {
+export default function LoginForm({ hideModal, setFormState, state }) {
     const onSubmit = async (data) => {
-        dispatch({ type: "LOADING" });
+        setFormState("LOADING");
         try {
             await signInWithEmailAndPassword(auth, data.email, data.password);
-            setModal(false);
-            dispatch({ type: "SUCCESS" });
+            setFormState("SUCCESS");
+            hideModal();
         } catch (e) {
             if (
                 e.message === "Firebase: Error (auth/invalid-email)." ||
                 "Firebase: Error (auth/user-not-found)."
             ) {
-                dispatch({ type: "ERROR", payload: "Invalid Email." });
+                setFormState("ERROR", "Invalid Email.");
                 console.log(e);
             } else if (e.message === "Firebase: Error (auth/wrong-password).") {
-                dispatch({ type: "ERROR", payload: "Wrong Password." });
+                setFormState("ERROR", "Wrong Password.");
                 console.log(e);
             }
         }

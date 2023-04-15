@@ -40,9 +40,9 @@ const Status = styled.div`
 `;
 
 export default function Members() {
-    const { members } = useContext(RoomContext);
+    const { roomData } = useContext(RoomContext);
     const { userData } = useContext(AuthContext);
-    const { users } = useContext(UsersContext);
+    const users = useContext(UsersContext);
 
     return (
         <Container>
@@ -50,7 +50,7 @@ export default function Members() {
                 <h2>Members</h2>
             </Flex>
             {users?.map((user) => {
-                if (members?.find((m) => m === user?.id)) {
+                if (roomData?.members?.find((m) => m === user?.id)) {
                     return (
                         <Flex justify={"space-between"} key={user.email}>
                             <Flex>

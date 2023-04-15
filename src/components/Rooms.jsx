@@ -51,6 +51,7 @@ const Span = styled.span`
     font-size: 0.7rem;
     align-self: end;
     text-overflow: ellipsis;
+    color: #aaa;
 `;
 
 const Button = styled.button`
@@ -69,12 +70,11 @@ const Button = styled.button`
 `;
 
 export default function Rooms() {
-    const [joinedRooms, setJoinedRooms] = useState([]);
-    const { setRoom } = useContext(RoomContext);
+    const { selectRoom } = useContext(RoomContext);
     const { userData } = useContext(AuthContext);
-    const { users } = useContext(UsersContext);
-    const { setShow, setContent, setType } = useContext(SnackContext);
-
+    const users = useContext(UsersContext);
+    const { showSnack } = useContext(SnackContext);
+    const [joinedRooms, setJoinedRooms] = useState([]);
     const [rooms, loading, error, onSnap] = useCollectionData(
         collection(firestoreDb, "Rooms")
     );
@@ -92,31 +92,25 @@ export default function Rooms() {
     }, [userData]);
 
     const sendJoinRequest = (creatorId, roomName) => {
-        if (userData) {
-            try {
-                const creatorDoc = doc(firestoreDb, "Users", creatorId);
-                updateDoc(creatorDoc, {
-                    notifications: arrayUnion({
-                        userID: userData.id,
-                        userName: userData.name,
-                        userImg: userData.img,
-                        roomName: roomName,
-                        note: `${userData.name} wanna join your room: ${roomName}`,
-                        time: new Date().toLocaleTimeString(),
-                    }),
-                });
-                setContent(
-                    `Your request to join room: ${roomName} has been sent successfully!`
-                );
-                setShow(true);
-                setType("success");
-            } catch (e) {
-                console.log(e);
-            }
-        } else {
-            setContent("You have to login first!");
-            setShow(true);
-            setType("error");
+        try {
+            const creatorDoc = doc(firestoreDb, "Users", creatorId);
+            updateDoc(creatorDoc, {
+                notifications: arrayUnion({
+                    userID: userData.id,
+                    userName: userData.name,
+                    userImg: userData.img,
+                    roomName: roomName,
+                    note: `${userData.name} wanna join your room: ${roomName}`,
+                    time: new Date().toLocaleTimeString(),
+                }),
+            });
+            showSnack(
+                `Your request to join room: ${roomName} has been sent successfully!`,
+                "success"
+            );
+        } catch (e) {
+            console.log(e);
+            showSnack("You have to login first!", "error");
         }
     };
 
@@ -132,12 +126,26 @@ export default function Rooms() {
             });
         } catch (e) {
             console.log(e);
+            showSnack("You have to login first!", "error");
         }
     };
 
     const join = (creatorId, room) => {
-        sendJoinRequest(creatorId, room);
-        roomToPending(room);
+        if (userData) {
+            try {
+                sendJoinRequest(creatorId, room);
+                roomToPending(room);
+                showSnack(
+                    `Your request to join room: ${roomName} has been sent successfully!`,
+                    "success"
+                );
+            } catch (e) {
+                console.log(e);
+                showSnack("Error!", "error");
+            }
+        } else {
+            showSnack("You have to login first!", "error");
+        }
     };
 
     return (
@@ -148,7 +156,7 @@ export default function Rooms() {
                     return (
                         <RoomContainer
                             key={room.name}
-                            onClick={() => setRoom(room)}
+                            onClick={() => selectRoom(room.name)}
                         >
                             <Flex>
                                 <Flex>

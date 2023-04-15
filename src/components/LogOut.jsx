@@ -21,14 +21,14 @@ const Container = styled.div`
         color: #979c9e;
     }
 `;
-export function LogOut({ logOut, setLogOut }) {
+export function LogOut({ logOutBtn, setLogOutBtn }) {
     const Out = async () => {
         await signOut(auth);
-        setLogOut(false);
+        setLogOutBtn(false);
     };
 
     return (
-        <Container opacity={logOut.toString()}>
+        <Container opacity={logOutBtn.toString()}>
             <button onClick={Out}>SignOut</button>
         </Container>
     );

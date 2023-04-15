@@ -8,7 +8,8 @@ import Modal from "react-modal";
 import Members from "components/Members";
 import Snackbar from "components/Snackbar";
 import { SnackContext } from "context/SnackContext";
-import Loading from "./components/Loading";
+import UsersContextProvider from "./context/UsersContext";
+import RoomContextProvider from "./context/RoomContext";
 
 const Grid = styled.div`
     display: grid;
@@ -22,27 +23,31 @@ Modal.setAppElement("#root");
 
 function App() {
     const [membersCon, setMembersCon] = useState(false);
-    const { show } = useContext(SnackContext);
+    const { snackData } = useContext(SnackContext);
     return (
         <>
             <GlobalStyle />
             <Header />
             <Grid>
-                <GridItem col={"1/4"}>
-                    <Rooms />
-                </GridItem>
-                <GridItem col={membersCon ? "4/11" : "4/13"}>
-                    <ChatWindow
-                        membersCon={membersCon}
-                        setMembersCon={setMembersCon}
-                    />
-                </GridItem>
-                {membersCon && (
-                    <GridItem col={"11/13"}>
-                        <Members />
-                    </GridItem>
-                )}
-                {show && <Snackbar />}
+                <UsersContextProvider>
+                    <RoomContextProvider>
+                        <GridItem col={"1/4"}>
+                            <Rooms />
+                        </GridItem>
+                        <GridItem col={membersCon ? "4/11" : "4/13"}>
+                            <ChatWindow
+                                membersCon={membersCon}
+                                setMembersCon={setMembersCon}
+                            />
+                        </GridItem>
+                        {membersCon && (
+                            <GridItem col={"11/13"}>
+                                <Members />
+                            </GridItem>
+                        )}
+                    </RoomContextProvider>
+                </UsersContextProvider>
+                {snackData?.show && <Snackbar />}
             </Grid>
         </>
     );

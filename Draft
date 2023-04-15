@@ -5,6 +5,8 @@ Features:
     - show if thier are new messages or notes.(Hold)
 
 Todo:
+    - optimize performance.
     - styling:
-          - loading before viewing.
+          - style time span
+          - loading before viewing(Page, Rooms, Messages).
           - font.
