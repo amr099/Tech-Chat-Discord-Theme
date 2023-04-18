@@ -58,9 +58,13 @@ export default function Header() {
                         onClick={toggleNotifications}
                     ></I>
                 )}
-                <Suspense fallback={<Loading />}>
-                    {notifications.window && <Notifications />}
-                </Suspense>
+
+                {notifications.window && (
+                    <Suspense fallback={<Loading />}>
+                        <Notifications />
+                    </Suspense>
+                )}
+
                 <Suspense>
                     <User />
                 </Suspense>
