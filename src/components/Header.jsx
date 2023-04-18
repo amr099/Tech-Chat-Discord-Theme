@@ -1,8 +1,9 @@
-import React, { useContext, useState } from "react";
+import React, { Suspense, lazy, useContext, useState } from "react";
 import styled from "styled-components";
 import { AuthContext } from "../context/AuthContext";
-import Notifications from "./Notifications";
-import User from "components/User";
+import Loading from "./Loading";
+const User = lazy(() => import("components/User"));
+const Notifications = lazy(() => import("components/Notifications"));
 
 const HeaderContainer = styled.div`
     display: flex;
@@ -57,8 +58,12 @@ export default function Header() {
                         onClick={toggleNotifications}
                     ></I>
                 )}
-                {notifications.window && <Notifications />}
-                <User />
+                <Suspense fallback={<Loading />}>
+                    {notifications.window && <Notifications />}
+                </Suspense>
+                <Suspense>
+                    <User />
+                </Suspense>
             </Flex>
         </HeaderContainer>
     );

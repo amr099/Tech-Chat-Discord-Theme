@@ -1,5 +1,5 @@
 import { firestoreDb } from "../../firebase-config";
-import React, { useState, useContext, useEffect, useMemo } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { AuthContext } from "../context/AuthContext";
 import styled from "styled-components";
 import {
@@ -164,8 +164,8 @@ export default function Notifications() {
                         time: new Date().toLocaleString(),
                     }),
                 });
+                showSnack(`Request has been deleted successfully!`, "success");
             }
-            showSnack(`Request has been deleted successfully!`, "success");
         } catch (e) {
             console.log(e);
             showSnack(`Error!`, "error");

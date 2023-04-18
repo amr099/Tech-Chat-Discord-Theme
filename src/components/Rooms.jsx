@@ -1,8 +1,7 @@
 import React, { useEffect, useState, useContext } from "react";
-import { db, firestoreDb } from "../../firebase-config";
+import { firestoreDb } from "../../firebase-config";
 import { RoomContext } from "../context/RoomContext";
 import { AuthContext } from "../context/AuthContext";
-import { ref, child, push, update, onValue } from "firebase/database";
 import styled from "styled-components";
 import CreateRoom from "components/CreateRoom";
 import { useCollectionData } from "react-firebase-hooks/firestore";
@@ -15,6 +14,7 @@ import {
 } from "firebase/firestore";
 import { UsersContext } from "context/UsersContext";
 import { SnackContext } from "context/SnackContext";
+import Loading from "./Loading";
 
 const Container = styled.div`
     height: 93vh;

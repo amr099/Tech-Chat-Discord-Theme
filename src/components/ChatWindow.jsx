@@ -1,9 +1,10 @@
-import React, { useContext } from "react";
-import Messages from "components/Messages";
+import React, { lazy, useContext, Suspense } from "react";
 import SendMessage from "components/SendMessage";
 import styled from "styled-components";
 import { RoomContext } from "context/RoomContext";
 import { UsersContext } from "context/UsersContext";
+import Loading from "./Loading";
+const Messages = lazy(() => import("components/Messages"));
 
 const Header = styled.div`
     height: 9vh;
@@ -81,7 +82,9 @@ export default function ChatWindow({ membersCon, setMembersCon }) {
                         }}
                     ></I>
                 </Header>
-                <Messages />
+                <Suspense fallback={<Loading />}>
+                    <Messages />
+                </Suspense>
                 <SendMessage />
             </>
         )
