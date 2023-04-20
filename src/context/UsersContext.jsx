@@ -1,7 +1,7 @@
 import React, { createContext } from "react";
 import { collection } from "firebase/firestore";
 import { useCollectionData } from "react-firebase-hooks/firestore";
-import { firestoreDb } from "../../firebase-config";
+import { firestoreDb } from "src/firebase-config";
 
 export const UsersContext = createContext();
 

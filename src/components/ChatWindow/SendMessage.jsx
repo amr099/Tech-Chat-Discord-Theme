@@ -1,13 +1,13 @@
 import { ref, child, push, update } from "firebase/database";
-import React, { useContext } from "react";
-import { db, firestoreDb } from "../../firebase-config";
-import { AuthContext } from "../context/AuthContext";
-import { RoomContext } from "../context/RoomContext";
+import React, { useContext, useRef } from "react";
 import { useForm } from "react-hook-form";
 import styled from "styled-components";
-import Snackbar from "./Snackbar";
 import { updateDoc, doc } from "firebase/firestore";
-import { SnackContext } from "context/SnackContext";
+
+import { db, firestoreDb } from "src/firebase-config";
+import { AuthContext } from "src/context/AuthContext";
+import { RoomContext } from "src/context/RoomContext";
+import { SnackContext } from "src/context/SnackContext";
 
 const Container = styled.div`
     margin: 1rem;
@@ -104,7 +104,6 @@ export default function SendMessage() {
                     </FormContainer>
                 </form>
             </Container>
-            <Snackbar />
         </>
     );
 }

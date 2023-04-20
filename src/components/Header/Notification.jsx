@@ -1,34 +1,9 @@
-import { firestoreDb } from "../../firebase-config";
-import React, { useState, useContext, useEffect } from "react";
-import { AuthContext } from "../context/AuthContext";
+import React, { useContext } from "react";
 import styled from "styled-components";
-import {
-    arrayRemove,
-    arrayUnion,
-    doc,
-    onSnapshot,
-    updateDoc,
-} from "firebase/firestore";
-import { SnackContext } from "context/SnackContext";
-
-const Container = styled.div`
-    user-select: none;
-    position: absolute;
-    min-height: 50vh;
-    max-height: 70vh;
-    overflow: auto;
-    width: 30%;
-    top: 7vh;
-    right: 2vw;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    border-radius: 10px;
-    padding: 1rem;
-    background-color: #f0f2f5;
-    color: #000;
-    z-index: 1;
-`;
+import { arrayRemove, arrayUnion, doc, updateDoc } from "firebase/firestore";
+import { firestoreDb } from "src/firebase-config";
+import { SnackContext } from "src/context/SnackContext";
+import { AuthContext } from "src/context/AuthContext";
 
 const Flex = styled.div`
     display: flex;
@@ -60,7 +35,7 @@ const Accept = styled.i`
         color: #0f0;
     }
 `;
-const Remove = styled.i`
+const Delete = styled.i`
     font-size: 1.5rem;
     &:hover {
         cursor: pointer;
@@ -77,16 +52,9 @@ const Span = styled.span`
     margin: 5px 0;
 `;
 
-export default function Notifications() {
-    const [notifications, setNotifications] = useState([]);
-    const { userData } = useContext(AuthContext);
+export default function Notification({ noteObj, note, userImg, time }) {
     const { showSnack } = useContext(SnackContext);
-
-    useEffect(() => {
-        onSnapshot(doc(firestoreDb, "Users", userData.id), (doc) => {
-            setNotifications(doc.data().notifications);
-        });
-    }, []);
+    const { userData } = useContext(AuthContext);
 
     const accept = (note) => {
         // Update User's rooms.
@@ -173,32 +141,27 @@ export default function Notifications() {
     };
 
     return (
-        <Container>
-            <h2>Notifications</h2>
-            {notifications?.map((note) => (
-                <Flex justfiy={"space-between"} align={"center"}>
-                    <Flex align={"center"}>
-                        {note.userImg && <Img src={note.userImg}></Img>}
-                        <Note>
-                            {note.note} <Span>{note.time} </Span>
-                        </Note>
-                    </Flex>
-                    <Flex align={"center"}>
-                        {note.userImg && (
-                            <>
-                                <Accept
-                                    className='bi bi-check-circle'
-                                    onClick={() => accept(note)}
-                                ></Accept>
-                            </>
-                        )}
-                        <Remove
-                            className='bi bi-x'
-                            onClick={() => onDelete(note)}
-                        ></Remove>
-                    </Flex>
-                </Flex>
-            ))}
-        </Container>
+        <Flex justfiy={"space-between"} align={"center"}>
+            <Flex key={time}>
+                {userImg && <Img src={userImg}></Img>}
+                <Note>
+                    {note} <Span>{time} </Span>
+                </Note>
+            </Flex>
+            <Flex align={"center"}>
+                {userImg && (
+                    <>
+                        <Accept
+                            className='bi bi-check-circle'
+                            onClick={() => accept(noteObj)}
+                        ></Accept>
+                    </>
+                )}
+                <Delete
+                    className='bi bi-x'
+                    onClick={() => onDelete(noteObj)}
+                ></Delete>
+            </Flex>
+        </Flex>
     );
 }

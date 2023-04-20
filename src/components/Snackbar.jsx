@@ -1,5 +1,5 @@
-import { SnackContext } from "context/SnackContext";
 import React, { useContext } from "react";
+import { SnackContext } from "src/context/SnackContext";
 import styled from "styled-components";
 
 const Container = styled.div`

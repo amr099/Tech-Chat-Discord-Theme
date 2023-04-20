@@ -2,7 +2,9 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import styled from "styled-components";
 
-const Form = styled.form`
+import Loading from "src/components/Loading";
+
+const FormContainer = styled.form`
     display: flex;
     flex-direction: column;
 `;
@@ -53,16 +55,26 @@ const SubmitButton = styled.button`
     }
 `;
 
-export default function CustomForm({ label, state, onSubmit, inputs }) {
+const Span = styled.span`
+    font-weight: bold;
+    color: #6b4eff;
+    &:hover {
+        cursor: pointer;
+    }
+`;
+
+export default function Form({ label, state, onSubmit, inputs, showForm }) {
     const {
         register,
         handleSubmit,
         formState: { errors },
     } = useForm();
 
+    console.log(label);
+
     return (
         <>
-            <Form onSubmit={handleSubmit(onSubmit)}>
+            <FormContainer onSubmit={handleSubmit(onSubmit)}>
                 {inputs?.find((i) => i === "email") && (
                     <InputGroup>
                         <h4>Email</h4>
@@ -154,10 +166,25 @@ export default function CustomForm({ label, state, onSubmit, inputs }) {
                     )}
                     {state.success && <h4 style={{ color: "green" }}>Done!</h4>}
                 </SubmitState>
-                <SubmitButton type='submit'>
-                    {state.loading ? "Loading..." : label}
-                </SubmitButton>
-            </Form>
+                {state.loading ? (
+                    <Loading />
+                ) : (
+                    <SubmitButton type='submit'>{label}</SubmitButton>
+                )}
+                {label === "Sign In" ? (
+                    <p>
+                        <span>Don't have an account. </span>{" "}
+                        <Span onClick={() => showForm("register")}>
+                            Create account
+                        </Span>
+                    </p>
+                ) : (
+                    <p>
+                        <span>Already have an account. </span>{" "}
+                        <Span onClick={() => showForm("login")}>Sign In</Span>
+                    </p>
+                )}
+            </FormContainer>
         </>
     );
 }

@@ -1,6 +1,7 @@
 import { signOut } from "firebase/auth";
-import { auth } from "../../firebase-config";
 import styled from "styled-components";
+
+import { auth } from "src/firebase-config";
 
 const Container = styled.div`
     position: absolute;

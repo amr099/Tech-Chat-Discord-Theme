@@ -1,14 +1,14 @@
-import CustomForm from "./CustomForm";
 import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../../firebase-config";
+import { auth } from "src/firebase-config";
 
-export default function LoginForm({ hideModal, setFormState, state }) {
+import Form from "src/components/Forms/Form";
+
+export default function LoginForm({ setFormState, state, showForm }) {
     const onSubmit = async (data) => {
         setFormState("LOADING");
         try {
             await signInWithEmailAndPassword(auth, data.email, data.password);
             setFormState("SUCCESS");
-            hideModal();
         } catch (e) {
             if (
                 e.message === "Firebase: Error (auth/invalid-email)." ||
@@ -24,11 +24,12 @@ export default function LoginForm({ hideModal, setFormState, state }) {
     };
 
     return (
-        <CustomForm
+        <Form
             onSubmit={onSubmit}
             label={"Sign In"}
             inputs={["email", "password"]}
             state={state}
+            showForm={showForm}
         />
     );
 }

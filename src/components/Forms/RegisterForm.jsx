@@ -1,5 +1,3 @@
-import CustomForm from "./CustomForm";
-import { auth, storage, firestoreDb, db } from "../../firebase-config";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { setDoc, doc } from "firebase/firestore";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
@@ -7,9 +5,13 @@ import { set, ref as realref } from "firebase/database";
 import { useCollectionData } from "react-firebase-hooks/firestore";
 import { collection } from "firebase/firestore";
 
-export default function RegisterForm({ state, setFormState }) {
-    const usersCol = collection(firestoreDb, "Users");
-    const [users, uloading, uerror, snapshot] = useCollectionData(usersCol);
+import { auth, storage, firestoreDb, db } from "src/firebase-config";
+import Form from "src/components/Forms/Form";
+import { useContext } from "react";
+import { UsersContext } from "src/context/UsersContext";
+
+export default function RegisterForm({ state, setFormState, showForm }) {
+    const users = useContext(UsersContext);
 
     const onSubmit = async (data) => {
         setFormState("LOADING");
@@ -122,11 +124,12 @@ export default function RegisterForm({ state, setFormState }) {
         }
     };
     return (
-        <CustomForm
+        <Form
             label={"Register"}
             onSubmit={onSubmit}
             inputs={["name", "email", "password", "image"]}
             state={state}
+            showForm={showForm}
         />
     );
 }

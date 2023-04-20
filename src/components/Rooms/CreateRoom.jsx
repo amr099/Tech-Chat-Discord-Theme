@@ -1,13 +1,14 @@
 import React, { useContext } from "react";
-import { db, firestoreDb } from "../../firebase-config";
 import styled from "styled-components";
-import { useForm } from "react-hook-form";
-import { ref, set } from "firebase/database";
 import { setDoc, doc, updateDoc, arrayUnion } from "firebase/firestore";
-import { AuthContext } from "../context/AuthContext";
-import { SnackContext } from "context/SnackContext";
+import { ref, set } from "firebase/database";
+import { useForm } from "react-hook-form";
 
-const Container = styled.div`
+import { db, firestoreDb } from "src/firebase-config";
+import { AuthContext } from "src/context/AuthContext";
+import { SnackContext } from "src/context/SnackContext";
+
+const FormContainer = styled.form`
     display: flex;
     border-bottom: 1px solid #909090;
 `;
@@ -105,18 +106,16 @@ export default function CreateRoom({ rooms }) {
         }
     }
     return (
-        <form onSubmit={handleSubmit(onSubmit)}>
-            <Container>
-                <Input
-                    autoComplete='off'
-                    {...register("roomName")}
-                    placeholder='Create new room ...'
-                />
-                <button type='submit'>
-                    <I className='bi bi-plus'></I>
-                </button>
-            </Container>
-        </form>
+        <FormContainer onSubmit={handleSubmit(onSubmit)}>
+            <Input
+                autoComplete='off'
+                {...register("roomName")}
+                placeholder='Create new room ...'
+            />
+            <button type='submit'>
+                <I className='bi bi-plus'></I>
+            </button>
+        </FormContainer>
     );
 }
 

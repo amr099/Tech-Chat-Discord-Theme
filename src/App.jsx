@@ -1,21 +1,17 @@
 import { useContext, useState, Suspense, lazy } from "react";
-// import Rooms from "components/Rooms";
-// import Header from "components/Header";
-// import ChatWindow from "components/ChatWindow";
-// import Members from "components/Members";
 import styled from "styled-components";
-import { GlobalStyle } from "components/GlobalStyles";
 import Modal from "react-modal";
-import { SnackContext } from "context/SnackContext";
-import UsersContextProvider from "./context/UsersContext";
-import RoomContextProvider from "./context/RoomContext";
-import Snackbar from "components/Snackbar";
-const Rooms = lazy(() => import("components/Rooms"));
-const Header = lazy(() => import("components/Header"));
-const ChatWindow = lazy(() => import("components/ChatWindow"));
-const Members = lazy(() => import("components/Members"));
 
-import Loading from "components/Loading";
+import { GlobalStyle } from "src/GlobalStyles";
+import { SnackContext } from "src/context/SnackContext";
+import UsersContextProvider from "src/context/UsersContext";
+import RoomContextProvider from "src/context/RoomContext";
+import Snackbar from "src/components/Snackbar";
+import Loading from "src/components/Loading";
+import Header from "src/components/Header/Header";
+const Rooms = lazy(() => import("src/components/Rooms/Rooms"));
+const ChatWindow = lazy(() => import("src/components/ChatWindow/ChatWindow"));
+const Members = lazy(() => import("src/components/Members/Members"));
 
 const Grid = styled.div`
     display: grid;
@@ -28,14 +24,16 @@ const GridItem = styled.div`
 Modal.setAppElement("#root");
 
 function App() {
-    const [membersCon, setMembersCon] = useState(false);
+    const [membersWindow, setMembersWindow] = useState(false);
     const { snackData } = useContext(SnackContext);
+
+    const toggleMembersWindow = () => {
+        setMembersWindow(!membersWindow);
+    };
     return (
         <>
             <GlobalStyle />
-            <Suspense fallback={<Loading />}>
-                <Header />
-            </Suspense>
+            <Header />
             <Grid>
                 <UsersContextProvider>
                     <RoomContextProvider>
@@ -44,15 +42,15 @@ function App() {
                                 <Rooms />
                             </Suspense>
                         </GridItem>
-                        <GridItem col={membersCon ? "4/11" : "4/13"}>
+                        <GridItem col={membersWindow ? "4/11" : "4/13"}>
                             <Suspense>
                                 <ChatWindow
-                                    membersCon={membersCon}
-                                    setMembersCon={setMembersCon}
+                                    membersWindow={membersWindow}
+                                    toggleMembersWindow={toggleMembersWindow}
                                 />
                             </Suspense>
                         </GridItem>
-                        {membersCon && (
+                        {membersWindow && (
                             <GridItem col={"11/13"}>
                                 <Suspense fallback={<Loading />}>
                                     <Members />

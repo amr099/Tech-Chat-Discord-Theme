@@ -5,8 +5,7 @@ const Spinner = styled.div`
     width: 30px;
     height: 30px;
     border-radius: 50%;
-    margin: auto;
-    margin-top: 20%;
+    margin: 1rem auto;
     border: 10px solid #fff;
     border-top: 10px solid #00f;
     border-bottom: 10px solid #00f;
