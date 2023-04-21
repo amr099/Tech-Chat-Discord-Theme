@@ -5,7 +5,7 @@ import { AuthContext } from "src/context/AuthContext";
 import RegisterForm from "src/components/Forms/RegisterForm";
 import LoginForm from "src/components/Forms/LoginForm";
 import { LogOut } from "src/components/Header/LogOut";
-import { Modal } from "react-modal";
+import Modal from "react-modal";
 
 const Img = styled.img`
     width: 40px;
@@ -44,19 +44,38 @@ const Span = styled.span`
     }
 `;
 
-// const customStyles = {
-//     content: {
-//         borderRadius: "20px",
-//         maxHeight: "90vh",
-//         overflow: "auto",
-//         top: "50%",
-//         left: "50%",
-//         right: "auto",
-//         bottom: "auto",
-//         marginRight: "-50%",
-//         transform: "translate(-50%, -50%)",
-//     },
-// };
+const customStyles = {
+    content: {
+        borderRadius: "20px",
+        maxHeight: "90vh",
+        overflow: "auto",
+        top: "50%",
+        left: "50%",
+        right: "auto",
+        bottom: "auto",
+        marginRight: "-50%",
+        transform: "translate(-50%, -50%)",
+    },
+};
+
+const Button = styled.button`
+    color: #766fc3;
+    border: 1px solid #766fc3;
+    border-radius: 20px 20px;
+    padding: 5px 20px;
+    min-width: 80px;
+    max-width: 200px;
+    display: flex;
+    gap: 5px;
+    align-items: center;
+
+    &:hover {
+        background-color: #6b4eff;
+        color: #fff;
+        border-radius: 20px 20px;
+        cursor: pointer;
+    }
+`;
 
 const reducer = (state, action) => {
     switch (action.type) {
@@ -97,10 +116,10 @@ export default function LogIn() {
         dispatch({ type: type, payload: payload });
     };
 
-    const openModal = () => {
+    const showModal = () => {
         setModal(true);
     };
-    const closeModal = () => {
+    const hideModal = () => {
         setModal(false);
     };
 
@@ -119,12 +138,12 @@ export default function LogIn() {
                 <Img src={userData.img} onClick={toggleLogOutButton} />
             ) : (
                 <>
-                    <Button onClick={openModal}>
+                    <Button onClick={showModal}>
                         <i className='bi bi-person-circle'></i> Sign In
                     </Button>
                     <Modal
                         isOpen={modal}
-                        onRequestClose={closeModal}
+                        onRequestClose={hideModal}
                         style={customStyles}
                     >
                         {form === "login" ? (
