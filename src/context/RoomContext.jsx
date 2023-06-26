@@ -34,22 +34,24 @@ export default function RoomContextProvider({ children }) {
         onSnapshot(doc(firestoreDb, "Rooms", roomData.name), (doc) => {
             dispatch({ type: "members", payload: doc.data().members });
             dispatch({ type: "owner", payload: doc.data().creatorId });
+            console.log(roomData.owner);
         });
     };
     const getMessages = () => {
         const messages = ref(db, `messages/${roomData.name}/`);
-        onValue(messages, (snapshot) => {
-            const data = snapshot.val();
+        onValue(messages, async (snapshot) => {
+            const data = await snapshot.val();
             let messages = [];
             for (let i in data) {
                 messages.push(data[i]);
             }
-            const sortedMessages = messages.sort((a, b) => {
+            messages?.sort((a, b) => {
                 const date1 = new Date(a.time);
                 const date2 = new Date(b.time);
                 return date1 - date2;
             });
-            dispatch({ type: "messages", payload: sortedMessages });
+            dispatch({ type: "messages", payload: messages });
+            console.log(roomData.messages);
         });
     };
 

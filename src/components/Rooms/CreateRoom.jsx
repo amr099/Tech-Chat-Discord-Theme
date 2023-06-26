@@ -38,7 +38,7 @@ export default function CreateRoom({ rooms }) {
     const { showSnack } = useContext(SnackContext);
 
     function onSubmit(data) {
-        if (userData.id) {
+        if (userData?.id) {
             if (!rooms?.find((r) => r.name === data.roomName)) {
                 try {
                     try {

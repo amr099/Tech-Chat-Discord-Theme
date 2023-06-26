@@ -1,6 +1,5 @@
 import React, { useContext, useEffect, useRef } from "react";
 import styled from "styled-components";
-
 import { AuthContext } from "src/context/AuthContext";
 import Message from "src/components/Messages/Message";
 import MyMessage from "src/components/Messages/MyMessage";
@@ -25,11 +24,11 @@ export default function Messages() {
         window.current.scrollTop = window.current.scrollHeight;
     }, [roomData.messages]);
 
-    console.log(roomData.messages);
+    console.log(roomData);
 
     return (
         <Container ref={window}>
-            {roomData.messages.map((msg) => {
+            {roomData.messages?.map((msg) => {
                 if (msg.uid === userData?.id) {
                     return <MyMessage msg={msg.msg} time={msg.time} />;
                 } else {

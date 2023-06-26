@@ -56,7 +56,11 @@ export default function Room({ name, lastMsg, lastMsgTime, creatorId }) {
     }, [userData]);
 
     return (
-        <RoomContainer onClick={() => selectRoom(name)}>
+        <RoomContainer
+            onClick={() => {
+                selectRoom(name);
+            }}
+        >
             <Flex>
                 <Flex>
                     <H3>{name}</H3>
