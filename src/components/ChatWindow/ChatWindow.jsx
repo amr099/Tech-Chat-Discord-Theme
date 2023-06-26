@@ -5,8 +5,7 @@ import { RoomContext } from "src/context/RoomContext";
 import Loading from "src/components/Loading";
 import MembersIcon from "src/components/Members/MembersIcon";
 import SendMessage from "src/components/ChatWindow/SendMessage";
-
-const Messages = lazy(() => import("src/components/Messages/Messages"));
+import Messages from "src/components/Messages/Message";
 
 const Header = styled.div`
     height: 9vh;

@@ -9,9 +9,9 @@ import RoomContextProvider from "src/context/RoomContext";
 import Snackbar from "src/components/Snackbar";
 import Loading from "src/components/Loading";
 import Header from "src/components/Header/Header";
-const Rooms = lazy(() => import("src/components/Rooms/Rooms"));
-const ChatWindow = lazy(() => import("src/components/ChatWindow/ChatWindow"));
-const Members = lazy(() => import("src/components/Members/Members"));
+import Rooms from "src/components/Rooms/Rooms";
+import ChatWindow from "src/components/ChatWindow/ChatWindow";
+import Members from "src/components/Members/Members";
 
 const Grid = styled.div`
     display: grid;

@@ -25,9 +25,11 @@ export default function Messages() {
         window.current.scrollTop = window.current.scrollHeight;
     }, [roomData.messages]);
 
+    console.log(roomData.messages);
+
     return (
         <Container ref={window}>
-            {roomData.messages?.map((msg) => {
+            {roomData.messages.map((msg) => {
                 if (msg.uid === userData?.id) {
                     return <MyMessage msg={msg.msg} time={msg.time} />;
                 } else {

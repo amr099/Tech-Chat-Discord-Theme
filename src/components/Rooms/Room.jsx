@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
 import styled from "styled-components";
-
 import { AuthContext } from "src/context/AuthContext";
 import { RoomContext } from "src/context/RoomContext";
 import { UsersContext } from "src/context/UsersContext";
@@ -38,27 +37,11 @@ const Span = styled.span`
     color: #aaa;
 `;
 
-// const Button = styled.button`
-//     color: #766fc3;
-//     font-weight: bold;
-//     border: 1px solid #766fc3;
-//     border-radius: 20px;
-//     padding: 5px 20px;
-//     align-self: start;
-
-//     &:hover {
-//         background-color: #6b4eff;
-//         color: #fff;
-//         cursor: pointer;
-//     }
-// `;
-
 export default function Room({ name, lastMsg, lastMsgTime, creatorId }) {
     const { selectRoom } = useContext(RoomContext);
     const [joinedRooms, setJoinedRooms] = useState([]);
     const users = useContext(UsersContext);
     const { userData } = useContext(AuthContext);
-    // const { showSnack } = useContext(SnackContext);
 
     useEffect(() => {
         if (userData) {
