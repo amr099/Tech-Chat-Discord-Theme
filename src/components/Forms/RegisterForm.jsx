@@ -2,9 +2,6 @@ import { createUserWithEmailAndPassword } from "firebase/auth";
 import { setDoc, doc } from "firebase/firestore";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { set, ref as realref } from "firebase/database";
-import { useCollectionData } from "react-firebase-hooks/firestore";
-import { collection } from "firebase/firestore";
-
 import { auth, storage, firestoreDb, db } from "src/firebase-config";
 import Form from "src/components/Forms/Form";
 import { useContext } from "react";

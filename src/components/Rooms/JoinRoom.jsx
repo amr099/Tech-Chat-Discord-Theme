@@ -1,6 +1,5 @@
 import React, { useContext } from "react";
 import styled from "styled-components";
-
 import { arrayUnion, updateDoc, doc } from "firebase/firestore";
 import { firestoreDb } from "src/firebase-config";
 import { SnackContext } from "src/context/SnackContext";

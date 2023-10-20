@@ -1,6 +1,5 @@
 import React, { useContext } from "react";
 import styled from "styled-components";
-
 import { RoomContext } from "src/context/RoomContext";
 import { UsersContext } from "src/context/UsersContext";
 import Member from "src/components/Members/Member";

@@ -1,6 +1,5 @@
 import { signOut } from "firebase/auth";
 import styled from "styled-components";
-
 import { auth } from "src/firebase-config";
 
 const Container = styled.div`

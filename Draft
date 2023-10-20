@@ -1,12 +1,3 @@
-Features:
-    - member list (toggle).(Done)
-    - member status.(Done)
-    - direct messages.(Hold)
-    - show if thier are new messages or notes.(Hold)
+New Features: - direct messages. - show if thier are new messages or notifications.
 
-Todo:
-    - optimize performance.
-    - styling:
-          - style time span
-          - loading before viewing(Page, Rooms, Messages).
-          - font.
+Todo: - styling: - Apply Discord Theme On: - Rooms - Chat window. - Notifications. - Make it responsive.

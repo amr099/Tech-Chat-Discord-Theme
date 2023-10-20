@@ -1,6 +1,5 @@
 import React, { useContext, useState } from "react";
 import styled from "styled-components";
-
 import { AuthContext } from "src/context/AuthContext";
 import Notifications from "./Notifications";
 import LogIn from "./LogIn";

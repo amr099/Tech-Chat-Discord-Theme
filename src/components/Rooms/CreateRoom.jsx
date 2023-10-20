@@ -3,7 +3,6 @@ import styled from "styled-components";
 import { setDoc, doc, updateDoc, arrayUnion } from "firebase/firestore";
 import { ref, set } from "firebase/database";
 import { useForm } from "react-hook-form";
-
 import { db, firestoreDb } from "src/firebase-config";
 import { AuthContext } from "src/context/AuthContext";
 import { SnackContext } from "src/context/SnackContext";

@@ -1,16 +1,16 @@
 import { createGlobalStyle } from "styled-components";
+import whiteny from './fonts/whitney/whitneybook.otf'
 
 export const GlobalStyle = createGlobalStyle`
-
     * {
-        font-family: sans-serif;
+        font-family:main;
         margin:0;
         padding:0;
     }
 
     .error{
         margin-top:0.5rem;
-        color:#f00;
+        color:#fff;
     }
 
     button{
@@ -23,3 +23,12 @@ export const GlobalStyle = createGlobalStyle`
         }
     }
     `;
+
+export const FontStyles = createGlobalStyle`
+
+@font-face {
+  font-family: 'main';
+  src: url(${whiteny}) format('woff2'),
+}
+`;
+

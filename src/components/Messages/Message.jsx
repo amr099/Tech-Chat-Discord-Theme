@@ -1,8 +1,6 @@
 import React, { useContext } from "react";
 import styled from "styled-components";
-
 import { UsersContext } from "src/context/UsersContext";
-import { RoomContext } from "src/context/RoomContext";
 
 const MessageContainer = styled.div`
     display: flex;

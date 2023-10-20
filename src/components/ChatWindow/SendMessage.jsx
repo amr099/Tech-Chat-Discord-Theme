@@ -3,7 +3,6 @@ import React, { useContext, useRef } from "react";
 import { useForm } from "react-hook-form";
 import styled from "styled-components";
 import { updateDoc, doc } from "firebase/firestore";
-
 import { db, firestoreDb } from "src/firebase-config";
 import { AuthContext } from "src/context/AuthContext";
 import { RoomContext } from "src/context/RoomContext";

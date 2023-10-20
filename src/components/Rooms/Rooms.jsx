@@ -2,7 +2,6 @@ import React from "react";
 import styled from "styled-components";
 import { collection } from "firebase/firestore";
 import { useCollectionData } from "react-firebase-hooks/firestore";
-
 import CreateRoom from "src/components/Rooms/CreateRoom";
 import Room from "src/components/Rooms/Room";
 import { firestoreDb } from "src/firebase-config";

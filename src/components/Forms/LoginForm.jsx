@@ -1,6 +1,5 @@
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "src/firebase-config";
-
 import Form from "src/components/Forms/Form";
 
 export default function LoginForm({ setFormState, state, showForm }) {

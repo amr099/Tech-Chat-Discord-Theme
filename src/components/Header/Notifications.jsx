@@ -1,7 +1,6 @@
 import React, { useState, useContext, useEffect } from "react";
 import styled from "styled-components";
 import { doc, onSnapshot } from "firebase/firestore";
-
 import { firestoreDb } from "src/firebase-config";
 import { AuthContext } from "src/context/AuthContext";
 import Notification from "./Notification";

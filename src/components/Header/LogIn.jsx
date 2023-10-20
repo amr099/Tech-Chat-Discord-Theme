@@ -1,51 +1,15 @@
 import React, { useContext, useState, useReducer } from "react";
 import styled from "styled-components";
-
 import { AuthContext } from "src/context/AuthContext";
 import RegisterForm from "src/components/Forms/RegisterForm";
 import LoginForm from "src/components/Forms/LoginForm";
 import { LogOut } from "src/components/Header/LogOut";
 import Modal from "react-modal";
 
-const Img = styled.img`
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-
-    &:hover {
-        cursor: pointer;
-    }
-`;
-
-// const LoginButton = styled.button`
-//     color: #766fc3;
-//     border: 1px solid #766fc3;
-//     border-radius: 20px 20px;
-//     padding: 5px 20px;
-//     min-width: 80px;
-//     max-width: 200px;
-//     display: flex;
-//     gap: 5px;
-//     align-items: center;
-
-//     &:hover {
-//         background-color: #6b4eff;
-//         color: #fff;
-//         border-radius: 20px 20px;
-//         cursor: pointer;
-//     }
-// `;
-
-const Span = styled.span`
-    font-weight: bold;
-    color: #6b4eff;
-    &:hover {
-        cursor: pointer;
-    }
-`;
-
 const customStyles = {
     content: {
+        backgroundColor:"#36393F",
+        padding:"2rem",
         borderRadius: "20px",
         maxHeight: "90vh",
         overflow: "auto",
@@ -57,6 +21,27 @@ const customStyles = {
         transform: "translate(-50%, -50%)",
     },
 };
+
+const Img = styled.img`
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+
+    &:hover {
+        cursor: pointer;
+    }
+`;
+
+
+const Span = styled.span`
+    font-weight: bold;
+    color: #6b4eff;
+    &:hover {
+        cursor: pointer;
+    }
+`;
+
+
 
 const Button = styled.button`
     color: #766fc3;
@@ -101,16 +86,7 @@ export default function LogIn() {
         success: false,
     });
 
-    const modalStyles = {
-        content: {
-            top: "50%",
-            left: "50%",
-            right: "auto",
-            bottom: "auto",
-            marginRight: "-50%",
-            transform: "translate(-50%, -50%)",
-        },
-    };
+    
 
     const setFormState = (type, payload) => {
         dispatch({ type: type, payload: payload });
