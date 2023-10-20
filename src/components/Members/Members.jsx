@@ -5,7 +5,7 @@ import { UsersContext } from "src/context/UsersContext";
 import Member from "src/components/Members/Member";
 
 const Container = styled.div`
-    border-left: 3px solid #f4f4f4;
+    border-left: 3px solid var(--main);
     padding: 1rem 2rem;
     display: flex;
     flex-direction: column;
@@ -14,13 +14,18 @@ const Container = styled.div`
     overflow-y: auto;
 `;
 
+const H2 = styled.h2`
+    color:#fff;
+    margin-bottom:1rem;
+`
+
 export default function Members() {
     const { roomData } = useContext(RoomContext);
     const users = useContext(UsersContext);
 
     return (
         <Container>
-            <h2>Members</h2>
+            <H2>Members</H2>
             {users?.map((user) => {
                 if (
                     roomData.members?.includes(user.id) ||

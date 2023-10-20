@@ -12,17 +12,22 @@ const Container = styled.div`
     max-height: 70vh;
     overflow: auto;
     width: 30%;
-    top: 7vh;
-    right: 2vw;
+    top: 6vh;
+    right: 7vw;
     display: flex;
     flex-direction: column;
     gap: 10px;
     border-radius: 10px;
     padding: 1rem;
-    background-color: #f0f2f5;
+    background-color: var(--semi-dark);
     color: #000;
     z-index: 1;
 `;
+
+const H3 = styled.h3`
+    color:var(--light);
+    font: var(--md) main-bold;
+`
 
 export default function Notifications() {
     const [notifications, setNotifications] = useState([]);
@@ -36,7 +41,7 @@ export default function Notifications() {
 
     return (
         <Container>
-            <h2>Notifications</h2>
+            <H3>Notifications</H3>
             {notifications?.map((note) => (
                 <Notification
                     noteObj={note}

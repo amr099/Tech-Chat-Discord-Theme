@@ -11,15 +11,15 @@ const MessageContainer = styled.div`
 `;
 
 const Message = styled.div`
-    background-color: #5538ee;
+    background-color: var(--main);
     border-radius: 20px 20px 0px 20px;
     color: #fff;
     padding: 0.5rem 1rem;
 `;
 
 const Msg = styled.p`
-    font-weight: bold;
-    margin: 0.5rem 0;
+    color:var(--light);
+    font:var(--sm) main-semibold;
 `;
 
 const Time = styled.span`
@@ -32,7 +32,7 @@ export default function MyMessage({ msg, time }) {
         <MessageContainer key={time}>
             <Message>
                 <Msg>{msg}</Msg>
-                <Time>{time}</Time>
+                {/* <Time>{time}</Time> */}
             </Message>
         </MessageContainer>
     );

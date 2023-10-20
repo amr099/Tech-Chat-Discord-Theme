@@ -11,9 +11,11 @@ const Flex = styled.div`
     justify-content: ${(props) => props.justfiy};
     align-items: ${(props) => props.align};
     flex-direction: ${(props) => props.direction};
-    padding: 10px;
+    padding: 5px;
+    margin-left:10px;
+    border-radius:5px;
     &:hover {
-        background-color: #f4f4f4;
+        background-color: var(--dark);
     }
 `;
 
@@ -24,10 +26,10 @@ const Img = styled.img`
 `;
 
 const Note = styled.p`
+    color:var(--light);
+    font:var(--sm) main-semibold;
     word-break: keep-all;
-    font-weight: 700;
 `;
-
 const Accept = styled.i`
     font-size: 1.5rem;
     &:hover {
@@ -37,10 +39,7 @@ const Accept = styled.i`
 `;
 const Delete = styled.i`
     font-size: 1.5rem;
-    &:hover {
-        cursor: pointer;
-        color: #f00;
-    }
+    color:var(--light)
 `;
 
 const Span = styled.span`

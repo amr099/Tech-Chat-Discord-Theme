@@ -10,11 +10,12 @@ const Flex = styled.div`
 
 const Span = styled.span`
     font-weight: bold;
+    color:var(--light)
 `;
 
 const Status = styled.div`
-    width: 5px;
-    height: 5px;
+    width: 10px;
+    height: 10px;
     border-radius: 50%;
     background-color: ${(props) =>
         props.status === "online" ? "green" : "red"};

@@ -8,40 +8,39 @@ import { AuthContext } from "src/context/AuthContext";
 import { RoomContext } from "src/context/RoomContext";
 import { SnackContext } from "src/context/SnackContext";
 
-const Container = styled.div`
-    margin: 1rem;
-    height: 9vh;
-`;
-
-const FormContainer = styled.div`
+const Container = styled.form`
+    margin: 0.5rem 0.5rem 0 ;
     margin-top: 1rem;
     font-weight: bold;
-    border-top: 1px solid #000;
     display: flex;
     justify-content: space-between;
+    border-raduis:5px;
     &::focued {
         outline: none;
     }
 `;
-
 const Input = styled.input`
-    font-size: 1.2rem;
+    background-color:var(--semi-dark);
+    color:var(--light);
+    font:var(--sm) main;
     padding: 0 1rem;
     border: none;
     outline: none;
     width: 100%;
+    border
     &::placeholder {
         color: #cacaca;
     }
 `;
 const Button = styled.button`
     all: unset;
+    background-color:var(--semi-dark);
     padding: 1rem;
 `;
 const I = styled.i`
-    font-size: 2rem;
+    font-size: var(--md);
+    color:var(--main);
     &:hover {
-        color: #ccc;
         cursor: pointer;
     }
 `;
@@ -89,9 +88,8 @@ export default function SendMessage() {
     }
     return (
         <>
-            <Container>
-                <form onSubmit={handleSubmit(onSubmit)}>
-                    <FormContainer>
+            <Container onSubmit={handleSubmit(onSubmit)}>
+                    {/* <FormContainer> */}
                         <Input
                             autoComplete='off'
                             {...register("message")}
@@ -100,8 +98,7 @@ export default function SendMessage() {
                         <Button type='submit'>
                             <I className='bi bi-send-fill'></I>
                         </Button>
-                    </FormContainer>
-                </form>
+                    {/* </FormContainer> */}
             </Container>
         </>
     );

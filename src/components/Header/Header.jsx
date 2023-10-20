@@ -10,12 +10,13 @@ const HeaderContainer = styled.div`
     align-items: center;
     height: 7vh;
     padding: 0 2.5%;
-    background-color: #292929;
+    background-color: var(--dark);
     color: #fff;
+    border-bottom:1px solid var(--main)
 `;
 
 const H1 = styled.h1`
-    font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
+    font:var(--lg) main-bold;
     letter-spacing: -1px;
 `;
 

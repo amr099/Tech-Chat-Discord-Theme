@@ -6,15 +6,15 @@ import { SnackContext } from "src/context/SnackContext";
 import { AuthContext } from "src/context/AuthContext";
 
 const Button = styled.button`
-    color: #766fc3;
-    font-weight: bold;
-    border: 1px solid #766fc3;
-    border-radius: 20px;
+    background-color: var(--main);
+    color: var(--light);
+    font:var(--sm) main-bold;
+    border: 1px solid var(--main);
+    border-radius: 5px;
     padding: 5px 20px;
     align-self: start;
 
     &:hover {
-        background-color: #6b4eff;
         color: #fff;
         cursor: pointer;
     }

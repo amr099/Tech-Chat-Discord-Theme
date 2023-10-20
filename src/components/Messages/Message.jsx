@@ -10,21 +10,17 @@ const MessageContainer = styled.div`
     margin: 1rem;
 `;
 
-const MessageTheme = styled.div`
-    padding: 1rem;
-    background-color: #e3e5e5;
-    border-radius: 0px 20px 20px 20px;
-`;
-
 const Name = styled.p`
-    font-size: 1rem;
+    color:#fff;
+    font: var(--sm) main-bold;
     margin: 0;
     margin-bottom: 10px;
     font-weight: bold;
 `;
 
 const Msg = styled.p`
-    font-weight: bold;
+    color:var(--light);
+    font:var(--sm) main-semibold;
     margin: 0.5rem 0;
 `;
 
@@ -42,8 +38,8 @@ const Time = styled.span`
 `;
 
 const UserImg = styled.img`
-    width: 50px;
-    height: 50px;
+    width: 40px;
+    height: 40px;
     border-radius: 50%;
 `;
 
@@ -73,10 +69,10 @@ export default function Message({ uid, msg, time, owner }) {
                     })()}
                     {uid === owner && <I className='bi bi-star-fill'></I>}
                 </Name>
-                <MessageTheme>
+                    {/* <Time>{time}</Time> */}
+                {/* <MessageTheme> */}
                     <Msg>{msg}</Msg>
-                    <Time>{time}</Time>
-                </MessageTheme>
+                {/* </MessageTheme> */}
             </div>
         </MessageContainer>
     );

@@ -44,22 +44,22 @@ const Span = styled.span`
 
 
 const Button = styled.button`
-    color: #766fc3;
-    border: 1px solid #766fc3;
+    background-color:var(--main);
+    color: #fff;
+    border: 1px solid var(--main);
     border-radius: 20px 20px;
     padding: 5px 20px;
     min-width: 80px;
-    max-width: 200px;
+    width: 50px;
     display: flex;
     gap: 5px;
     align-items: center;
-
-    &:hover {
-        background-color: #6b4eff;
-        color: #fff;
-        border-radius: 20px 20px;
-        cursor: pointer;
+    justify-content:center;
+    &:hover{
+        cursor:pointer;
     }
+
+    
 `;
 
 const reducer = (state, action) => {

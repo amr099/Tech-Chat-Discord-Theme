@@ -8,10 +8,12 @@ import Messages from "src/components/Messages/Messages";
 
 const Header = styled.div`
     height: 9vh;
-    background-color: #fdfdfd;
-    border-bottom: 3px solid #f4f4f4;
+    background-color: var(--dark);
+    color:#fff;
+    border-bottom: 3px solid var(--main);
     text-align: center;
     padding: 10px 0;
+    font:var(--md) main;
 `;
 
 export default function ChatWindow({ membersWindow, toggleMembersWindow }) {

@@ -8,28 +8,28 @@ import JoinRoom from "./JoinRoom";
 const RoomContainer = styled.div`
     padding: 1rem;
     overflow: auto;
-    border-bottom: 1px solid #5538ee;
+    border-bottom: 1px solid var(--main);
     &:hover {
-        background-color: #e7e7ff;
+        cursor:pointer;
+        background-color: #202225;
     }
 `;
-
 const Flex = styled.div`
     display: flex;
     justify-content: space-between;
+    align-items:center;
     gap: 10px;
 `;
-
 const H3 = styled.h3`
-    flex-shrink: 0;
-    flex-basis: max-content;
+    color:#fff;
+    font:var(--sm) main-bold;
 `;
-
 const P = styled.p`
     color: #c1c1c1;
     align-self: end;
-`;
+    font:var(--xs) main-semibold;
 
+`;
 const Span = styled.span`
     font-size: 0.7rem;
     align-self: end;
@@ -65,8 +65,8 @@ export default function Room({ name, lastMsg, lastMsgTime, creatorId }) {
                 <Flex>
                     <H3>{name}</H3>
                     <Flex>
-                        <P>{lastMsg || "No Messages Yet!"}</P>
-                        <Span>{lastMsgTime}</Span>
+                        {/* <P>{lastMsg || "No Messages Yet!"}</P> */}
+                        {/* <Span>{lastMsgTime}</Span> */}
                     </Flex>
                 </Flex>
                 {!joinedRooms?.find((r) => r.name === name) && (

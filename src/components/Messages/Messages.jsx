@@ -12,7 +12,7 @@ const Container = styled.div`
     display: flex;
     gap: 5px;
     flex-direction: column;
-    background-color: #fdfdfd;
+    background-color: var(--dark);
 `;
 
 export default function Messages() {

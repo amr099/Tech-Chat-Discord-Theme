@@ -14,7 +14,8 @@ const FormContainer = styled.form`
 
 const Input = styled.input`
     all: unset;
-    font-size: 1.2rem;
+    font: var(-sm) main;
+    color: var(--light);
     padding: 1rem;
     width: 100%;
     &::placeholder {
@@ -23,9 +24,9 @@ const Input = styled.input`
 `;
 
 const I = styled.i`
-    font-size: 2rem;
+    font: var(--lg) main-bold;
     margin: 1rem;
-
+    color:#3ba55c;
     &:hover {
         color: #aaa;
     }
