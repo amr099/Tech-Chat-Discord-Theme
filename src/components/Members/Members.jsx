@@ -10,8 +10,8 @@ const Container = styled.div`
     display: flex;
     flex-direction: column;
     gap: 1rem;
-    min-height: 90vh;
-    overflow-y: auto;
+    height: 93vh;
+    // overflow-y: auto;
 `;
 
 const H2 = styled.h2`

@@ -8,7 +8,6 @@ import { firestoreDb } from "src/firebase-config";
 
 const Container = styled.div`
     height: 93vh;
-    overflow: auto;
     border-right: 3px solid var(--main);
 `;
 

@@ -1,9 +1,8 @@
-import { ref, child, push, update } from "firebase/database";
 import React, { useContext, useRef } from "react";
 import { useForm } from "react-hook-form";
 import styled from "styled-components";
-import { updateDoc, doc } from "firebase/firestore";
-import { db, firestoreDb } from "src/firebase-config";
+import { updateDoc, doc, arrayUnion } from "firebase/firestore";
+import {  firestoreDb } from "src/firebase-config";
 import { AuthContext } from "src/context/AuthContext";
 import { RoomContext } from "src/context/RoomContext";
 import { SnackContext } from "src/context/SnackContext";
@@ -50,41 +49,30 @@ export default function SendMessage() {
     const { userData } = useContext(AuthContext);
     const { showSnack } = useContext(SnackContext);
     const { register, handleSubmit } = useForm();
+    const input = useRef(null)
 
     function onSubmit(data) {
-        if (userData) {
-            if (
-                roomData.members?.find((m) => m == userData.id) ||
-                roomData.owner == userData.id
-            ) {
-                try {
-                    const msg = {
-                        uid: userData.id,
-                        msg: data.message,
-                        time: new Date().toLocaleString(),
-                    };
+        if (!userData) {showSnack("You have to login first!", "error"); return}
+        if (
+            !roomData.members?.find((m) => m == userData.id) 
+        ){showSnack("Members only can send to room!", "error");return}
 
-                    const newMsgKey = push(child(ref(db), "messages")).key;
-                    const updates = {};
-                    updates[`messages/${roomData.name}/${newMsgKey}/`] = msg;
-                    update(ref(db), updates);
-                    updateDoc(doc(firestoreDb, "Rooms", roomData.name), {
-                        lastMsg: {
-                            msg: data.message,
-                            time: new Date().toLocaleString(),
-                        },
-                    });
-                } catch (e) {
-                    showSnack("Error!", "error");
-                    console.log(e);
-                    console.log("error sending message.");
-                }
-            } else {
-                showSnack("Members only can send to room!", "error");
-            }
-        } else {
-            showSnack("You have to login first!", "error");
+        try {
+            const msg = {
+                uid: userData.id,
+                msg: data.message,
+                time: new Date().toLocaleString(),
+            };
+            updateDoc(doc(firestoreDb, "Rooms", roomData.name), {
+                messages: arrayUnion(msg),
+            });
+            input.current = ''
+        } catch (e) {
+            showSnack("Error!", "error");
+            console.log(e);
+            console.log("error sending message.");
         }
+       
     }
     return (
         <>
@@ -94,6 +82,7 @@ export default function SendMessage() {
                             autoComplete='off'
                             {...register("message")}
                             placeholder='Type a message ...'
+                            ref={input}
                         />
                         <Button type='submit'>
                             <I className='bi bi-send-fill'></I>

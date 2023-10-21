@@ -8,11 +8,11 @@ const HeaderContainer = styled.div`
     display: flex;
     justify-content: space-between;
     align-items: center;
-    height: 7vh;
+    min-height: 7vh;
     padding: 0 2.5%;
     background-color: var(--dark);
     color: #fff;
-    border-bottom:1px solid var(--main)
+    border-bottom:3px solid var(--main)
 `;
 
 const H1 = styled.h1`

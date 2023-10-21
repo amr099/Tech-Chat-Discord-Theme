@@ -7,7 +7,7 @@ import SendMessage from "src/components/ChatWindow/SendMessage";
 import Messages from "src/components/Messages/Messages";
 
 const Header = styled.div`
-    height: 9vh;
+    min-height: 10vh;
     background-color: var(--dark);
     color:#fff;
     border-bottom: 3px solid var(--main);

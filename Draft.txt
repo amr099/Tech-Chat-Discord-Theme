@@ -1,0 +1,9 @@
+New Features:
+    - view user's photo once after he sends messages.
+    - direct messages.
+    - show if thier are new messages or notifications.
+    - emojis, attach files, imgs and Code.
+    - user profile.
+
+Todo:
+    - Make it responsive.

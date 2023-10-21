@@ -6,7 +6,7 @@ import MyMessage from "src/components/Messages/MyMessage";
 import { RoomContext } from "src/context/RoomContext";
 
 const Container = styled.div`
-    height: 65vh;
+    height:67%;
     padding: 1rem;
     overflow: auto;
     display: flex;
@@ -23,8 +23,6 @@ export default function Messages() {
     useEffect(() => {
         window.current.scrollTop = window.current.scrollHeight;
     }, [roomData.messages]);
-
-    console.log(roomData);
 
     return (
         <Container ref={window}>

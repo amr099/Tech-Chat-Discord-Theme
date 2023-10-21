@@ -2,8 +2,10 @@ import React from "react";
 import styled from "styled-components";
 
 const I = styled.i`
-    position: relative;
-    left: 47%;
+    // position: relative;
+    // left: 47%;
+    float:right;
+    margin-right:1rem;
     font-size: 2rem;
 `;
 

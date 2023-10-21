@@ -9,7 +9,6 @@ const MessageContainer = styled.div`
     max-width: 90%;
     margin: 1rem;
 `;
-
 const Name = styled.p`
     color:#fff;
     font: var(--sm) main-bold;
@@ -17,13 +16,11 @@ const Name = styled.p`
     margin-bottom: 10px;
     font-weight: bold;
 `;
-
 const Msg = styled.p`
     color:var(--light);
     font:var(--sm) main-semibold;
     margin: 0.5rem 0;
 `;
-
 const I = styled.i`
     margin: 0 5px;
     &:hover {
@@ -31,12 +28,10 @@ const I = styled.i`
         cursor: inherit;
     }
 `;
-
 const Time = styled.span`
     font-size: 0.5rem;
     float: right;
 `;
-
 const UserImg = styled.img`
     width: 40px;
     height: 40px;
@@ -70,9 +65,7 @@ export default function Message({ uid, msg, time, owner }) {
                     {uid === owner && <I className='bi bi-star-fill'></I>}
                 </Name>
                     {/* <Time>{time}</Time> */}
-                {/* <MessageTheme> */}
-                    <Msg>{msg}</Msg>
-                {/* </MessageTheme> */}
+                <Msg>{msg}</Msg>
             </div>
         </MessageContainer>
     );

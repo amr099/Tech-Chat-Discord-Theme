@@ -45,6 +45,7 @@ const Span = styled.span`
 
 const Button = styled.button`
     background-color:var(--main);
+    font:var(--sm) main-semibold;
     color: #fff;
     border: 1px solid var(--main);
     border-radius: 20px 20px;

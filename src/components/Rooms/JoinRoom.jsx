@@ -64,20 +64,17 @@ export default function JoinRoom({ name, creatorId }) {
     };
 
     const join = (creatorId, room) => {
-        if (userData) {
-            try {
-                sendJoinRequest(creatorId, room);
-                roomToPending(room);
-                showSnack(
-                    `Your request to join room: ${room} has been sent successfully!`,
-                    "success"
-                );
-            } catch (e) {
-                console.log(e);
-                showSnack("Error!", "error");
-            }
-        } else {
-            showSnack("You have to login first!", "error");
+        if (!userData){showSnack("You have to login first!", "error");return}
+        try {
+            sendJoinRequest(creatorId, room);
+            roomToPending(room);
+            showSnack(
+                `Your request to join room: ${room} has been sent successfully!`,
+                "success"
+            );
+        } catch (e) {
+            console.log(e);
+            showSnack("Error!", "error");
         }
     };
 

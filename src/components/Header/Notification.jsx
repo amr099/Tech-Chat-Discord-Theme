@@ -32,9 +32,11 @@ const Note = styled.p`
 `;
 const Accept = styled.i`
     font-size: 1.5rem;
+    color: #3ba55c;
     &:hover {
         cursor: pointer;
         color: #0f0;
+
     }
 `;
 const Delete = styled.i`

@@ -1,6 +1,5 @@
-import React, { createContext, useState, useEffect, useReducer } from "react";
-import { onValue, ref } from "firebase/database";
-import { db, firestoreDb } from "../firebase-config";
+import React, { createContext, useEffect, useReducer } from "react";
+import { firestoreDb } from "../firebase-config";
 import { onSnapshot, doc } from "firebase/firestore";
 
 export const RoomContext = createContext();
@@ -34,24 +33,11 @@ export default function RoomContextProvider({ children }) {
         onSnapshot(doc(firestoreDb, "Rooms", roomData.name), (doc) => {
             dispatch({ type: "members", payload: doc.data().members });
             dispatch({ type: "owner", payload: doc.data().creatorId });
-            console.log(roomData.owner);
         });
     };
     const getMessages = () => {
-        const messages = ref(db, `messages/${roomData.name}/`);
-        onValue(messages, async (snapshot) => {
-            const data = await snapshot.val();
-            let messages = [];
-            for (let i in data) {
-                messages.push(data[i]);
-            }
-            messages?.sort((a, b) => {
-                const date1 = new Date(a.time);
-                const date2 = new Date(b.time);
-                return date1 - date2;
-            });
-            dispatch({ type: "messages", payload: messages });
-            console.log(roomData.messages);
+        onSnapshot(doc(firestoreDb, "Rooms", roomData.name), (doc) => {
+            dispatch({ type: "messages", payload: doc?.data().messages });
         });
     };
 
