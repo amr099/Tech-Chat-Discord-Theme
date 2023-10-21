@@ -14,13 +14,15 @@ import Members from "src/components/Members/Members";
 
 const Grid = styled.div`
     display: grid;
+    gap:0;
     grid-template-columns: repeat(12, 1fr);
+    grid-template-rows:8vh 92vh;
 `;
 
 const GridItem = styled.div`
     grid-column: ${(props) => props.col};
+    grid-row: ${(props) => props.row};
 `;
-Modal.setAppElement("#root");
 
 function App() {
     const [membersWindow, setMembersWindow] = useState(false);
@@ -32,17 +34,19 @@ function App() {
     return (
         <>
             <GlobalStyle />
-            <Header />
             <Grid>
+                <GridItem col={'1/13'} row={'1/2'}>
+                    <Header />
+                </GridItem>
                 <UsersContextProvider>
                     <RoomContextProvider>
-                        <GridItem col={"1/4"}>
+                        <GridItem col={"1/4"} row={'2/3'}>
                             <Suspense fallback={<Loading />}>
                                 <Rooms />
                             </Suspense>
                         </GridItem>
-                        <GridItem col={membersWindow ? "4/11" : "4/13"}>
-                            <Suspense>
+                        <GridItem col={membersWindow ? "4/11" : "4/13"} row={'2/3'}>
+                            <Suspense> 
                                 <ChatWindow
                                     membersWindow={membersWindow}
                                     toggleMembersWindow={toggleMembersWindow}
@@ -50,7 +54,7 @@ function App() {
                             </Suspense>
                         </GridItem>
                         {membersWindow && (
-                            <GridItem col={"11/13"}>
+                            <GridItem col={"11/13"} row={'2/3'}>
                                 <Suspense fallback={<Loading />}>
                                     <Members />
                                 </Suspense>

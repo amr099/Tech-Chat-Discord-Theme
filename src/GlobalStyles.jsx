@@ -19,6 +19,7 @@ export const GlobalStyle = createGlobalStyle`
         font-family:main;
         margin:0;
         padding:0;
+        box-sizing:border-box;
     }
 
     body{

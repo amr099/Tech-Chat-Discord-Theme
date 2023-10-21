@@ -8,8 +8,7 @@ import { RoomContext } from "src/context/RoomContext";
 import { SnackContext } from "src/context/SnackContext";
 
 const Container = styled.form`
-    margin: 0.5rem 0.5rem 0 ;
-    margin-top: 1rem;
+    margin: 0.5rem ;
     font-weight: bold;
     display: flex;
     justify-content: space-between;
@@ -48,31 +47,29 @@ export default function SendMessage() {
     const { roomData } = useContext(RoomContext);
     const { userData } = useContext(AuthContext);
     const { showSnack } = useContext(SnackContext);
-    const { register, handleSubmit } = useForm();
-    const input = useRef(null)
+    const { register, handleSubmit,reset } = useForm();
 
-    function onSubmit(data) {
+    async function onSubmit(data) {
+        if (data.message ===''){showSnack("There's no message to send!", "error"); return}
         if (!userData) {showSnack("You have to login first!", "error"); return}
         if (
             !roomData.members?.find((m) => m == userData.id) 
         ){showSnack("Members only can send to room!", "error");return}
 
         try {
-            const msg = {
-                uid: userData.id,
-                msg: data.message,
-                time: new Date().toLocaleString(),
-            };
-            updateDoc(doc(firestoreDb, "Rooms", roomData.name), {
-                messages: arrayUnion(msg),
+            await updateDoc(doc(firestoreDb, "Rooms", roomData.name), {
+                messages: arrayUnion({
+                    uid: userData.id,
+                    msg: data.message,
+                    time: new Date().toLocaleString(),
+                }),
             });
-            input.current = ''
+            reset();
         } catch (e) {
             showSnack("Error!", "error");
             console.log(e);
             console.log("error sending message.");
         }
-       
     }
     return (
         <>
@@ -82,7 +79,6 @@ export default function SendMessage() {
                             autoComplete='off'
                             {...register("message")}
                             placeholder='Type a message ...'
-                            ref={input}
                         />
                         <Button type='submit'>
                             <I className='bi bi-send-fill'></I>

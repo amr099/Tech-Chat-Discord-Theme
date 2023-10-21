@@ -10,7 +10,7 @@ const Container = styled.div`
     display: flex;
     flex-direction: column;
     gap: 1rem;
-    height: 93vh;
+    height: 100%;
     // overflow-y: auto;
 `;
 

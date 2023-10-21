@@ -8,8 +8,7 @@ import Notification from "./Notification";
 const Container = styled.div`
     user-select: none;
     position: absolute;
-    min-height: 50vh;
-    max-height: 70vh;
+    height: 70vh;
     overflow: auto;
     width: 30%;
     top: 6vh;

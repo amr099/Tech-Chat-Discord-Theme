@@ -6,9 +6,9 @@ import LogIn from "./LogIn";
 
 const HeaderContainer = styled.div`
     display: flex;
+    height:100%;
     justify-content: space-between;
     align-items: center;
-    min-height: 7vh;
     padding: 0 2.5%;
     background-color: var(--dark);
     color: #fff;

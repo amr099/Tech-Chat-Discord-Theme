@@ -6,7 +6,7 @@ import MyMessage from "src/components/Messages/MyMessage";
 import { RoomContext } from "src/context/RoomContext";
 
 const Container = styled.div`
-    height:67%;
+    height:100%;
     padding: 1rem;
     overflow: auto;
     display: flex;

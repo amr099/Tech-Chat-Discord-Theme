@@ -7,7 +7,6 @@ import SendMessage from "src/components/ChatWindow/SendMessage";
 import Messages from "src/components/Messages/Messages";
 
 const Header = styled.div`
-    min-height: 10vh;
     background-color: var(--dark);
     color:#fff;
     border-bottom: 3px solid var(--main);
@@ -15,13 +14,18 @@ const Header = styled.div`
     padding: 10px 0;
     font:var(--md) main;
 `;
+const WindowContainer = styled.div`
+    height:100%;
+    display:flex;
+    flex-direction:column;
+`;
 
 export default function ChatWindow({ membersWindow, toggleMembersWindow }) {
     const { roomData } = useContext(RoomContext);
 
     return (
         roomData?.name && (
-            <>
+            <WindowContainer>
                 <Header>
                     <h2>{roomData.name}</h2>
                     <MembersIcon
@@ -33,7 +37,7 @@ export default function ChatWindow({ membersWindow, toggleMembersWindow }) {
                     <Messages />
                 </Suspense>
                 <SendMessage />
-            </>
+            </WindowContainer>
         )
     );
 }

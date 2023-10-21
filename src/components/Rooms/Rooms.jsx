@@ -7,7 +7,7 @@ import Room from "src/components/Rooms/Room";
 import { firestoreDb } from "src/firebase-config";
 
 const Container = styled.div`
-    height: 93vh;
+    height: 100%;
     border-right: 3px solid var(--main);
 `;
 

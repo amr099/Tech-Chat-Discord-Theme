@@ -32,14 +32,15 @@ const I = styled.i`
 `;
 
 export default function CreateRoom({ rooms }) {
-    const { register, handleSubmit } = useForm();
+    const { register, handleSubmit,reset } = useForm();
     const { userData } = useContext(AuthContext);
     const { showSnack } = useContext(SnackContext);
 
 
-    function onSubmit(data) {
-        if(!userData){showSnack("You have to sign in first.", "error");}
-        if (rooms?.find((r) => r.name === data.roomName)){showSnack("Room name already exists.", "error");}
+    async function onSubmit(data) {
+        if(data.roomName === ''){showSnack("Please enter room name.", "error");return}
+        if(!userData){showSnack("You have to sign in first.", "error");return}
+        if (rooms?.find((r) => r.name === data.roomName)){showSnack("Room name already exists.", "error");return}
 
         try {
             const creationMsg = {
@@ -48,7 +49,7 @@ export default function CreateRoom({ rooms }) {
                             time: new Date().toLocaleString(),
                         }
             // New Room at Rooms Collections.
-            setDoc(doc(firestoreDb, "Rooms", data.roomName), {
+            await setDoc(doc(firestoreDb, "Rooms", data.roomName), {
                 name: data.roomName,
                 creatorId: userData.id,
                 messages:[creationMsg],
@@ -64,7 +65,7 @@ export default function CreateRoom({ rooms }) {
 
         try {
             // New Room at Users rooms.
-            updateDoc(doc(firestoreDb, "Users", userData.id), {
+            await updateDoc(doc(firestoreDb, "Users", userData.id), {
                 rooms: arrayUnion({
                     name: data.roomName,
                     role: "owner",
@@ -74,6 +75,7 @@ export default function CreateRoom({ rooms }) {
                     time: new Date().toLocaleString(),
                 }),
             });
+            reset();
         } catch (e) {
             console.log(e);
             console.log("error setting new room into User's rooms");
