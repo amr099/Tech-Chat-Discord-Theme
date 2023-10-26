@@ -7,3 +7,9 @@ New Features:
 
 Todo:
     - Make it responsive.
+        - decrease font on media 992px
+        
+        - disable wrap in members names
+        - edit online status with font color
+        - style scrollbar
+        - fix forms

@@ -1,7 +1,7 @@
 import { createGlobalStyle } from "styled-components";
-import whiteny from './fonts/whitney/whitneymedium.otf'
-import whitenySemibold from './fonts/whitney/whitneysemibold.otf'
-import whitenyBold from './fonts/whitney/whitneybold.otf'
+import whiteny from "./fonts/whitney/whitneymedium.otf";
+import whitenySemibold from "./fonts/whitney/whitneysemibold.otf";
+import whitenyBold from "./fonts/whitney/whitneybold.otf";
 
 export const GlobalStyle = createGlobalStyle`
 
@@ -10,10 +10,10 @@ export const GlobalStyle = createGlobalStyle`
         --dark:#202225;
         --semi-dark:#40444b;
         --light:#dcddde;
-        --lg:32px;
-        --md:24px;
-        --sm:16px;
-        --xs:12px;
+        --lg:2rem;
+        --md:1.5rem;
+        --sm:1rem;
+        --xs:0.75rem;
     }
     * {
         font-family:main;
@@ -22,11 +22,22 @@ export const GlobalStyle = createGlobalStyle`
         box-sizing:border-box;
     }
 
+    ::-webkit-scrollbar {
+        -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+	    background-color: var(--semi-dark);
+	    border-radius: 9px;
+    }
+
+    ::-webkit-scrollbar-thumb{
+        background-color: var(--main);
+        border: 3px solid transparent;
+        border-radius: 9px;
+        background-clip: content-box;
+    }
+
     body{
         background-color:var(--dark);
     }
-
-
 
     .error{
         margin-top:0.5rem;
@@ -40,6 +51,35 @@ export const GlobalStyle = createGlobalStyle`
     i{
         &:hover{
             cursor:pointer;
+        }
+    }
+    @media (max-width:992px){
+        h1{
+            font-size:1.75rem !important;
+        }
+        h2{
+            font-size:1.25rem !important;
+        }
+        h3{
+            font-size: 1rem !important;
+        }
+        p,input,button,span{
+            font-size: 0.75rem !important;
+        }
+    }
+
+    @media (max-width:768px){
+        h1{
+            font-size:1.5rem !important;
+        }
+        h2{
+            font-size:1rem !important;
+        }
+        h3{
+            font-size: 0.75rem !important;
+        }
+        p,input,button,span{
+            font-size: 0.6rem !important;
         }
     }
     `;
@@ -61,4 +101,3 @@ export const FontStyles = createGlobalStyle`
     src: url(${whitenyBold}) format('woff2'),
   }
 `;
-

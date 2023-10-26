@@ -50,8 +50,6 @@ const Button = styled.button`
     border: 1px solid var(--main);
     border-radius: 20px 20px;
     padding: 5px 20px;
-    min-width: 80px;
-    width: 50px;
     display: flex;
     gap: 5px;
     align-items: center;

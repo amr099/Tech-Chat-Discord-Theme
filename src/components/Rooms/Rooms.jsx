@@ -7,31 +7,32 @@ import Room from "src/components/Rooms/Room";
 import { firestoreDb } from "src/firebase-config";
 
 const Container = styled.div`
-    height: 100%;
-    border-right: 3px solid var(--main);
+  height: 100%;
+  border-right: 3px solid var(--main);
+  overflow-y: auto;
 `;
 
 export default function Rooms() {
-    const [rooms, loading, error, onSnap] = useCollectionData(
-        collection(firestoreDb, "Rooms")
-    );
+  const [rooms, loading, error, onSnap] = useCollectionData(
+    collection(firestoreDb, "Rooms")
+  );
 
-    return (
-        <>
-            <Container>
-                <CreateRoom rooms={rooms} />
-                {rooms?.map((room) => {
-                    return (
-                        <Room
-                            key={room.name}
-                            name={room.name}
-                            creatorId={room.creatorId}
-                            lastMsg={room.lastMsg?.msg}
-                            lastMsgTime={room.lastMsg?.time}
-                        />
-                    );
-                })}
-            </Container>
-        </>
-    );
+  return (
+    <>
+      <Container>
+        <CreateRoom rooms={rooms} />
+        {rooms?.map((room) => {
+          return (
+            <Room
+              key={room.name}
+              name={room.name}
+              creatorId={room.creatorId}
+              lastMsg={room.lastMsg?.msg}
+              lastMsgTime={room.lastMsg?.time}
+            />
+          );
+        })}
+      </Container>
+    </>
+  );
 }
