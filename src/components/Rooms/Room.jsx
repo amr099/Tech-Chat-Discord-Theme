@@ -7,7 +7,10 @@ import JoinRoom from "./JoinRoom";
 
 const RoomContainer = styled.div`
   padding: 1rem;
-  border-bottom: 1px solid var(--main);
+  margin: 0.5rem 0;
+  border-radius: 5px;
+  background-color: ${(props) =>
+    props.selected ? "var(--semi-dark)" : "transparent"};
   &:hover {
     cursor: pointer;
     background-color: var(--semi-dark);
@@ -24,8 +27,8 @@ const Flex = styled.div`
   }
 `;
 const H3 = styled.h3`
-  color: #fff;
-  font: var(--sm) main-bold;
+  color: ${(props) => (props.selected ? "#fff" : "var(--light)")};
+  font: var(--sm) ${(props) => (props.selected ? "main-bold" : "main")};
   text-align: center;
 `;
 // const P = styled.p`
@@ -45,6 +48,7 @@ export default function Room({ name, lastMsg, lastMsgTime, creatorId }) {
   const [joinedRooms, setJoinedRooms] = useState([]);
   const users = useContext(UsersContext);
   const { userData } = useContext(AuthContext);
+  const { roomData } = useContext(RoomContext);
 
   useEffect(() => {
     if (userData) {
@@ -60,13 +64,14 @@ export default function Room({ name, lastMsg, lastMsgTime, creatorId }) {
 
   return (
     <RoomContainer
+      selected={name == roomData.name}
       onClick={() => {
         selectRoom(name);
       }}
     >
       <Flex>
         <Flex>
-          <H3>{name}</H3>
+          <H3 selected={name == roomData.name}>{name}</H3>
           <Flex>
             {/* <P>{lastMsg || "No Messages Yet!"}</P> */}
             {/* <Span>{lastMsgTime}</Span> */}

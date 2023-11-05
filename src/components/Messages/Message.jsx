@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import styled from "styled-components";
 import { UsersContext } from "src/context/UsersContext";
-
+import star from "../../assets/Gold Medal.svg";
 const MessageContainer = styled.div`
   display: flex;
   align-items: start;
@@ -13,6 +13,9 @@ const MessageContainer = styled.div`
   }
 `;
 const Name = styled.span`
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
   color: #fff;
   font: var(--sm) main-bold;
   margin: 0;
@@ -31,6 +34,9 @@ const I = styled.i`
     cursor: inherit;
   }
 `;
+const Img = styled.img`
+  width: 100%;
+`;
 const Time = styled.span`
   font-size: 0.5rem;
   float: right;
@@ -45,7 +51,7 @@ const UserImg = styled.img`
   }
 `;
 
-export default function Message({ uid, msg, time, owner }) {
+export default function Message({ uid, msg, time, owner, img }) {
   const users = useContext(UsersContext);
 
   return (
@@ -69,10 +75,19 @@ export default function Message({ uid, msg, time, owner }) {
               }
             }
           })()}
-          {uid === owner && <I className="bi bi-star-fill"></I>}
+          {uid === owner && <img src={star} width="20" />}
         </Name>
         {/* <Time>{time}</Time> */}
-        <Msg>{msg}</Msg>
+        {img ? (
+          <figure>
+            <Img src={img} />
+            <figcaption>
+              <Msg>{msg}</Msg>
+            </figcaption>
+          </figure>
+        ) : (
+          <Msg>{msg}</Msg>
+        )}
       </div>
     </MessageContainer>
   );

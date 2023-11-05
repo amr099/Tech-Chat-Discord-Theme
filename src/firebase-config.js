@@ -4,6 +4,7 @@ import { getFirestore } from "@firebase/firestore";
 import { getDatabase } from "firebase/database";
 import { getStorage } from "firebase/storage";
 
+
 const firebaseConfig = {
     apiKey: "AIzaSyBI2eJiXjqBCyapZHFUhBozyI7pV_6yITE",
     authDomain: "realtime-tech-chat.firebaseapp.com",

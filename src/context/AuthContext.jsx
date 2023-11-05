@@ -7,31 +7,31 @@ import { useRef } from "react";
 export const AuthContext = createContext();
 
 export default function AuthContextProvider({ children }) {
-    const [userData, setUserData] = useState();
-    const id = useRef();
+  const [userData, setUserData] = useState();
+  const id = useRef();
 
-    useEffect(() => {
-        onAuthStateChanged(auth, async (user) => {
-            if (user) {
-                id.current = user.uid;
-                onSnapshot(doc(firestoreDb, "Users", user.uid), (doc) => {
-                    setUserData(doc.data());
-                });
-                updateDoc(doc(firestoreDb, "Users", user.uid), {
-                    status: "online",
-                });
-            } else {
-                await updateDoc(doc(firestoreDb, "Users", id.current), {
-                    status: "offline",
-                });
-                setUserData(false);
-            }
+  useEffect(() => {
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        id.current = user.uid;
+        onSnapshot(doc(firestoreDb, "Users", user.uid), (doc) => {
+          setUserData(doc.data());
         });
-    }, []);
+        updateDoc(doc(firestoreDb, "Users", user.uid), {
+          status: "online",
+        });
+      } else {
+        await updateDoc(doc(firestoreDb, "Users", id.current), {
+          status: "offline",
+        });
+        setUserData(false);
+      }
+    });
+  }, []);
 
-    return (
-        <AuthContext.Provider value={{ userData }}>
-            {children}
-        </AuthContext.Provider>
-    );
+  return (
+    <AuthContext.Provider value={{ userData, setUserData }}>
+      {children}
+    </AuthContext.Provider>
+  );
 }

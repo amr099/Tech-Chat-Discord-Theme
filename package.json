@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "bootstrap-icons": "^1.11.1",
+    "emoji-picker-react": "^4.5.14",
     "firebase": "^9.18.0",
     "firebase-tools": "^11.25.1",
     "firebaseui": "^6.0.2",

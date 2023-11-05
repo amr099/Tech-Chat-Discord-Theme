@@ -5,7 +5,7 @@ import { UsersContext } from "src/context/UsersContext";
 import Member from "src/components/Members/Member";
 
 const Container = styled.div`
-  border-left: 3px solid var(--main);
+  border-left: 1px solid var(--semi-dark);
   padding: 1rem;
   display: flex;
   flex-direction: column;

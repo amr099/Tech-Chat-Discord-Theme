@@ -15,14 +15,6 @@ const Span = styled.span`
     props.status === "online" ? "var(--light)" : "var(--semi-dark)"};
 `;
 
-// const Status = styled.div`
-//     width: 10px;
-//     height: 10px;
-//     border-radius: 50%;
-//     background-color: ${(props) =>
-//         props.status === "online" ? "green" : "red"};
-// `;
-
 const Img = styled.img`
   display: ${(props) => (props.status === "online" ? "inline-flex" : "none")};
   width: 30px;
@@ -33,13 +25,13 @@ const Img = styled.img`
     height: 20px;
   }
 `;
+
 export default function Member({ img, name, status, email }) {
   return (
     <Flex justify={"space-between"} key={email}>
       <Flex>
         <Img src={img} status={status}></Img>
         <Span status={status}>{name}</Span>
-        {/* <Status status={status}></Status> */}
       </Flex>
     </Flex>
   );

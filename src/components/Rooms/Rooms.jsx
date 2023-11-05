@@ -8,8 +8,9 @@ import { firestoreDb } from "src/firebase-config";
 
 const Container = styled.div`
   height: 100%;
-  border-right: 3px solid var(--main);
+  border-right: 1px solid var(--semi-dark);
   overflow-y: auto;
+  padding: 0 0.5rem;
 `;
 
 export default function Rooms() {
@@ -18,21 +19,19 @@ export default function Rooms() {
   );
 
   return (
-    <>
-      <Container>
-        <CreateRoom rooms={rooms} />
-        {rooms?.map((room) => {
-          return (
-            <Room
-              key={room.name}
-              name={room.name}
-              creatorId={room.creatorId}
-              lastMsg={room.lastMsg?.msg}
-              lastMsgTime={room.lastMsg?.time}
-            />
-          );
-        })}
-      </Container>
-    </>
+    <Container>
+      <CreateRoom rooms={rooms} />
+      {rooms?.map((room) => {
+        return (
+          <Room
+            key={room.name}
+            name={room.name}
+            creatorId={room.creatorId}
+            lastMsg={room.lastMsg?.msg}
+            lastMsgTime={room.lastMsg?.time}
+          />
+        );
+      })}
+    </Container>
   );
 }
