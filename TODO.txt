@@ -1,14 +1,8 @@
 Todo Features:
-    - user profile.
-    - google Auth.
     - direct messages.
     - view user's photo once after he sends messages.
-    - insert code.
     - show if thier are new messages or notifications.
     - Optimize sending message : spinner while sending message with img / filename visible.
-    - lazy loading.
 
-    - clone discord theme.
 
-- Fix Members section responsiveness.
 

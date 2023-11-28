@@ -12,9 +12,12 @@ export default function RegisterForm({ state, setFormState, showForm }) {
 
     const onSubmit = async (data) => {
         setFormState("LOADING");
-        if (users?.find((e) => e.name === data.name)) {
+        if (users?.find((e) => e.name == data.name)) {
             setFormState("ERROR", "Username is already exists.");
-
+            return;
+        }
+        if (users?.find((e) => e.email == data.email)) {
+            setFormState("ERROR", "Email is already exists.");
             return;
         }
         try {
@@ -90,6 +93,7 @@ export default function RegisterForm({ state, setFormState, showForm }) {
                                         name: data.name,
                                         email: data.email,
                                         img: downloadURL,
+                                        status: "online",
                                     }
                                 );
                             }

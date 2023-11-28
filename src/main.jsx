@@ -5,14 +5,17 @@ import AuthContextProvider from "./context/AuthContext";
 import SnackContextProvider from "./context/SnackContext";
 import { FontStyles } from "./GlobalStyles";
 import "bootstrap-icons/font/bootstrap-icons.css";
+import UsersContextProvider from "./context/UsersContext";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
-  <React.StrictMode>
-    <AuthContextProvider>
-      <SnackContextProvider>
-        <FontStyles />
-        <App />
-      </SnackContextProvider>
-    </AuthContextProvider>
-  </React.StrictMode>
+    <React.StrictMode>
+        <UsersContextProvider>
+            <AuthContextProvider>
+                <SnackContextProvider>
+                    <FontStyles />
+                    <App />
+                </SnackContextProvider>
+            </AuthContextProvider>
+        </UsersContextProvider>
+    </React.StrictMode>
 );
