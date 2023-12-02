@@ -7,131 +7,127 @@ import { LogOut } from "src/components/Header/LogOut";
 import Modal from "react-modal";
 
 const customStyles = {
-  content: {
-    backgroundColor: "#36393F",
-    padding: "2rem",
-    borderRadius: "20px",
-    maxHeight: "90vh",
-    overflow: "auto",
-    top: "50%",
-    left: "50%",
-    right: "auto",
-    bottom: "auto",
-    marginRight: "-50%",
-    transform: "translate(-50%, -50%)",
-  },
+    content: {
+        backgroundColor: "#36393F",
+        padding: "2rem",
+        borderRadius: "20px",
+        maxHeight: "90vh",
+        overflow: "auto",
+        top: "50%",
+        left: "50%",
+        right: "auto",
+        bottom: "auto",
+        marginRight: "-50%",
+        transform: "translate(-50%, -50%)",
+    },
 };
 
 const Img = styled.img`
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
 
-  &:hover {
-    cursor: pointer;
-  }
-`;
-
-const Span = styled.span`
-  font-weight: bold;
-  color: #6b4eff;
-  &:hover {
-    cursor: pointer;
-  }
+    &:hover {
+        cursor: pointer;
+    }
 `;
 
 const Button = styled.button`
-  background-color: var(--main);
-  font: var(--sm) main-semibold;
-  color: #fff;
-  border: 1px solid var(--main);
-  border-radius: 20px 20px;
-  padding: 5px 20px;
-  display: flex;
-  gap: 5px;
-  align-items: center;
-  justify-content: center;
-  &:hover {
-    cursor: pointer;
-  }
+    background-color: var(--main);
+    font: var(--sm) main-semibold;
+    color: #fff;
+    border: 1px solid var(--main);
+    border-radius: 20px 20px;
+    padding: 5px 20px;
+    display: flex;
+    gap: 5px;
+    align-items: center;
+    justify-content: center;
+    &:hover {
+        cursor: pointer;
+    }
 `;
 
 const reducer = (state, action) => {
-  switch (action.type) {
-    case "SUCCESS":
-      return { success: true, error: "", loading: false };
-    case "ERROR":
-      return { success: false, error: action.payload, loading: false };
-    case "LOADING":
-      return { success: false, error: "", loading: true };
-    case "RESET":
-      return { success: false, error: "", loading: "" };
-    default:
-      return state;
-  }
+    switch (action.type) {
+        case "SUCCESS":
+            return { success: true, error: "", loading: false };
+        case "ERROR":
+            return { success: false, error: action.payload, loading: false };
+        case "LOADING":
+            return { success: false, error: "", loading: true };
+        case "RESET":
+            return { success: false, error: "", loading: "" };
+        default:
+            return state;
+    }
 };
 
 export default function LogIn() {
-  const { userData } = useContext(AuthContext);
-  const [logOutBtn, setLogOutBtn] = useState(false);
-  const [modal, setModal] = useState(false);
-  const [form, setForm] = useState("login");
-  const [state, dispatch] = useReducer(reducer, {
-    loading: false,
-    error: "",
-    success: false,
-  });
+    const { userData } = useContext(AuthContext);
+    const [logOutBtn, setLogOutBtn] = useState(false);
+    const [modal, setModal] = useState(false);
+    const [form, setForm] = useState("login");
+    const [state, dispatch] = useReducer(reducer, {
+        loading: false,
+        error: "",
+        success: false,
+    });
 
-  const setFormState = (type, payload) => {
-    dispatch({ type: type, payload: payload });
-  };
+    const setFormState = (type, payload) => {
+        dispatch({ type: type, payload: payload });
+    };
 
-  const showModal = () => {
-    setModal(true);
-  };
-  const hideModal = () => {
-    setModal(false);
-    dispatch({ type: "RESET" });
-  };
+    const showModal = () => {
+        setModal(true);
+    };
+    const hideModal = () => {
+        setModal(false);
+        dispatch({ type: "RESET" });
+    };
 
-  const toggleLogOutButton = () => {
-    setLogOutBtn(!logOutBtn);
-  };
+    const toggleLogOutButton = () => {
+        setLogOutBtn(!logOutBtn);
+    };
 
-  const selectForm = (form) => {
-    setForm(form);
-    dispatch({ type: "RESET" });
-  };
+    const selectForm = (form) => {
+        setForm(form);
+        dispatch({ type: "RESET" });
+    };
 
-  return (
-    <>
-      <LogOut setLogOutBtn={setLogOutBtn} logOutBtn={logOutBtn} />
-      {userData ? (
-        <Img src={userData.img} onClick={toggleLogOutButton} />
-      ) : (
+    return (
         <>
-          <Button onClick={showModal}>
-            <i className="bi bi-person-circle"></i> Sign In
-          </Button>
-          <Modal isOpen={modal} onRequestClose={hideModal} style={customStyles}>
-            {form === "login" ? (
-              <LoginForm
-                hideModal={hideModal}
-                setFormState={setFormState}
-                state={state}
-                showForm={selectForm}
-              />
+            <LogOut setLogOutBtn={setLogOutBtn} logOutBtn={logOutBtn} />
+            {userData ? (
+                <Img src={userData.img} onClick={toggleLogOutButton} />
             ) : (
-              <RegisterForm
-                hideModal={hideModal}
-                setFormState={setFormState}
-                state={state}
-                showForm={selectForm}
-              />
+                <>
+                    <Button onClick={showModal}>
+                        <i className='bi bi-person-circle'></i> Sign In
+                    </Button>
+                    <Modal
+                        isOpen={modal}
+                        onRequestClose={hideModal}
+                        style={customStyles}
+                    >
+                        {form === "login" ? (
+                            <LoginForm
+                                hideModal={hideModal}
+                                setFormState={setFormState}
+                                state={state}
+                                showForm={selectForm}
+                            />
+                        ) : (
+                            <RegisterForm
+                                hideModal={hideModal}
+                                setFormState={setFormState}
+                                state={state}
+                                showForm={selectForm}
+                            />
+                        )}
+                    </Modal>
+                </>
             )}
-          </Modal>
         </>
-      )}
-    </>
-  );
+    );
 }

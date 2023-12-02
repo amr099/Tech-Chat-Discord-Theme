@@ -111,75 +111,78 @@ export default function SendMessage() {
             showSnack("You have to login first!", "error");
             return;
         }
-        if (!roomData.members?.find((m) => m == userData.id)) {
+        if (!roomData.members.find((m) => m == userData.id)) {
             showSnack("Members only can send to room!", "error");
             return;
         }
 
-        if (img) {
-            /** @type {any} */
-            const metadata = {
-                contentType: "image/jpeg",
-            };
-
-            const storageRef = ref(storage, "images/" + msg);
-            const uploadTask = uploadBytesResumable(
-                storageRef,
-                img[0],
-                metadata
-            );
-            let progress;
-            uploadTask.on(
-                "state_changed",
-                (snapshot) => {
-                    progress =
-                        (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                    console.log("Upload is " + progress + "% done");
-                },
-                (error) => {
-                    console.log(error);
-                    return;
-                },
-                () => {
-                    if (progress === 100) {
-                        getDownloadURL(uploadTask.snapshot.ref).then(
-                            async (downloadURL) => {
-                                const newMsg = {
-                                    uid: userData.id,
-                                    msg: msg,
-                                    time: new Date().toLocaleString(),
-                                    img: downloadURL,
-                                };
-                                await updateDoc(
-                                    doc(firestoreDb, "Rooms", roomData.name),
-                                    {
-                                        messages: arrayUnion(newMsg),
-                                    }
-                                );
-                                setMsg("");
-                                setImg(null);
-                                fileRef.current.value = null;
-                                return;
-                            }
-                        );
-                    }
-                }
-            );
-        } else {
-            const newMsg = {
-                uid: userData.id,
-                msg: msg,
-                time: new Date().toLocaleString(),
-            };
-
-            await updateDoc(doc(firestoreDb, "Rooms", roomData.name), {
-                messages: arrayUnion(newMsg),
-            });
-            setMsg("");
-            setImg(null);
-            fileRef.current.value = null;
-        }
         try {
+            if (img) {
+                /** @type {any} */
+                const metadata = {
+                    contentType: "image/jpeg",
+                };
+
+                const storageRef = ref(storage, "images/" + msg);
+                const uploadTask = uploadBytesResumable(
+                    storageRef,
+                    img[0],
+                    metadata
+                );
+                let progress;
+                uploadTask.on(
+                    "state_changed",
+                    (snapshot) => {
+                        progress =
+                            (snapshot.bytesTransferred / snapshot.totalBytes) *
+                            100;
+                        console.log("Upload is " + progress + "% done");
+                    },
+                    (error) => {
+                        console.log(error);
+                        return;
+                    },
+                    () => {
+                        if (progress === 100) {
+                            getDownloadURL(uploadTask.snapshot.ref).then(
+                                async (downloadURL) => {
+                                    const newMsg = {
+                                        uid: userData.id,
+                                        msg: msg,
+                                        time: new Date().toLocaleString(),
+                                        img: downloadURL,
+                                    };
+                                    await updateDoc(
+                                        doc(
+                                            firestoreDb,
+                                            "Rooms",
+                                            roomData.name
+                                        ),
+                                        {
+                                            messages: arrayUnion(newMsg),
+                                        }
+                                    );
+                                    setMsg("");
+                                    setImg(null);
+                                    fileRef.current.value = null;
+                                    return;
+                                }
+                            );
+                        }
+                    }
+                );
+            } else {
+                const newMsg = {
+                    uid: userData.id,
+                    msg: msg,
+                    time: new Date().toLocaleString(),
+                };
+
+                await updateDoc(doc(firestoreDb, "Rooms", roomData.name), {
+                    messages: arrayUnion(newMsg),
+                });
+                setMsg("");
+            }
         } catch (e) {
             showSnack("Error!", "error");
             console.log(e);

@@ -1,9 +1,7 @@
 import { useContext, useState, Suspense, lazy } from "react";
 import styled from "styled-components";
-import Modal from "react-modal";
 import { GlobalStyle } from "src/GlobalStyles";
 import { SnackContext } from "src/context/SnackContext";
-import UsersContextProvider from "src/context/UsersContext";
 import RoomContextProvider from "src/context/RoomContext";
 import Snackbar from "src/components/Snackbar";
 import Loading from "src/components/Loading";

@@ -1,7 +1,7 @@
 import { createGlobalStyle } from "styled-components";
-import whiteny from "./fonts/whitney/whitneymedium.otf";
-import whitenySemibold from "./fonts/whitney/whitneysemibold.otf";
-import whitenyBold from "./fonts/whitney/whitneybold.otf";
+import whiteny from "./assets/fonts/whitney/whitneymedium.otf";
+import whitenySemibold from "./assets/fonts/whitney/whitneysemibold.otf";
+import whitenyBold from "./assets/fonts/whitney/whitneybold.otf";
 
 export const GlobalStyle = createGlobalStyle`
 

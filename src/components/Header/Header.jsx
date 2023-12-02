@@ -6,17 +6,17 @@ import LogIn from "./LogIn";
 
 const HeaderContainer = styled.div`
     display: flex;
-    height:100%;
+    height: 100%;
     justify-content: space-between;
     align-items: center;
-    padding:0 2.5%;
+    padding: 0 2.5%;
     background-color: var(--dark);
     color: #fff;
-    border-bottom:3px solid var(--main)
+    border-bottom: 3px solid var(--main);
 `;
 
 const H1 = styled.h1`
-    font:var(--lg) main-bold;
+    font: var(--lg) main-bold;
     letter-spacing: -1px;
 `;
 

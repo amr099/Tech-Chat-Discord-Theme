@@ -17,9 +17,10 @@ const Container = styled.div`
 
     &:hover {
         cursor: pointer;
-        background-color:var(--dark);
+        background-color: var(--dark);
     }
 `;
+
 export function LogOut({ logOutBtn, setLogOutBtn }) {
     const Out = async () => {
         await signOut(auth);

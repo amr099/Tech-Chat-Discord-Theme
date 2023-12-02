@@ -1,12 +1,6 @@
-import { useContext } from "react";
 import { useForm } from "react-hook-form";
 import styled from "styled-components";
 import Loading from "src/components/Loading";
-import { signInWithPopup } from "firebase/auth";
-import { provider, auth, firestoreDb } from "../../firebase-config";
-import { AuthContext } from "src/context/AuthContext";
-import { doc, setDoc, updateDoc, onSnapshot } from "firebase/firestore";
-import { UsersContext } from "src/context/UsersContext";
 
 const FormContainer = styled.form`
     display: flex;
@@ -70,11 +64,6 @@ const SubmitButton = styled.button`
     }
 `;
 
-const GoogleButton = styled(SubmitButton)`
-    background-color: white;
-    color: black;
-`;
-
 const Action = styled.span`
     font-size: 16px;
     color: #00aff4;
@@ -94,48 +83,6 @@ export default function Form({ label, state, onSubmit, inputs, showForm }) {
         handleSubmit,
         formState: { errors },
     } = useForm();
-
-    // const { setUserData } = useContext(AuthContext);
-    // const users = useContext(UsersContext);
-
-    // const loginWithGoogle = async () => {
-    //     try {
-    //         const result = await signInWithPopup(auth, provider);
-    //         const newUser = result.user;
-    //         console.log(newUser);
-
-    //         if (!users.find((u) => u.email == newUser.email)) {
-    //             await setDoc(doc(firestoreDb, "Users", newUser.uid), {
-    //                 id: newUser?.uid,
-    //                 name: newUser?.displayName,
-    //                 email: newUser?.email,
-    //                 img: newUser?.photoURL,
-    //                 status: "online",
-    //             });
-    //             await onSnapshot(
-    //                 doc(firestoreDb, "Users", newUser?.uid),
-    //                 (doc) => {
-    //                     setUserData(doc.data());
-    //                 }
-    //             );
-    //         } else {
-    //             for (let user of users) {
-    //                 if (user?.email === newUser.email) {
-    //                     console.log(user);
-    //                     await onSnapshot(
-    //                         doc(firestoreDb, "Users", user?.id),
-    //                         (doc) => {
-    //                             setUserData(doc.data());
-    //                         }
-    //                     );
-    //                 }
-    //             }
-    //         }
-    //     } catch (error) {
-    //         console.log(error);
-    //         console.log("error");
-    //     }
-    // };
 
     return (
         <>
@@ -262,11 +209,6 @@ export default function Form({ label, state, onSubmit, inputs, showForm }) {
                     </p>
                 )}
             </FormContainer>
-            {/* {label === "Sign In" && (
-                <GoogleButton onClick={loginWithGoogle}>
-                    Login with Google
-                </GoogleButton>
-            )} */}
         </>
     );
 }
